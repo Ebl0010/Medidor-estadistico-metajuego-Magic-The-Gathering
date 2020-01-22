@@ -1,0 +1,40 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>ACTUALIZAR O BORRAR BARAJA</title>
+    </h:head>
+    <h:body>
+        <h:form id="form" style="width: 100%; padding: 20px 33px;">
+            <h2 style="color: blue;">Proporciona los datos nuevos de la baraja</h2>
+            <h3 style="color: blue;">Nombre actual: #{barajaManagedBean.nombre}, Tier actual: #{barajaManagedBean.tier}</h3>
+
+            <span>Nombre: </span>
+            <h:inputText value="#{barajaManagedBean.nombre}"
+                         style=" width:25%;" />
+            <br/><br/>
+
+            <span>Tier: </span>
+            <h:inputText value="#{barajaManagedBean.tier}"
+                         style=" width:25%;" />
+
+
+            <h:form>
+                <h:commandButton value="Actualizar datos" type="action"
+                                 action="#{barajaManagedBean.actualizarBaraja()}" />
+            </h:form>
+
+
+            <h:form>
+                <h:commandButton value="Volver" type="action"
+                                 action="#{formularioManagedBean.login()}" />
+            </h:form>
+
+            <h:form>
+                <h:commandButton value="Salir" type="submit"
+                                 action="#{formularioManagedBean.salir()}" />
+            </h:form>
+
+    </h:body>
+</html>

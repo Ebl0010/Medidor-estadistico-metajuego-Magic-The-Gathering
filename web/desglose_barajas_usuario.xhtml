@@ -1,0 +1,64 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>HOME USER</title>
+    </h:head>
+    <h:body>
+        <h2 style="color: blue;">DATOS DE #{formularioManagedBean.nombre}</h2>
+        
+        <h:form>
+
+            <h:dataTable value="#{formularioManagedBean.lista_de_barajas_de_usuario}"
+                         var="baraja" border="2"
+                         cellspacing="10" cellpadding="10">
+
+                <h:column>
+                    <f:facet name="header">Baraja</f:facet>
+                        #{baraja.nombre_baraja}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Victorias main</f:facet>
+                        #{baraja.gm}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Victorias side</f:facet>
+                        #{baraja.gs}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Victorias totales</f:facet>
+                        #{baraja.ganadas_total}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">% Main</f:facet>
+                        #{baraja.porcentaje_main}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">% Side</f:facet>
+                        #{baraja.porcentaje_side}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">% Victorias total</f:facet>
+                        #{baraja.porcentaje_total}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Jugadas total</f:facet>
+                        #{baraja.jugadas_total}
+                </h:column>
+            </h:dataTable>
+        
+        </h:form>
+            
+        <h:form>
+            <h:commandButton value="Volver" type="action"
+                             action="#{formularioManagedBean.login()}" />
+        </h:form>
+        
+        <h:form>
+            <h:commandButton value="Salir" type="submit"
+                             action="#{formularioManagedBean.salir()}" />
+        </h:form>
+        
+    </h:body>
+</html>

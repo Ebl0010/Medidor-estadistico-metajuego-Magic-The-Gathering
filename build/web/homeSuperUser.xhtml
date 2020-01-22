@@ -1,0 +1,71 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>HOME SUPER USER</title>
+    </h:head>
+    <h:body>
+        <h2 style="color: blue;">USUARIO: #{formularioManagedBean.nombre} </h2>
+        
+        <h2 style="color: blue;">Privilegios de administrador</h2>
+
+         <table>
+            <tr>
+                <td><spam>PARTIDAS GANADAS</spam></td>
+                <td><spam>PARTIDAS EMPATADAS</spam></td>
+                <td><spam>PARTIDAS PERDIDAS</spam></td>
+                <td><spam>RONDAS GANADAS</spam></td>
+                <td><spam>RONDAS EMPATADAS</spam></td>
+                <td><spam>RONDAS PERDIDAS</spam></td>
+                <td><spam>% PARTIDAS</spam></td>
+                <td><spam>% RONDAS</spam></td>
+            </tr>
+            <tr>
+                <td><spam>#{formularioManagedBean.pj}</spam></td>
+                <td><spam>#{formularioManagedBean.pg}</spam></td>
+                <td><spam>#{formularioManagedBean.pe}</spam></td>
+                <td><spam>#{formularioManagedBean.pp}</spam></td>
+                <td><spam>#{formularioManagedBean.rj}</spam></td>
+                <td><spam>#{formularioManagedBean.rg}</spam></td>
+                <td><spam>#{formularioManagedBean.re}</spam></td>
+                <td><spam>#{formularioManagedBean.rp}</spam></td>
+            </tr>
+        </table>
+        
+        <h:form>
+            <h:dataTable value="#{formularioManagedBean.lista_de_barajas_de_usuario}"
+                         var="baraja" border="2"
+                         cellspacing="10" cellpadding="10">
+
+                <h:column>
+                    <f:facet name="header">Baraja:</f:facet>
+                        #{baraja.nombre_baraja}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Total victorias:</f:facet>
+                        #{baraja.ganadas_total}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">% victorias:</f:facet>
+                        #{baraja.porcentaje_total}
+                </h:column>
+            </h:dataTable>            
+        </h:form>
+        
+        <h:form>
+            <h:commandButton value="Desglose por barajas" action="desglose_barajas_usuario.xhtml" />
+        </h:form>
+        
+        <h:form>
+            <h:commandButton value="Gestionar barajas" action="barajas.xhtml" />
+        </h:form>
+
+        
+        <h:form>
+            <h:commandButton value="Salir" type="submit"
+                             action="#{formularioManagedBean.salir()}" />
+        </h:form>
+        
+    </h:body>
+</html>

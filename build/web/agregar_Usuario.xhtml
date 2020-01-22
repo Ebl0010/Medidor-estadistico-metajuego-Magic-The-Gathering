@@ -1,0 +1,24 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <h:head>
+        <title>REGISTRO DE NUEVO USUARIO</title>
+    </h:head>
+    <h:body>
+        <h:form id="form" style="width: 100%; padding: 20px 33px;">
+            <h2 style="color: blue;">Proporciona los datos del usuario nuevo</h2>
+            <span>Nombre: </span>
+            <h:inputText value="#{registroManagedBean.nombre}"
+                         style=" width:25%;" />
+            <br/><br/>
+
+            <span>Clave: </span>
+            <h:inputSecret value="#{registroManagedBean.clave}"
+                         style=" width:25%;" />
+            <br/><br/>
+            <br/><br/>
+            <h:commandButton value="Agregar" type="submit"
+                             action="#{registroManagedBean.guardarUsuario()}" />
+
+        </h:form>
+    </h:body>
+</html>
