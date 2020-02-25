@@ -28,6 +28,11 @@ public class Usuario {
         lista_de_barajas_de_usuario = new ArrayList<Baraja_de_usuario>();
     }
     
+    public Usuario(String n){
+        nombre = n;
+        lista_de_barajas_de_usuario = new ArrayList<Baraja_de_usuario>();
+    }
+    
     public Usuario(String n, String c){
         nombre = n;
         clave = c;

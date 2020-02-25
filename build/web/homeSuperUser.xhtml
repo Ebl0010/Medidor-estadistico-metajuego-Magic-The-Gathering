@@ -7,10 +7,10 @@
     </h:head>
     <h:body>
         <h2 style="color: blue;">USUARIO: #{formularioManagedBean.nombre} </h2>
-        
+
         <h2 style="color: blue;">Privilegios de administrador</h2>
 
-         <table>
+        <table>
             <tr>
                 <td><spam>PARTIDAS GANADAS</spam></td>
                 <td><spam>PARTIDAS EMPATADAS</spam></td>
@@ -32,7 +32,7 @@
                 <td><spam>#{formularioManagedBean.rp}</spam></td>
             </tr>
         </table>
-        
+
         <h:form>
             <h:dataTable value="#{formularioManagedBean.lista_de_barajas_de_usuario}"
                          var="baraja" border="2"
@@ -58,14 +58,20 @@
         </h:form>
         
         <h:form>
-            <h:commandButton value="Gestionar barajas" action="barajas.xhtml" />
+            <h:commandButton value="Introducir resultado" action="intoducir_resultado.xhtml" />
+        </h:form>
+        
+
+        <h:form>
+            <h:commandButton value="Gestionar barajas" type="submit"
+                             action="#{barajaManagedBean.carga_pagina_gestionar_barajas()}" />
         </h:form>
 
-        
+
         <h:form>
             <h:commandButton value="Salir" type="submit"
                              action="#{formularioManagedBean.salir()}" />
         </h:form>
-        
+
     </h:body>
 </html>

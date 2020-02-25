@@ -1,11 +1,23 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
         <title>BARAJAS</title>
     </h:head>
+    
     <h:body>
+        
+        <spam>Introduce nombre para modificar bajara</spam>
+        <h:form>
+            <h:inputText value="#{barajaManagedBean.modificar}"
+                         style=" width:25%;" />
+            <h:commandButton value="Modificar" type="action"
+                             action="#{barajaManagedBean.modificar()}" />
+        </h:form>
+        
+        <h:form>
+            <h:commandButton value="Añadir baraja nueva" action="aniadir_baraja.xhtml" />
+        </h:form>
 
         <h:dataTable value="#{barajaManagedBean.barajas}"
                      var="baraja" border="2" 
@@ -21,31 +33,7 @@
             </h:column>
         </h:dataTable>
 
-        <table>
-            <tr>
-                <spam>Introduce nombre para modificar bajara</spam>
-            </tr>
-            <tr>
-                <h:form>
-                    <h:inputText value="#{barajaManagedBean.modificar}"
-                             style=" width:25%;" />  
-                </h:form>
-                              
-            </tr>
-            <tr>
-                <h:form>
-                    <h:commandButton value="Modificar" type="action"
-                             action="#{barajaManagedBean.modificar()}" />
-                </h:form> 
-            </tr>
-        </table>
-
-
-
-        <h:form>
-            <h:commandButton value="Añadir baraja nueva" action="aniadir_baraja.xhtml" />
-        </h:form>
-
+        
 
         <h:form>
             <h:commandButton value="Volver" type="action"

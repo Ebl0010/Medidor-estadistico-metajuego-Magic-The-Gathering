@@ -108,14 +108,33 @@ public class Baraja_de_usuario {
     
     
     public void calculaTotales(){
-        
+              
         ganadas_total = gm+gs;
         jugadas_total = gm+gs+em+es+pm+ps;
-        int jugadas_main = gm+pm+em;
-        porcentaje_main = (gm / jugadas_main) * 100;
+        
+        int jugadas_main = gm+pm+em;      
+        if (jugadas_main != 0){
+            porcentaje_main = (gm / jugadas_main) * 100;
+        } else {
+            porcentaje_main = 0;
+        }
+        
         int jugadas_side = gs+ps+es;
-        porcentaje_side = (gs / jugadas_side) * 100;
-        porcentaje_total = (ganadas_total / jugadas_total) * 100;
+        if (jugadas_side != 0){
+            porcentaje_side = (gs / jugadas_side) * 100;
+        } else {
+            porcentaje_side = 0;
+        }
+        
+        if (porcentaje_main == 0 && porcentaje_side == 0){
+            porcentaje_total = 0;
+        } else {
+             porcentaje_total = (ganadas_total / jugadas_total) * 100;
+        }
+        
+        
+        
+       
         
     }
     

@@ -182,7 +182,7 @@ public class FormularioManagedBean {
         }
     }
 
-    private void cargarUsuario(Usuario usuario) throws SQLException {
+    public void cargarUsuario(Usuario usuario) throws SQLException {
 
         pj = usuario.getPj();
         pg = usuario.getPg();

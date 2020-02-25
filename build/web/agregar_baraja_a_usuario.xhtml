@@ -1,39 +1,32 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
-        <title>BARAJAS</title>
+        <title>HOME USER</title>
     </h:head>
-    
     <h:body>
-        
-        <spam>Introduce nombre para modificar bajara</spam>
-        <h:form>
-            <h:inputText value="#{barajaManagedBean.modificar}"
-                         style=" width:25%;" />
-            <h:commandButton value="Modificar" type="action"
-                             action="#{barajaManagedBean.modificar()}" />
-        </h:form>
-        
-        <h:form>
-            <h:commandButton value="Añadir baraja nueva" action="aniadir_baraja.xhtml" />
-        </h:form>
+        <h2 style="color: blue;">AGREGAR NUEVA BARAJA AL USUARIO</h2>
+        <h3 style="color: blue;">Barajas disponibles:</h3>
+
 
         <h:dataTable value="#{barajaManagedBean.barajas}"
-                     var="baraja" border="2" 
+                     var="baraja" border="1"
                      cellspacing="10" cellpadding="10">
-
             <h:column>
                 <f:facet name="header">Baraja</f:facet>
                     #{baraja.nombre}
             </h:column>
-            <h:column>
-                <f:facet name="header">Tier</f:facet>
-                    #{baraja.tier}
-            </h:column>
         </h:dataTable>
 
-        
+        <spam>Introduce nombre de la baraja que quieres agregar</spam>
+        <h:form>
+            <h:inputText value="#{barajaManagedBean.nombre_nueva_baraja_usuario}"
+                         style=" width:25%;" /> 
+            <h:commandButton value="Agregar baraja" type="action"
+                             action="#{barajaManagedBean.agregar_baraja_a_usuario(formularioManagedBean.nombre)}" />
+        </h:form>
+
 
         <h:form>
             <h:commandButton value="Volver" type="action"
