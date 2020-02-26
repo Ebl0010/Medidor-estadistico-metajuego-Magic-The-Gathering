@@ -1,0 +1,57 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>VALIDAR TORNEO</title>
+    </h:head>
+    
+    <h:body>
+         
+        <h2>Revisar y Validar los datos introducidos</h2>
+
+        <h:dataTable value="#{resultadoManagedBean.resultadosRonda}"
+                     var="resultado_ronda" border="2" 
+                     cellspacing="10" cellpadding="10">
+            
+            <h:column>
+                <f:facet name="header">Oponente:</f:facet>
+                    #{resultado_ronda.oponente}
+            </h:column>
+            
+
+            <h:column>
+                <f:facet name="header">Ganadas main:</f:facet>
+                    #{resultado_ronda.ganadas_main}
+            </h:column>
+            
+            <h:column>
+                <f:facet name="header">Perdidas main:</f:facet>
+                    #{resultado_ronda.perdidas_main}
+            </h:column>
+            
+            <h:column>
+                <f:facet name="header">Ganadas side:</f:facet>
+                    #{resultado_ronda.ganadas_side}
+            </h:column>
+            
+            <h:column>
+                <f:facet name="header">Perdidas side:</f:facet>
+                    #{resultado_ronda.perdidas_side}
+            </h:column>
+            
+        </h:dataTable>
+
+        
+
+        <h:form>
+            <h:commandButton value="Volver" type="action"
+                             action="#{formularioManagedBean.login()}" />
+        </h:form>
+
+        <h:form>
+            <h:commandButton value="Salir" type="submit"
+                             action="#{formularioManagedBean.salir()}" />
+        </h:form>
+
+    </h:body>
+</html>

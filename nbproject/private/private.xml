@@ -3,26 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/src/java/Controller/FormularioManagedBean.java</file>
-            <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/web/agregar_Usuario.xhtml</file>
-            <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/src/java/Model/Baraja.java</file>
             <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/src/java/Controller/ResultadoManagedBean.java</file>
-            <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/web/aniadir_baraja.xhtml</file>
-            <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/web/desglose_barajas_usuario.xhtml</file>
-            <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/web/intoducir_resultado.xhtml</file>
-            <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/web/index.xhtml</file>
-            <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/web/homeUser.xhtml</file>
-            <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/src/java/Controller/RegistroManagedBean.java</file>
-            <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/web/agregar_baraja_a_usuario.xhtml</file>
-            <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/src/java/Controller/BarajaManagedBean.java</file>
-            <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/web/modificar_baraja.xhtml</file>
-            <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/src/java/Model/ConectaBD.java</file>
-            <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/web/resultado_no_introducido.xhtml</file>
-            <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/src/java/Model/Usuario.java</file>
-            <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/web/resultado_introducido.xhtml</file>
-            <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/src/java/Model/Baraja_de_usuario.java</file>
-            <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/web/homeSuperUser.xhtml</file>
-            <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/web/barajas.xhtml</file>
+            <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/src/java/Model/ResultadoRonda.java</file>
+            <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/web/introducir_torneo_2.xhtml</file>
+            <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/web/validar_torneo.xhtml</file>
             <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/src/java/Model/GestorBD.java</file>
         </group>
     </open-files>

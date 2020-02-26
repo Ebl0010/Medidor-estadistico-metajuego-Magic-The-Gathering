@@ -458,5 +458,70 @@ public class GestorBD {
             }
         }
     }
+    
+    public boolean usuario_tiene_baraja(String nombre_usuario, String baraja) throws SQLException{
+        try {
+            ConectaBD conectaBD = new ConectaBD();
+            con = conectaBD.getConnection();
+            st = con.createStatement();
+            
+            rs = st.executeQuery(
+                    "SELECT * FROM barajas_usuarios WHERE (nombre = '" 
+                            + nombre_usuario + "' and baraja = '" 
+                            + baraja + "');");
+            
+            if (! rs.next()){
+                return false;
+            } else {
+                return true;
+            }
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+            
+        } finally {
 
+            if (rs != null) {
+                rs.close();
+            }
+            if (st != null) {
+                st.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+    }
+    
+    public boolean existeBaraja(String baraja) throws SQLException {
+        try {
+            ConectaBD conectaBD = new ConectaBD();
+            con = conectaBD.getConnection();
+            st = con.createStatement();
+            rs = st.executeQuery(
+                    "select * from barajas where baraja = '" + baraja + "'");
+
+            if (!rs.next()) {
+                return false;
+            } else {
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+            if (st != null) {
+                st.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+    }
+    
+  
 }

@@ -1,0 +1,62 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>INTRODUCIR DATOS DE TORNEO (2)</title>
+    </h:head>
+    
+    <h:body>
+        
+        
+        <h:form id="form" style="width: 100%; padding: 20px 33px;">
+            <h2 style="color: blue;">RESULTADO RONDA #{resultadoManagedBean.resultadosRonda.size()+1}:</h2>
+            <br/><br/>
+ 
+            <span>Baraja del oponente: </span>
+            <h:inputText value="#{resultadoManagedBean.baraja2}"
+                         style=" width:25%;" />
+            <br/><br/>
+            <span>Victorias de main: </span>
+            <h:selectOneMenu value="#{resultadoManagedBean.main1}">
+                <f:selectItem itemValue="0" itemLabel="0"/>
+                <f:selectItem itemValue="1" itemLabel="1"/>
+                <f:selectItem itemValue="2" itemLabel="2"/>
+            </h:selectOneMenu>
+            
+ 
+            <br/><br/>
+            <span>Derrotas de main: </span>
+            <h:selectOneMenu value="#{resultadoManagedBean.main2}">
+                <f:selectItem itemValue="0" itemLabel="0"/>
+                <f:selectItem itemValue="1" itemLabel="1"/>
+                <f:selectItem itemValue="2" itemLabel="2"/>
+            </h:selectOneMenu>
+
+            <br/><br/>
+            <span>Victorias de side: </span>
+            <h:selectOneMenu value="#{resultadoManagedBean.side1}">
+                <f:selectItem itemValue="0" itemLabel="0"/>
+                <f:selectItem itemValue="1" itemLabel="1"/>
+                <f:selectItem itemValue="2" itemLabel="2"/>
+                <f:selectItem itemValue="3" itemLabel="3"/>
+            </h:selectOneMenu>
+
+            <br/><br/>
+            <span>Derrotas de side: </span>
+            <h:selectOneMenu value="#{resultadoManagedBean.side2}">
+                <f:selectItem itemValue="0" itemLabel="0"/>
+                <f:selectItem itemValue="1" itemLabel="1"/>
+                <f:selectItem itemValue="2" itemLabel="2"/>
+                <f:selectItem itemValue="3" itemLabel="3"/>
+            </h:selectOneMenu>
+            <br/><br/>
+
+            
+
+            <h:commandButton value="Aceptar" type="submit"
+                             action="#{resultadoManagedBean.introducirResultadoTorneo()}" />
+
+        </h:form>
+
+    </h:body>
+</html>
