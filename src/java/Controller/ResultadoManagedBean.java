@@ -8,6 +8,7 @@ import Model.Usuario;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
@@ -17,7 +18,7 @@ import javax.faces.context.FacesContext;
 @SessionScoped
 public class ResultadoManagedBean {
 
-    private String baraja1, baraja2, usuario;
+    private String baraja1, baraja2, usuario, resultado_torneo;
     private int main1, main2, side1, side2, rondas_ganadas, rondas_perdidas, rondas_empatadas, num_rondas;
     private GestorBD gestorBD;
     private ArrayList<ResultadoRonda> resultadosRondas;
@@ -98,6 +99,10 @@ public class ResultadoManagedBean {
     public ArrayList<ResultadoRonda> getResultadosRonda(){
         return resultadosRondas;
     }
+    
+    public String getResultado_torneo(){
+        return resultado_torneo;
+    }
 
     public void introducirResultado() throws SQLException {
         // el CT de 2 string devuelve -1 en a.CT(b)
@@ -111,7 +116,7 @@ public class ResultadoManagedBean {
             control = gestorBD.introducirResultado(baraja2, baraja1, main1, main2, side1, side2);
         }
         puestaCero();
-        if (control == true) {
+        if (control) {
             try {
                 FacesContext.getCurrentInstance()
                         .getExternalContext()
@@ -132,7 +137,7 @@ public class ResultadoManagedBean {
     }
 
     public void introducirPrevioTorneo(String usuario) throws SQLException {
-        usuario = usuario;
+        this.usuario = usuario;
         if (gestorBD.usuario_tiene_baraja(usuario, baraja1)) {
             rondas_ganadas = 0;
             rondas_perdidas = 0;
@@ -161,6 +166,7 @@ public class ResultadoManagedBean {
 
     public void introducirResultadoTorneo() throws SQLException {
         ResultadoRonda ronda = new ResultadoRonda();
+        resultado_torneo = "";
         while (resultadosRondas.size() < num_rondas) {
 
             if (gestorBD.existeBaraja(baraja2)) {
@@ -201,7 +207,6 @@ public class ResultadoManagedBean {
             }
 
         } // termina el while ahora tengo que redirigir a la pagina de validacion del torneo
-        puestaCero();
         try {
                 FacesContext.getCurrentInstance()
                         .getExternalContext()
@@ -210,6 +215,102 @@ public class ResultadoManagedBean {
             } catch (IOException e) {
                 e.printStackTrace();
             }   
+    }
+    
+    
+    public void guardar_torneo() throws SQLException{
+       
+        /* en cada elemento del arraylist resultadosRondas tengo partidas ganadas y perdidas,
+            puedo iterar sobre este arraylis llamando al metodo que trabaja contra
+            la base de datos, guardando en cada iteracion lo que sea necesario,
+            ya que hay que actualizar el cuadro cruces, y esto hay que hacerlo con un
+            update por cada elemento del arraylist (que corresponde a cada ronda del torneo).
+        */ 
+        
+        int main_torneo1 = 0;
+        int main_torneo2 = 0;
+        int side_torneo1 = 0;
+        int side_torneo2 = 0;
+        int rondas_ganadas = 0;
+        int rondas_perdidas = 0;
+        int rondas_empatadas = 0;
+        ResultadoRonda resultado;
+        
+        boolean control = true;
+        Iterator<ResultadoRonda> it = resultadosRondas.iterator();
+        
+        /* Este bucle va a ir recorriendo todos los resultadosRonda en el arraylist, que son todas las
+        rondas individuales. Cada ronda engloba resultados para un par de barajas, que deben entrar a la tabla
+        de cruces de forma individual, pero, de forma global, se contabilizan todas las victorias y derrotas de
+        partidas y de rondas para el usuario y para las barajas de usuario, y como en ambas tablas no importa
+        la baraja oponente, en el bucle se iran extrayendo de cada iteracion sobre el arraylist y se ira
+        llamando a meter resultado, y luego se irán sumando para, cuando termine el bucle, añadirlas con
+        una sola operacion update a la base de datos sobre cada tabla, reduciendo el numero de operaciones
+        sobre la base de datos
+         */
+        while (it.hasNext() && control){
+            resultado = it.next();
+            int main1 = resultado.getGanadas_main();
+            int main2 = resultado.getPerdidas_main();
+            int side1 = resultado.getGanadas_side();
+            int side2 = resultado.getPerdidas_side();
+            String baraja2 = resultado.getOponente();
+            
+            control = gestorBD.introducirResultado(baraja1, baraja2, main1, main2, side1, side2);
+            
+            main_torneo1 = main_torneo1 + main1;
+            main_torneo2 = main_torneo2 + main2;
+            side_torneo1 = side_torneo1 + side1;
+            side_torneo2 = side_torneo2 + side2;
+            
+            if (main1 + side1 > main2 + side2){
+                rondas_ganadas ++;
+            } else {
+                if (main1 + side1 < main2 + side2){
+                    rondas_perdidas ++;
+                } else {
+                    rondas_empatadas ++;
+                }
+            }
+       
+        } // cierra el while
+        baraja2 = null;
+        main1 = 0;
+        main2 = 0;
+        side1 = 0;
+        side2 = 0;
+        /*
+        en este punto se ha recorrido entero el arraylist de resultados, se han introducido en la tabla cruces
+        todos los resultados y se tienen los valores totales de partidas y rondas ganadas, perdidas y empatadas
+        a lo largo del torneo, que se deberan introducir con una sola operacion en cada tabla, con un solo metodo
+        cuando el it.hasNext devuelva false, control deberia ser true si todo se ha introducido bien
+        */
+        
+        if (control){
+            control = gestorBD.guardar_torneo(usuario, baraja1, main_torneo1, main_torneo2, 
+                    side_torneo1, side_torneo2, rondas_ganadas, rondas_perdidas, rondas_empatadas);
+            
+        }
+            
+                   
+        if (control) {
+            try {
+                FacesContext.getCurrentInstance()
+                        .getExternalContext()
+                        .redirect("resultado_introducido.xhtml");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            try {
+                FacesContext.getCurrentInstance()
+                        .getExternalContext()
+                        .redirect("resultado_no_introducido.xhtml");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }

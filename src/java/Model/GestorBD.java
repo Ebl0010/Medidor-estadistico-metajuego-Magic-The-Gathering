@@ -188,10 +188,8 @@ public class GestorBD {
                     Baraja_de_usuario b = new Baraja_de_usuario();
                     b.setNombre_baraja(rs.getString("baraja"));
                     b.setGm(rs.getInt("gm"));
-                    b.setEm(rs.getInt("em"));
                     b.setPm(rs.getInt("pm"));
                     b.setGs(rs.getInt("gs"));
-                    b.setEs(rs.getInt("es"));
                     b.setPs(rs.getInt("ps"));
                     lista_de_barajas.add(b);
                 } while (rs.next());
@@ -360,7 +358,7 @@ public class GestorBD {
                 // la baraja si existe. Se hace el insert
                 resultUpdate = st.executeUpdate("insert into barajas_usuarios values ('"
                         + nombre_usuario + "', '"
-                        + nombre_baraja + "', 0,0,0,0,0,0,0,0,0);");
+                        + nombre_baraja + "', 0, 0, 0, 0, 0, 0, 0);");
                 if (resultUpdate != 0) {
                     retorno = true;
                 }
@@ -418,16 +416,15 @@ public class GestorBD {
                 porcentaje = (main1 + side1) / (main1 + main2 + side1 + side2);
                 resultUpdate = st.executeUpdate(
                         "UPDATE cruces SET gm1 = "
-                        +main1+", gm2 = "
-                        +main2+", gs1 = "
-                        +side1+", gs2 = "
-                        +side2+", porcentaje = "
-                        +porcentaje+" where baraja1 = '"
-                        +baraja1+"' and baraja2 = '"
-                        +baraja2+"'");
-                        
-                        
-                        /*
+                        + main1 + ", gm2 = "
+                        + main2 + ", gs1 = "
+                        + side1 + ", gs2 = "
+                        + side2 + ", porcentaje = "
+                        + porcentaje + " where baraja1 = '"
+                        + baraja1 + "' and baraja2 = '"
+                        + baraja2 + "'");
+
+                /*
                         "UPDATE cruces SET gm1 = "
                         + main1 + ", gm2 = "
                         + main2 + ", gs1 = "
@@ -458,28 +455,28 @@ public class GestorBD {
             }
         }
     }
-    
-    public boolean usuario_tiene_baraja(String nombre_usuario, String baraja) throws SQLException{
+
+    public boolean usuario_tiene_baraja(String nombre_usuario, String baraja) throws SQLException {
         try {
             ConectaBD conectaBD = new ConectaBD();
             con = conectaBD.getConnection();
             st = con.createStatement();
-            
+
             rs = st.executeQuery(
-                    "SELECT * FROM barajas_usuarios WHERE (nombre = '" 
-                            + nombre_usuario + "' and baraja = '" 
-                            + baraja + "');");
-            
-            if (! rs.next()){
+                    "SELECT * FROM barajas_usuarios WHERE (nombre = '"
+                    + nombre_usuario + "' and baraja = '"
+                    + baraja + "');");
+
+            if (!rs.next()) {
                 return false;
             } else {
                 return true;
             }
-            
+
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
-            
+
         } finally {
 
             if (rs != null) {
@@ -493,7 +490,7 @@ public class GestorBD {
             }
         }
     }
-    
+
     public boolean existeBaraja(String baraja) throws SQLException {
         try {
             ConectaBD conectaBD = new ConectaBD();
@@ -522,6 +519,126 @@ public class GestorBD {
             }
         }
     }
-    
-  
+
+    /*
+    public boolean guardar_torneo(String usuario, String baraja1, String baraja2, int main1, int main2, int side1, int side2,
+            int rondas_ganadas, int rondas_perdidas, int rondas_empatadas) throws SQLException {
+        /*
+        comprobaciones que pueden ser omitidas: si la baraja no esta asignada al usuario no podemos llegar
+        al punto donde se lanza este metodo, luego no es necesario comprobar eso.
+        Tampoco es necesario, por ende, comprobar que el usuario y la baraja existen.
+     */
+    public boolean guardar_torneo(String usuario, String baraja1, int main1, int main2, int side1, int side2,
+            int rondas_ganadas, int rondas_perdidas, int rondas_empatadas) throws SQLException {
+
+        try {
+            ConectaBD conectaBD = new ConectaBD();
+            con = conectaBD.getConnection();
+            st = con.createStatement();
+
+            boolean control = true;
+
+            rs = st.executeQuery("select * from barajas_usuarios where nombre = '" + usuario + "' and baraja = '" + baraja1 + "'");
+
+            if (!rs.next()) {
+                control = false;
+            }
+
+            if (control) {
+
+                int main1N = rs.getInt("gm") + main1;
+                int main2N = rs.getInt("pm") + main2;
+                int side1N = rs.getInt("gs") + side1;
+                int side2N = rs.getInt("ps") + side2;
+
+                int partidas_jugadas_total = main1N + main2N + side1N + side2N;
+
+                float por_main = main1 / (main1 + main2);
+                float por_side = side1 / (side1 + side2);
+                float por_partidas_total = (main1 + side1) / partidas_jugadas_total;
+
+                // con los porcentajes y los datos tengo que hacer un update en barajas_usuario
+                resultUpdate = st.executeUpdate(
+                        "UPDATE barajas_usuarios SET gm = " + main1
+                        + ", pm = " + main2
+                        + ", gs = " + side1
+                        + ", ps = " + side2
+                        + ", por_main = " + por_main
+                        + ", por_side = " + por_side
+                        + ", por_total = " + por_partidas_total
+                        + " where nombre = '" + usuario 
+                        + "' and baraja = '" + baraja1 +"'");
+                rs.close();
+
+                if (resultUpdate != 1) {
+                    control = false;
+                }
+            }
+
+            // esto actualizaria las barajas de usuario. Ahora faltaria actualizar los datos del usuario
+            if (control) {
+                rs = st.executeQuery("select * from usuarios where nombre = '" + usuario +"'");
+                if (!rs.next()) {
+                    control = false;
+                }
+            }
+
+            if (control) {
+
+                int partidas_ganadas = rs.getInt("pg") + main1 + side1;
+                int partidas_perdidas = rs.getInt("pp") + main2 + side2;
+                int partidas_jugadas = rs.getInt("pj") + partidas_ganadas + partidas_perdidas;
+
+                int rgN = rs.getInt("rg") + rondas_ganadas;
+                int rpN = rs.getInt("rp") + rondas_perdidas;
+                int reN = rs.getInt("re") + rondas_empatadas;
+                int rjN = rs.getInt("rj") + rondas_ganadas + rondas_perdidas + rondas_empatadas;
+
+                float por_rondas = rgN / rjN;
+                float por_partidas = partidas_ganadas / partidas_jugadas;
+
+                resultUpdate = st.executeUpdate(
+                        "UPDATE usuarios SET pj = " + partidas_jugadas
+                        + ", pg = " + partidas_ganadas
+                        + ", pe = " + 0
+                        + ", pp = " + partidas_perdidas
+                        + ", rj = " + rjN
+                        + ", rg = " + rgN
+                        + ", re = " + reN
+                        + ", rp = " + rpN
+                        + ", por_rondas = " + por_rondas
+                        + ", por_partidas = " + por_partidas
+                        + " where nombre = '" + usuario +"'");
+
+                // y ahora compruebo que se ha actualizado una fila:
+                if (resultUpdate != 1) {
+                    control = false;
+                }
+            } // aqui cierra la ultima comprobacion de control
+
+            if (control) {
+                //con.commit();
+                return true;
+            } else {
+                //con.rollback();
+                return false;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            //con.rollback();
+            return false;
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+            if (st != null) {
+                st.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+    }
+
 }
