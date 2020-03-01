@@ -166,7 +166,6 @@ public class ResultadoManagedBean {
 
     public void introducirResultadoTorneo() throws SQLException {
         ResultadoRonda ronda = new ResultadoRonda();
-        resultado_torneo = "";
         while (resultadosRondas.size() < num_rondas) {
 
             if (gestorBD.existeBaraja(baraja2)) {

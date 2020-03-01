@@ -186,7 +186,7 @@ public class FormularioManagedBean {
 
         pj = usuario.getPj();
         pg = usuario.getPg();
-        pe = usuario.getPe();
+        //pe = usuario.getPe();
         pp = usuario.getPp();
         rj = usuario.getRj();
         rg = usuario.getRg();

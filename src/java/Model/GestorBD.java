@@ -553,9 +553,9 @@ public class GestorBD {
 
                 int partidas_jugadas_total = main1N + main2N + side1N + side2N;
 
-                float por_main = main1 / (main1 + main2);
-                float por_side = side1 / (side1 + side2);
-                float por_partidas_total = (main1 + side1) / partidas_jugadas_total;
+                float por_main = (main1 * 100) / (main1 + main2);
+                float por_side = (side1 * 100) / (side1 + side2);
+                float por_partidas_total = (main1 + side1) * 100 / partidas_jugadas_total;
 
                 // con los porcentajes y los datos tengo que hacer un update en barajas_usuario
                 resultUpdate = st.executeUpdate(
@@ -594,8 +594,8 @@ public class GestorBD {
                 int reN = rs.getInt("re") + rondas_empatadas;
                 int rjN = rs.getInt("rj") + rondas_ganadas + rondas_perdidas + rondas_empatadas;
 
-                float por_rondas = rgN / rjN;
-                float por_partidas = partidas_ganadas / partidas_jugadas;
+                float por_rondas = (rgN / rjN) * 100;
+                float por_partidas = (partidas_ganadas / partidas_jugadas) * 100;
 
                 resultUpdate = st.executeUpdate(
                         "UPDATE usuarios SET pj = " + partidas_jugadas
