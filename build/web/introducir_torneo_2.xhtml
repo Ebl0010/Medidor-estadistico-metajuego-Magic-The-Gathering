@@ -2,25 +2,31 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
-        <title>INTRODUCIR DATOS DE TORNEO (2)</title>
+        <title>INTRODUCIR RESULTADOS</title>
     </h:head>
     
     <h:body>
         
         
         <h:form id="form" style="width: 100%; padding: 20px 33px;">
-            <h2 style="color: blue;">RESULTADO RONDA #{resultadoManagedBean.resultadosRonda.size()+1}:</h2>
+            <h2 style="color: blue;">#{resultadoManagedBean.encabezado}</h2>
             <br/><br/>
- 
-            <span>Baraja del oponente: </span>
-            <h:inputText value="#{resultadoManagedBean.baraja2}"
-                         style=" width:25%;" />
+            
+            <h:outputLabel value="Baraja del oponente: "/>
+            <h:selectOneMenu value="#{resultadoManagedBean.baraja2}">
+                <f:selectItems value="#{resultadoManagedBean.todas_las_barajas}" />
+            </h:selectOneMenu>
+            
+            
             <br/><br/>
             <span>Victorias de main: </span>
             <h:selectOneMenu value="#{resultadoManagedBean.main1}">
                 <f:selectItem itemValue="0" itemLabel="0"/>
                 <f:selectItem itemValue="1" itemLabel="1"/>
                 <f:selectItem itemValue="2" itemLabel="2"/>
+                <f:selectItem itemValue="3" itemLabel="3"/>
+                <f:selectItem itemValue="4" itemLabel="4"/>
+                <f:selectItem itemValue="5" itemLabel="5"/>
             </h:selectOneMenu>
             
  
@@ -30,6 +36,9 @@
                 <f:selectItem itemValue="0" itemLabel="0"/>
                 <f:selectItem itemValue="1" itemLabel="1"/>
                 <f:selectItem itemValue="2" itemLabel="2"/>
+                <f:selectItem itemValue="3" itemLabel="3"/>
+                <f:selectItem itemValue="4" itemLabel="4"/>
+                <f:selectItem itemValue="5" itemLabel="5"/>
             </h:selectOneMenu>
 
             <br/><br/>
@@ -39,6 +48,10 @@
                 <f:selectItem itemValue="1" itemLabel="1"/>
                 <f:selectItem itemValue="2" itemLabel="2"/>
                 <f:selectItem itemValue="3" itemLabel="3"/>
+                <f:selectItem itemValue="4" itemLabel="4"/>
+                <f:selectItem itemValue="5" itemLabel="5"/>
+                <f:selectItem itemValue="6" itemLabel="6"/>
+                <f:selectItem itemValue="7" itemLabel="7"/>
             </h:selectOneMenu>
 
             <br/><br/>
@@ -48,6 +61,10 @@
                 <f:selectItem itemValue="1" itemLabel="1"/>
                 <f:selectItem itemValue="2" itemLabel="2"/>
                 <f:selectItem itemValue="3" itemLabel="3"/>
+                <f:selectItem itemValue="4" itemLabel="4"/>
+                <f:selectItem itemValue="5" itemLabel="5"/>
+                <f:selectItem itemValue="6" itemLabel="6"/>
+                <f:selectItem itemValue="7" itemLabel="7"/>
             </h:selectOneMenu>
             <br/><br/>
 
@@ -55,6 +72,9 @@
 
             <h:commandButton value="Aceptar" type="submit"
                              action="#{resultadoManagedBean.introducirResultadoTorneo()}" />
+            
+            <h:commandButton value="Volver" type="submit"
+                            action="#{formularioManagerBean.login()}" />
 
         </h:form>
 

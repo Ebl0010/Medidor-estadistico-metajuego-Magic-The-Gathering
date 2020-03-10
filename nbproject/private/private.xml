@@ -5,15 +5,24 @@
         <group>
             <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/src/java/Controller/FormularioManagedBean.java</file>
             <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/src/java/Model/Baraja.java</file>
+            <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/src/java/Model/Torneo.java</file>
             <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/src/java/Controller/ResultadoManagedBean.java</file>
-            <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/src/java/Model/ResultadoRonda.java</file>
-            <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/web/introducir_torneo_2.xhtml</file>
+            <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/web/intoducir_torneo_1.xhtml</file>
             <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/web/validar_torneo.xhtml</file>
             <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/web/desglose_barajas_usuario.xhtml</file>
+            <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/web/introducir_resultado.xhtml</file>
+            <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/web/homeUser.xhtml</file>
+            <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/web/vista_torneos_general.xhtml</file>
+            <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/src/java/Controller/RegistroManagedBean.java</file>
+            <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/web/agregar_baraja_a_usuario.xhtml</file>
+            <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/src/java/Controller/BarajaManagedBean.java</file>
+            <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/src/java/Model/Usuario.java</file>
+            <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/src/java/Model/ResultadoRonda.java</file>
+            <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/web/introducir_torneo_2.xhtml</file>
             <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/src/java/Model/Baraja_de_usuario.java</file>
+            <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/src/java/Controller/HistorialTorneosManagedBean.java</file>
             <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/web/homeSuperUser.xhtml</file>
             <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/src/java/Model/GestorBD.java</file>
-            <file>file:/C:/Users/admin/Documents/NetBeansProjects/WebApplication5.4/src/java/Controller/RegistroManagedBean.java</file>
         </group>
     </open-files>
 </project-private>

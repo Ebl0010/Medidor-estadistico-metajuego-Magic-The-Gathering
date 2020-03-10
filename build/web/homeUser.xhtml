@@ -6,12 +6,11 @@
         <title>HOME SUPER USER</title>
     </h:head>
     <h:body>
-        <h2 style="color: blue;">USUARIO: #{formularioManagedBean.nombre} </h2>       
+        <h2 style="color: blue;">USUARIO: #{formularioManagedBean.nombre} </h2>
 
-         <table>
+        <table border="2" cellspacing="10" cellpadding="10">
             <tr>
                 <td><spam>PARTIDAS GANADAS</spam></td>
-                <td><spam>PARTIDAS EMPATADAS</spam></td>
                 <td><spam>PARTIDAS PERDIDAS</spam></td>
                 <td><spam>RONDAS GANADAS</spam></td>
                 <td><spam>RONDAS EMPATADAS</spam></td>
@@ -20,35 +19,41 @@
                 <td><spam>% RONDAS</spam></td>
             </tr>
             <tr>
-                <td><spam>#{formularioManagedBean.pj}</spam></td>
-                <td><spam>#{formularioManagedBean.pg}</spam></td>
-                <td><spam>#{formularioManagedBean.pe}</spam></td>
-                <td><spam>#{formularioManagedBean.pp}</spam></td>
-                <td><spam>#{formularioManagedBean.rj}</spam></td>
-                <td><spam>#{formularioManagedBean.rg}</spam></td>
-                <td><spam>#{formularioManagedBean.re}</spam></td>
-                <td><spam>#{formularioManagedBean.rp}</spam></td>
+                <td align="center"><spam>#{formularioManagedBean.pg}</spam></td>
+                <td align="center"><spam>#{formularioManagedBean.pp}</spam></td>
+                <td align="center"><spam>#{formularioManagedBean.rg}</spam></td>
+                <td align="center"><spam>#{formularioManagedBean.re}</spam></td>
+                <td align="center"><spam>#{formularioManagedBean.rp}</spam></td>
+                <td align="center"><spam>#{formularioManagedBean.por_partidas}</spam></td>
+                <td align="center"><spam>#{formularioManagedBean.por_rondas}</spam></td>
             </tr>
         </table>
         
+        <br></br>
+
         <h:form>
             <h:dataTable value="#{formularioManagedBean.lista_de_barajas_de_usuario}"
-                         var="baraja_de_usuario" border="2"
+                         var="baraja" border="2"
                          cellspacing="10" cellpadding="10">
 
                 <h:column>
                     <f:facet name="header">Baraja:</f:facet>
-                        #{baraja_de_usuario.nombre_baraja}
+                        #{baraja.nombre_baraja}
                 </h:column>
                 <h:column>
                     <f:facet name="header">Total victorias:</f:facet>
-                        #{baraja_de_usuario.ganadas_total}
+                        #{baraja.ganadas_total}
                 </h:column>
                 <h:column>
                     <f:facet name="header">% victorias:</f:facet>
-                        #{baraja_de_usuario.porcentaje_total}
+                        #{baraja.porcentaje_total}
                 </h:column>
             </h:dataTable>            
+        </h:form>
+        
+        <h:form>
+            <h:commandButton value="Agregar nueva baraja" type="action"
+                             action="#{barajaManagedBean.carga_pagina_agregar_baraja_a_usuario()}" />
         </h:form>
         
         <h:form>
@@ -56,9 +61,19 @@
         </h:form>
         
         <h:form>
+        <h:commandButton value="Registrar torneo" 
+                             action="#{resultadoManagedBean.introducirPrevioTorneo(formularioManagedBean.nombre)}" />
+        </h:form>        
+        <h:form>
+            <h:commandButton value="Introducir resultado individual" 
+                             action="#{resultadoManagedBean.carga_pagina_introducir_resultado()}" />
+        </h:form>
+        
+
+        <h:form>
             <h:commandButton value="Salir" type="submit"
                              action="#{formularioManagedBean.salir()}" />
         </h:form>
-        
+
     </h:body>
 </html>

@@ -54,15 +54,26 @@
         </h:form>
         
         <h:form>
+            <h:commandButton value="Agregar nueva baraja" type="action"
+                             action="#{barajaManagedBean.carga_pagina_agregar_baraja_a_usuario()}" />
+        </h:form>
+        
+        <h:form>
             <h:commandButton value="Desglose por barajas" action="desglose_barajas_usuario.xhtml" />
         </h:form>
         
         <h:form>
-            <h:commandButton value="Introducir torneo" action="intoducir_torneo_1.xhtml" />
-        </h:form>
+            <h:commandButton value="Ver historial de torneos" 
+                         action="#{historialTorneosManagedBean.cargaTorneosDeUsuario(formularioManagedBean.nombre)}" />
+        </h:form>     
         
         <h:form>
-            <h:commandButton value="Introducir resultado individual" action="intoducir_resultado.xhtml" />
+        <h:commandButton value="Registrar torneo" 
+                             action="#{resultadoManagedBean.introducirPrevioTorneo(formularioManagedBean.nombre)}" />
+        </h:form>        
+        <h:form>
+            <h:commandButton value="Introducir resultado individual" 
+                             action="#{resultadoManagedBean.carga_pagina_introducir_resultado()}" />
         </h:form>
         
 

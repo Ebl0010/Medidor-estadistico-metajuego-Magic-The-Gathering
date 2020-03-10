@@ -19,11 +19,13 @@ public class BarajaManagedBean {
     /*
     @ManagedProperty("#{formularioManagedBean}")
     private FormularioManagedBean formularioManagedBean;
-     */
+    */
+    
     private String nombre, modificar, nuevo_nombre;
     private String nombre_nueva_baraja_usuario;
     private int tier, tier_nuevo;
     private ArrayList<Baraja> barajas;
+    private ArrayList<String> nombres_barajas;
     private GestorBD gestorBD;
 
     public BarajaManagedBean() throws SQLException {
@@ -81,6 +83,11 @@ public class BarajaManagedBean {
 
     public void setTier_nuevo(int tier_nuevo) {
         this.tier_nuevo = tier_nuevo;
+    }
+
+    
+    public ArrayList<String> getNombres_barajas(){
+        return nombres_barajas;
     }
 
     public void carga_pagina_gestionar_barajas() throws SQLException {
@@ -165,6 +172,11 @@ public class BarajaManagedBean {
 
     public void carga_pagina_agregar_baraja_a_usuario() throws SQLException {
         barajas = gestorBD.leeBarajas();
+        nombres_barajas = new ArrayList<String>();
+        for (Baraja baraja : barajas) {
+            nombres_barajas.add(baraja.getNombre());
+        }
+
         try {
             FacesContext.getCurrentInstance()
                     .getExternalContext()
@@ -176,13 +188,22 @@ public class BarajaManagedBean {
 
     public void agregar_baraja_a_usuario(String nombre_usuario) throws SQLException {
         if (gestorBD.agregar_baraja_a_usuario(nombre_usuario, nombre_nueva_baraja_usuario)) {
+            //nombre_nueva_baraja_usuario = null;
             try {
                 FacesContext.getCurrentInstance()
                         .getExternalContext()
-                        .redirect("desglose_barajas_usuario.xhtml");
+                        .redirect("resultado_introducido.xhtml");
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        } else {
+           try {
+                FacesContext.getCurrentInstance()
+                        .getExternalContext()
+                        .redirect("resultado_no_introducido.xhtml");
+            } catch (IOException e) {
+                e.printStackTrace();
+            } 
         }
     }
 

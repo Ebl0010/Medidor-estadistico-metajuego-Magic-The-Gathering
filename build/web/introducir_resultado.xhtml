@@ -10,9 +10,15 @@
         
         <h:form id="form" style="width: 100%; padding: 20px 33px;">
             <h2 style="color: blue;">#{resultadoManagedBean.encabezado}</h2>
+            
             <br/><br/>
             
-            <h:outputLabel value="Baraja del oponente: "/>
+            <h:outputLabel value="Baraja 1: "/>
+            <h:selectOneMenu value="#{resultadoManagedBean.baraja1}">
+                <f:selectItems value="#{resultadoManagedBean.todas_las_barajas}" />
+            </h:selectOneMenu>
+            
+            <h:outputLabel value="Baraja 2: "/>
             <h:selectOneMenu value="#{resultadoManagedBean.baraja2}">
                 <f:selectItems value="#{resultadoManagedBean.todas_las_barajas}" />
             </h:selectOneMenu>
@@ -71,7 +77,7 @@
             
 
             <h:commandButton value="Aceptar" type="submit"
-                             action="#{resultadoManagedBean.introducirResultadoTorneo()}" />
+                             action="#{resultadoManagedBean.introducirResultado()}" />
             
             <h:commandButton value="Volver" type="submit"
                             action="#{formularioManagerBean.login()}" />

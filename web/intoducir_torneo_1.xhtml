@@ -1,14 +1,19 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
         <title>INTRODUCIR DATOS DE TORNEO (1)</title>
     </h:head>
     <h:body>
         <h:form id="form" style="width: 100%; padding: 20px 33px;">
             <h2 style="color: blue;">Introduce la baraja que has jugado y el nº de rondas que has jugado</h2>
-            <span>Baraja: </span>
-            <h:inputText value="#{resultadoManagedBean.baraja1}"
-                         style=" width:25%;" />
+            
+            <h:outputLabel value="Baraja usada en el torneo: "/>
+            <h:selectOneMenu value="#{resultadoManagedBean.baraja1}">
+                <f:selectItems value="#{resultadoManagedBean.barajas_de_usuario}" />
+            </h:selectOneMenu>
+            
+            
             <br/><br/>
 
             <span>Rondas: </span>
@@ -17,7 +22,7 @@
             <br/><br/>
             <br/><br/>
             <h:commandButton value="Aceptar" type="submit"
-                             action="#{resultadoManagedBean.introducirPrevioTorneo(formularioManagedBean.nombre)}" />
+                             action="#{resultadoManagedBean.introducirTorneo1()}" />
 
         </h:form>
     </h:body>

@@ -1,0 +1,46 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>HOME USER</title>
+    </h:head>
+    <h:body>
+        <h2 style="color: blue;">RESULTADOS DE TORNEOS</h2>
+        
+        <h:form>
+
+            <h:dataTable value="#{historialTorneosManagedBean.torneos}"
+                         var="torneo" border="2"
+                         cellspacing="10" cellpadding="10">
+
+                <h:column>
+                    <f:facet name="header">Baraja</f:facet>
+                        #{torneo.nombre_baraja}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Resultado</f:facet>
+                        #{torneo.resultado}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Nº de veces</f:facet>
+                        #{torneo.repeticiones}
+                </h:column>
+            </h:dataTable>
+        
+        </h:form>
+        
+        
+            
+        <h:form>
+            <h:commandButton value="Volver" type="action"
+                             action="#{formularioManagedBean.login()}" />
+        </h:form>
+        
+        <h:form>
+            <h:commandButton value="Salir" type="submit"
+                             action="#{formularioManagedBean.salir()}" />
+        </h:form>
+        
+    </h:body>
+</html>
