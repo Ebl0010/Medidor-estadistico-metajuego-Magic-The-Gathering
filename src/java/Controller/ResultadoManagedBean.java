@@ -217,6 +217,7 @@ public class ResultadoManagedBean {
         */
         while (num_rondas > 0) {
 
+            
             if (gestorBD.existeBaraja(baraja2)) {
                 ronda.setGanadas_main(main1);
                 ronda.setPerdidas_main(main2);
@@ -234,7 +235,9 @@ public class ResultadoManagedBean {
                 int val = resultadosRondas.size()+1;
                 encabezado = "Ronda: " + val;
                 num_rondas --;
+                       
             }
+
             // solo se hacen las puestas a 0 e incrementos si la baraja2 existe, y si no existe
             // al recargar la pagina se ven los valores introducidos 
 

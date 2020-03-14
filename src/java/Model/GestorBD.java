@@ -1,7 +1,7 @@
 package Model;
 
-
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -10,18 +10,19 @@ import java.util.ArrayList;
 public class GestorBD {
 
     private Connection con = null;
-    private Statement st = null;
+    private PreparedStatement st = null;
     private ResultSet rs = null;
     private int resultUpdate = 0;
 
     public ArrayList<Usuario> leerUsuarios() {
+
         ArrayList<Usuario> usuarios = new ArrayList<Usuario>();
         Usuario usuarioHallado;
         try {
             ConectaBD conectaBD = new ConectaBD();
             con = conectaBD.getConnection();
-            st = con.createStatement();
-            rs = st.executeQuery("select * from usuarios");
+            st = con.prepareStatement("Select * from usuarios");
+            rs = st.executeQuery();
 
             if (!rs.next()) {
                 System.out.println("no se ha encontrado nada");
@@ -38,46 +39,50 @@ public class GestorBD {
                 return usuarios;
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
         }
         return null;
     }
 
     public boolean guardarUsuario(Usuario usuario) {
+        boolean retorno = false;
         try {
             ConectaBD conectaBD = new ConectaBD();
+            boolean superUser = false;
+            
             con = conectaBD.getConnection();
-            st = con.createStatement();
-            rs = st.executeQuery("SELECT * FROM usuarios");
+            st = con.prepareStatement("Select * from usuarios");
+            rs = st.executeQuery();
 
-            /*
-            esto permite que si el usuario se logea y es el primero adquiere automaticamente 
-            derechos de superusuario
-             */
             if (!rs.next()) {
-                resultUpdate = st.executeUpdate("INSERT INTO usuarios VALUES ('"
-                        + usuario.getNombre()
-                        + "', '" + usuario.getClave() + "',0,0,0,0,0,0,0,0,0,0,true);");
-            } else {
-                resultUpdate = st.executeUpdate("INSERT INTO usuarios VALUES ('"
-                        + usuario.getNombre()
-                        + "', '" + usuario.getClave() + "',0,0,0,0,0,0,0,0,0,0,false);");
+                superUser = true;
             }
 
-            if (resultUpdate != 0) {
-                con.close();
-                return true;
-            } else {
-                con.close();
-                System.out.println("no se ha agregado el usuario");
-                return false;
-            }
-        } catch (Exception e) {
-            System.out.println("fallo la base de datos");
-            e.printStackTrace();
-            return false;
+            st = con.prepareStatement("INSERT INTO usuarios VALUES"
+                    + " ?,?,?,?,?,?,?,?,?,?,?,?,?");
+            st.setString(1, usuario.getNombre());
+            st.setString(2, usuario.getClave());
+            st.setInt(3, 0);
+            st.setInt(4, 0);
+            st.setInt(5, 0);
+            st.setInt(6, 0);
+            st.setInt(7, 0);
+            st.setInt(8, 0);
+            st.setInt(9, 0);
+            st.setInt(10, 0);
+            st.setInt(11, 0);
+            st.setInt(12, 0);
+            st.setBoolean(13, superUser);
+
+            resultUpdate = st.executeUpdate();
+
+            retorno = (resultUpdate != 0); 
+            //con.commit();
+            
+        } catch (SQLException e) {
+            //con.rollback();
         }
+        return retorno;
     }
 
     /**
@@ -93,23 +98,23 @@ public class GestorBD {
         try {
             ConectaBD conectaBD = new ConectaBD();
             con = conectaBD.getConnection();
-            st = con.createStatement();
-            rs = st.executeQuery(
-                    "select * from usuarios where nombre = '"
-                    + usuario.getNombre() + "' and clave = '"
-                    + usuario.getClave() + "'");
+            st = con.prepareStatement("SELECT superUser FROM usuarios WHERE nombre = ? and clave = ?");
+            st.setString(1, usuario.getNombre());
+            st.setString(2, usuario.getClave());
+            rs = st.executeQuery();
 
             if (!rs.next()) {
                 devolver = 0;
             } else {
-                if (rs.getBoolean("superUser")) {
+                if (rs.getBoolean(1)) {
                     devolver = 2;
                 } else {
                     devolver = 1;
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            //con.commit();
+        } catch (SQLException e) {
+            //con.rollback();
         } finally {
             if (rs != null) {
                 rs.close();
@@ -120,24 +125,27 @@ public class GestorBD {
             if (con != null) {
                 con.close();
             }
-            return devolver;
+            
         }
+        return devolver;
     }
 
-    public Usuario cargarUsuario(Usuario parametro) throws SQLException {
+    public Usuario cargarUsuario(Usuario usuario) throws SQLException {
         Usuario devolver = null;
         try {
             ConectaBD conectaBD = new ConectaBD();
             con = conectaBD.getConnection();
-            st = con.createStatement();
-            rs = st.executeQuery(
-                    "select * from usuarios where nombre = '"
-                    + parametro.getNombre() + "' and clave = '"
-                    + parametro.getClave() + "'");
+            st = con.prepareStatement("SELECT * FROM usuarios WHERE nombre = ? and clave = ?");
+
+            st.setString(1, usuario.getNombre());
+            st.setString(2, usuario.getClave());
+            
+            rs = st.executeQuery();
+            
             if (!rs.next()) {
                 devolver = null;
             } else {
-                devolver = new Usuario(parametro.getNombre(), parametro.getClave());
+                devolver = new Usuario(usuario.getNombre(), usuario.getClave());
                 devolver.setPj(rs.getInt("pj"));
                 devolver.setPg(rs.getInt("pg"));
                 devolver.setPe(rs.getInt("pe"));
@@ -148,12 +156,12 @@ public class GestorBD {
                 devolver.setRp(rs.getInt("rp"));
                 devolver.setPor_partidas(rs.getFloat("por_partidas"));
                 devolver.setPor_rondas(rs.getFloat("por_rondas"));
-                ArrayList<Baraja_de_usuario> barajas = leeBarajas_de_usuario(parametro);
+                ArrayList<Baraja_de_usuario> barajas = leeBarajas_de_usuario(usuario);
                 devolver.setLista_de_barajas_de_usuario(barajas);
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            //con.rollback();
         } finally {
             if (rs != null) {
                 rs.close();
@@ -164,23 +172,24 @@ public class GestorBD {
             if (con != null) {
                 con.close();
             }
-            return devolver;
+           
         }
-
+        return devolver;
     }
 
     private ArrayList<Baraja_de_usuario> leeBarajas_de_usuario(Usuario usuario)
             throws SQLException {
         String nombre = usuario.getNombre();
-        ArrayList<Baraja_de_usuario> lista_de_barajas = new ArrayList<Baraja_de_usuario>();
+        ArrayList<Baraja_de_usuario> lista_de_barajas = new ArrayList<>();
         try {
             ConectaBD conectaBD = new ConectaBD();
             con = conectaBD.getConnection();
-            st = con.createStatement();
-            rs = st.executeQuery(
+            st = con.prepareStatement(
                     "select * from barajas_usuarios inner join barajas "
                     + "on barajas_usuarios.baraja = barajas.baraja "
-                    + "where nombre ='" + nombre + "' order by tier");
+                    + "where nombre = ? order by tier");
+            st.setString(1, nombre);
+            rs = st.executeQuery();
 
             if (!rs.next()) {
                 return lista_de_barajas;
@@ -196,8 +205,8 @@ public class GestorBD {
                 } while (rs.next());
                 return lista_de_barajas;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            //con.rollback();
             return lista_de_barajas;
         } finally {
             if (rs != null) {
@@ -213,19 +222,22 @@ public class GestorBD {
     }
 
     public ArrayList<String> devolver_barajas_de_usuario(String nombre_usuario) throws SQLException {
-        ArrayList<String> barajas = new ArrayList<String>();
+        ArrayList<String> barajas = new ArrayList<>();
         try {
             ConectaBD conectaBD = new ConectaBD();
             con = conectaBD.getConnection();
-            st = con.createStatement();
-            ResultSet rs = st.executeQuery("select baraja from barajas_usuarios where nombre = '" + nombre_usuario + "'");
+            st = con.prepareStatement(
+                    "SELECT baraja from barajas_usuarios where nombre = ?");
+            st.setString(1, nombre_usuario);
+            rs = st.executeQuery();
+            
             while (rs.next()) {
                 barajas.add(rs.getString("baraja"));
             }
             return barajas;
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            //con.rollback();
             return barajas;
         } finally {
             if (rs != null) {
@@ -244,10 +256,11 @@ public class GestorBD {
         try {
             ConectaBD conectaBD = new ConectaBD();
             con = conectaBD.getConnection();
-            st = con.createStatement();
-            resultUpdate = st.executeUpdate("INSERT INTO barajas VALUES ('"
-                    + baraja.getNombre()
-                    + "', " + baraja.getTier() + ")");
+            st = con.prepareStatement("INSERT INTO barajas VALUES (?, ?)");
+            st.setString(1, baraja.getNombre());
+            st.setInt(2, baraja.getTier());
+            
+            resultUpdate = st.executeUpdate();
 
             if (resultUpdate != 0) {
                 return true;
@@ -255,9 +268,8 @@ public class GestorBD {
                 System.out.println("no se ha agregado la baraja");
                 return false;
             }
-        } catch (Exception e) {
-            System.out.println("fallo la base de datos");
-            e.printStackTrace();
+        } catch (SQLException e) {
+            //con.rollback();
             return false;
         } finally {
             if (st != null) {
@@ -270,12 +282,12 @@ public class GestorBD {
     }
 
     public ArrayList<Baraja> leeBarajas() throws SQLException {
-        ArrayList<Baraja> barajas = new ArrayList<Baraja>();
+        ArrayList<Baraja> barajas = new ArrayList<>();
         try {
             ConectaBD conectaBD = new ConectaBD();
             con = conectaBD.getConnection();
-            st = con.createStatement();
-            rs = st.executeQuery("SELECT * FROM barajas order by tier");
+            st = con.prepareStatement("SELECT * FROM barajas order by tier");
+            rs = st.executeQuery();
 
             if (!rs.next()) {
                 return barajas;
@@ -285,9 +297,8 @@ public class GestorBD {
                 } while (rs.next());
                 return barajas;
             }
-        } catch (Exception e) {
-            System.out.println("fallo la base de datos");
-            e.printStackTrace();
+        } catch (SQLException e) {
+            //con.rollback();
             return null;
         } finally {
             if (rs != null) {
@@ -307,9 +318,9 @@ public class GestorBD {
         try {
             ConectaBD conectaBD = new ConectaBD();
             con = conectaBD.getConnection();
-            st = con.createStatement();
-            rs = st.executeQuery("select * from barajas where baraja ='"
-                    + nombre_baraja + "'");
+            st = con.prepareStatement("SELECT * FROM barajas where baraja = ?");
+            st.setString(1, nombre_baraja);
+            rs = st.executeQuery();
 
             if (!rs.next()) {
                 devolver = 0;
@@ -319,9 +330,8 @@ public class GestorBD {
 
             return devolver;
 
-        } catch (Exception e) {
-            System.out.println("fallo la base de datos");
-            e.printStackTrace();
+        } catch (SQLException e) {
+            //con.rollback();
             return 0;
         } finally {
             if (rs != null) {
@@ -340,22 +350,17 @@ public class GestorBD {
         try {
             ConectaBD conectaBD = new ConectaBD();
             con = conectaBD.getConnection();
-            st = con.createStatement();
-            resultUpdate = st.executeUpdate(
-                    "update barajas set baraja = '"
-                    + nuevo_nombre + "', tier = '"
-                    + tier_nuevo + "' where baraja = '"
-                    + modificar + "'");
+            st = con.prepareStatement("UPDATE barajas SET baraja = ?, tier = ? where baraja = ?");
+            st.setString(1, nuevo_nombre);
+            st.setInt(2, tier_nuevo);
+            st.setString(3, modificar);
 
-            if (resultUpdate != 0) {
-                return true;
-            } else {
-                return false;
-            }
+            resultUpdate = st.executeUpdate();
 
-        } catch (Exception e) {
-            System.out.println("fallo la base de datos");
-            e.printStackTrace();
+            return resultUpdate != 0;
+
+        } catch (SQLException e) {
+            //con.rollback;
             return false;
         } finally {
             if (rs != null) {
@@ -375,26 +380,34 @@ public class GestorBD {
         try {
             ConectaBD conectaBD = new ConectaBD();
             con = conectaBD.getConnection();
-            st = con.createStatement();
-            // no compruebo si el usuario es correcto porque viene del login. si tengo que comprobar
-            // si la baraja existe
-
-            rs = st.executeQuery("SELECT * FROM barajas WHERE baraja = '" + nombre_baraja + "'");
+            st = con.prepareStatement("SELECT * FROM barajas where baraja = ?");
+            st.setString(1, nombre_baraja);
+            rs = st.executeQuery();
 
             if (!rs.next()) {
                 return retorno;
             } else {
                 // la baraja si existe. Se hace el insert
-                resultUpdate = st.executeUpdate("insert into barajas_usuarios values ('"
-                        + nombre_usuario + "', '"
-                        + nombre_baraja + "', 0, 0, 0, 0, 0, 0, 0);");
+                
+               st = con.prepareStatement("INSERT INTO barajas_usuarios values (?, ?, ?, ?, ?, ?, ?, ?, ?");
+               st.setString(1, nombre_usuario);
+               st.setString(2, nombre_baraja);
+               st.setInt(3, 0);
+               st.setInt(4, 0);
+               st.setInt(5, 0);
+               st.setInt(6, 0);
+               st.setInt(7, 0);
+               st.setInt(8, 0);
+               st.setInt(9, 0);
+  
+               resultUpdate = st.executeUpdate();
                 if (resultUpdate != 0) {
                     retorno = true;
                 }
                 return retorno;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            //con.rollback();
             return retorno;
         } finally {
             if (rs != null) {
@@ -418,21 +431,28 @@ public class GestorBD {
 
             ConectaBD conectaBD = new ConectaBD();
             con = conectaBD.getConnection();
-            st = con.createStatement();
+            st = con.prepareStatement(
+                            "SELECT * FROM cruces WHERE (baraja1 = ? and baraja2 = ?");
+            st.setString(1, baraja1);
+            st.setString(2, baraja2);
+            rs = st.executeQuery();
 
-            rs = st.executeQuery(
-                    "SELECT * FROM cruces WHERE (baraja1 = '" + baraja1 + "' and baraja2 = '" + baraja2 + "');");
             if (!rs.next()) {
                 porcentaje = (main1 + side1) / (main1 + main2 + side1 + side2);
-                resultUpdate = st.executeUpdate(
-                        "INSERT INTO cruces VALUES ('"
-                        + baraja1 + "', '"
-                        + baraja2 + "', "
-                        + main1 + ", "
-                        + main2 + ", "
-                        + side1 + ", "
-                        + side2 + ", "
-                        + porcentaje + ");");
+                
+                st = con.prepareStatement(
+                        "INSERT INTO cruces VALUES (?, ?, ?, ?, ?, ?, ?)");
+                
+                st.setString(1, baraja1);
+                st.setString(2, baraja2);
+                st.setInt(3, main1);
+                st.setInt(4, main2);
+                st.setInt(5, side1);
+                st.setInt(6, side2);
+                st.setFloat(7, porcentaje);
+                
+                resultUpdate = st.executeUpdate();
+                              
                 if (resultUpdate != 1) {
                     retorno = false;
                 }
@@ -443,24 +463,29 @@ public class GestorBD {
                 side1 = side1 + rs.getInt(5);
                 side2 = side2 + rs.getInt(6);
                 porcentaje = (main1 + side1) / (main1 + main2 + side1 + side2);
-                resultUpdate = st.executeUpdate(
-                        "UPDATE cruces SET gm1 = "
-                        + main1 + ", gm2 = "
-                        + main2 + ", gs1 = "
-                        + side1 + ", gs2 = "
-                        + side2 + ", porcentaje = "
-                        + porcentaje + " where baraja1 = '"
-                        + baraja1 + "' and baraja2 = '"
-                        + baraja2 + "'");
-
+                
+                st = con.prepareStatement(
+                        "UPDATE cruces SET gm1 = ?, gm2 = ?, gs1 = ?. gs2 = ?, porcentaje = ? where baraja1 = ? and baraja2 = ?");
+                
+                st.setInt(1, main1);
+                st.setInt(2, main2);
+                st.setInt(3, side1);
+                st.setInt(4, side2);
+                st.setFloat(5, porcentaje);
+                st.setString(6, baraja1);
+                st.setString(7, baraja2);
+                
+                resultUpdate = st.executeUpdate();
+                
                 if (resultUpdate != 1) {
                     retorno = false;
                 }
             }
+            //con.commit();
             return retorno;
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            //con.rollback();
             return false;
         } finally {
 
@@ -480,21 +505,19 @@ public class GestorBD {
         try {
             ConectaBD conectaBD = new ConectaBD();
             con = conectaBD.getConnection();
-            st = con.createStatement();
+            
+            st = con.prepareStatement(
+                    "SELECT * FROM barajas_usuarios WHERE nombre = ? and baraja = ?");
+            
+            st.setString(1, nombre_usuario);
+            st.setString(2, baraja);
+            
+            rs = st.executeQuery();
 
-            rs = st.executeQuery(
-                    "SELECT * FROM barajas_usuarios WHERE (nombre = '"
-                    + nombre_usuario + "' and baraja = '"
-                    + baraja + "');");
-
-            if (!rs.next()) {
-                return false;
-            } else {
-                return true;
-            }
+            return rs.next();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            //con.rollback();
             return false;
 
         } finally {
@@ -515,17 +538,15 @@ public class GestorBD {
         try {
             ConectaBD conectaBD = new ConectaBD();
             con = conectaBD.getConnection();
-            st = con.createStatement();
-            rs = st.executeQuery(
-                    "select * from barajas where baraja = '" + baraja + "'");
+            st = con.prepareStatement(
+                        "SELECT * from barajas WHERE baraja = ?");
+            st.setString(1, baraja);
+            
+            rs = st.executeQuery();
 
-            if (!rs.next()) {
-                return false;
-            } else {
-                return true;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+            return rs.next();
+        } catch (SQLException e) {
+            //con.rollback();
             return false;
         } finally {
             if (rs != null) {
@@ -554,11 +575,16 @@ public class GestorBD {
         try {
             ConectaBD conectaBD = new ConectaBD();
             con = conectaBD.getConnection();
-            st = con.createStatement();
+            
+            st = con.prepareStatement(
+                    "SELECT * FROM barajas_usuarios WHERE nombre = ? and baraja = ?");
+            
+            st.setString(1, usuario);
+            st.setString(2, baraja1);
 
             boolean control = true;
 
-            rs = st.executeQuery("select * from barajas_usuarios where nombre = '" + usuario + "' and baraja = '" + baraja1 + "'");
+            rs = st.executeQuery();
 
             if (!rs.next()) {
                 control = false;
@@ -578,17 +604,21 @@ public class GestorBD {
                 float por_partidas_total = (main1 + side1) * 100 / partidas_jugadas_total;
 
                 // con los porcentajes y los datos tengo que hacer un update en barajas_usuario
-                resultUpdate = st.executeUpdate(
-                        "UPDATE barajas_usuarios SET gm = " + main1
-                        + ", pm = " + main2
-                        + ", gs = " + side1
-                        + ", ps = " + side2
-                        + ", por_main = " + por_main
-                        + ", por_side = " + por_side
-                        + ", por_total = " + por_partidas_total
-                        + " where nombre = '" + usuario
-                        + "' and baraja = '" + baraja1 + "'");
-                rs.close();
+                st = con.prepareStatement(
+                            "UPDATE barajas_usuarios SET gm=?, pm=?, gs=?, ps=?, por_main=?, por_side=?, por_total=? "
+                                    + "where nombre = ? and baraja = ?");
+                st.setInt(1, main1);
+                st.setInt(2, main2);
+                st.setInt(3, side1);
+                st.setInt(4, side2);
+                st.setFloat(5, por_main);
+                st.setFloat(6, por_side);
+                st.setFloat(7, por_partidas_total);
+                st.setString(8, usuario);
+                st.setString(9, baraja1);
+                
+                resultUpdate = st.executeUpdate();
+                
 
                 if (resultUpdate != 1) {
                     control = false;
@@ -616,19 +646,23 @@ public class GestorBD {
 
                 float por_rondas = (rgN / rjN) * 100;
                 float por_partidas = (partidas_ganadas / partidas_jugadas) * 100;
+                
+                st = con.prepareStatement(
+                        "UPDATE usuarios SET pj=?, pg=?, pe=0, pp=?, rj=?, rg=?, re=?, rp=?, "
+                                + "por_rondas=?, por_partidas=? where nombre = ?");
+                
+                st.setInt(1, partidas_jugadas);
+                st.setInt(2, partidas_ganadas);
+                st.setInt(3, partidas_perdidas);
+                st.setInt(4, rjN);
+                st.setInt(5, rgN);
+                st.setInt(6, reN);
+                st.setInt(7, rpN);
+                st.setFloat(8, por_rondas);
+                st.setFloat(9, por_partidas);
+                st.setString(10, usuario);
 
-                resultUpdate = st.executeUpdate(
-                        "UPDATE usuarios SET pj = " + partidas_jugadas
-                        + ", pg = " + partidas_ganadas
-                        + ", pe = " + 0
-                        + ", pp = " + partidas_perdidas
-                        + ", rj = " + rjN
-                        + ", rg = " + rgN
-                        + ", re = " + reN
-                        + ", rp = " + rpN
-                        + ", por_rondas = " + por_rondas
-                        + ", por_partidas = " + por_partidas
-                        + " where nombre = '" + usuario + "'");
+                resultUpdate = st.executeUpdate();
 
                 // y ahora compruebo que se ha actualizado una fila:
                 if (resultUpdate != 1) {
@@ -636,16 +670,16 @@ public class GestorBD {
                 }
             } // aqui cierra la ultima comprobacion de control
 
+            /*
             if (control) {
                 //con.commit();
-                return true;
             } else {
                 //con.rollback();
-                return false;
             }
+            */
+            return control;
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
             //con.rollback();
             return false;
         } finally {
@@ -770,4 +804,3 @@ public class GestorBD {
 
     }
 }
-
