@@ -164,7 +164,7 @@ public class ResultadoManagedBean {
             }
         }
     }
-    
+
     public void introducirPrevioTorneo(String usuario) throws SQLException {
         this.usuario = usuario;
         barajas_de_usuario = gestorBD.devolver_barajas_de_usuario(usuario);
@@ -206,18 +206,15 @@ public class ResultadoManagedBean {
         }
     }
 
-   
-
     public void introducirResultadoTorneo() throws SQLException {
         ResultadoRonda ronda = new ResultadoRonda();
-        
+
         /*
          si pongo num_rondas -1 no pide los datos en "la ronda extra" pero no guarda los datos
         de la ultima ronda. 
-        */
+         */
         while (num_rondas > 0) {
 
-            
             if (gestorBD.existeBaraja(baraja2)) {
                 ronda.setGanadas_main(main1);
                 ronda.setPerdidas_main(main2);
@@ -232,22 +229,23 @@ public class ResultadoManagedBean {
                 side1 = 0;
                 side2 = 0;
                 baraja2 = null;
-                int val = resultadosRondas.size()+1;
+                int val = resultadosRondas.size() + 1;
                 encabezado = "Ronda: " + val;
-                num_rondas --;
-                       
+                num_rondas--;
+
             }
 
             // solo se hacen las puestas a 0 e incrementos si la baraja2 existe, y si no existe
             // al recargar la pagina se ven los valores introducidos 
+            if (num_rondas > 0) {
+                try {
+                    FacesContext.getCurrentInstance()
+                            .getExternalContext()
+                            .redirect("introducir_torneo_2.xhtml");
 
-            try {
-                FacesContext.getCurrentInstance()
-                        .getExternalContext()
-                        .redirect("introducir_torneo_2.xhtml");
-
-            } catch (IOException e) {
-                e.printStackTrace();
+                } catch (IOException e) {
+                    
+                }
             }
 
         } // termina el while ahora tengo que redirigir a la pagina de validacion del torneo
@@ -257,7 +255,7 @@ public class ResultadoManagedBean {
                     .redirect("validar_torneo.xhtml");
 
         } catch (IOException e) {
-            e.printStackTrace();
+            
         }
     }
 
@@ -332,10 +330,10 @@ public class ResultadoManagedBean {
             control = gestorBD.guardar_torneo(usuario, baraja1, main_torneo1, main_torneo2,
                     side_torneo1, side_torneo2, rondas_ganadas, rondas_perdidas, rondas_empatadas);
 
-        } 
-        
+        }
+
         if (control) {
-            String cadena_resultado = ""+rondas_ganadas+"-"+rondas_perdidas+"-"+rondas_empatadas;
+            String cadena_resultado = "" + rondas_ganadas + "-" + rondas_perdidas + "-" + rondas_empatadas;
             int puntos = rondas_ganadas * 3 + rondas_empatadas;
             control = gestorBD.guardar_resultado_torneo(usuario, baraja1, puntos, cadena_resultado);
         }
@@ -359,6 +357,5 @@ public class ResultadoManagedBean {
             }
         }
     }
-    
 
 }

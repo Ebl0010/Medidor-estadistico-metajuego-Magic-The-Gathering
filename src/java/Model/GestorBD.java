@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 
 public class GestorBD {
@@ -16,7 +15,7 @@ public class GestorBD {
 
     public ArrayList<Usuario> leerUsuarios() {
 
-        ArrayList<Usuario> usuarios = new ArrayList<Usuario>();
+        ArrayList<Usuario> usuarios = new ArrayList<>();
         Usuario usuarioHallado;
         try {
             ConectaBD conectaBD = new ConectaBD();
@@ -432,7 +431,7 @@ public class GestorBD {
             ConectaBD conectaBD = new ConectaBD();
             con = conectaBD.getConnection();
             st = con.prepareStatement(
-                            "SELECT * FROM cruces WHERE (baraja1 = ? and baraja2 = ?");
+                            "SELECT * FROM cruces WHERE (baraja1 = ? and baraja2 = ?)");
             st.setString(1, baraja1);
             st.setString(2, baraja2);
             rs = st.executeQuery();
@@ -465,7 +464,7 @@ public class GestorBD {
                 porcentaje = (main1 + side1) / (main1 + main2 + side1 + side2);
                 
                 st = con.prepareStatement(
-                        "UPDATE cruces SET gm1 = ?, gm2 = ?, gs1 = ?. gs2 = ?, porcentaje = ? where baraja1 = ? and baraja2 = ?");
+                        "UPDATE cruces SET gm1 = ?, gm2 = ?, gs1 = ?, gs2 = ?, porcentaje = ? where baraja1 = ? and baraja2 = ?");
                 
                 st.setInt(1, main1);
                 st.setInt(2, main2);
@@ -702,26 +701,29 @@ public class GestorBD {
             // no tengo que comprobar usuario ni baraja porque sino el torneo no hubiese podido agregarse
             ConectaBD conectaBD = new ConectaBD();
             con = conectaBD.getConnection();
-            st = con.createStatement();
-            resultUpdate = st.executeUpdate("update torneos set repeticiones = repeticiones +1 "
-                    + "where nombre = '" + nombre_usuario
-                    + "' and baraja = '" + nombre_baraja
-                    + "' and resultado = '" + cadena_resultado + "'");
+            st = con.prepareStatement(
+                    "update torneos set repeticiones = repeticiones +1 where nombre = ? and baraja = ? and resultado = ?");
+            st.setString(1, nombre_usuario);
+            st.setString(2, nombre_baraja);
+            st.setString(3, cadena_resultado);
+            
+            resultUpdate = st.executeUpdate();
             if (resultUpdate == 1) {
                 retorno = true;
             } else {
-                resultUpdate = st.executeUpdate("insert into torneos values ('"
-                        + nombre_usuario + "', '" + nombre_baraja + "', " + puntos + ", '" + cadena_resultado + "', 1)");
-                if (resultUpdate == 1) {
-                    retorno = true;
-                } else {
-                    retorno = false;
-                }
+                
+                st = con.prepareStatement("INSERT INTO torneos values (?, ?, ?, ?, 1)");
+                st.setString(1, nombre_usuario);
+                st.setString(2, nombre_baraja);
+                st.setInt(3, puntos);
+                st.setString(4, cadena_resultado);
+                
+                resultUpdate = st.executeUpdate();
+                retorno = resultUpdate == 1;
             }
 
             return retorno;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
             //con.rollback();
             return false;
         } finally {
@@ -738,12 +740,12 @@ public class GestorBD {
     }
 
     public ArrayList<String> carga_todas_las_barajas() throws SQLException {
-        ArrayList<String> barajas = new ArrayList<String>();
+        ArrayList<String> barajas = new ArrayList<>();
         try {
             ConectaBD conectaBD = new ConectaBD();
             con = conectaBD.getConnection();
-            st = con.createStatement();
-            rs = st.executeQuery("select baraja from barajas");
+            st = con.prepareStatement("SELECT baraja FROM barajas");
+            rs = st.executeQuery();
 
             while (rs.next()) {
                 barajas.add(rs.getString(1));
@@ -751,8 +753,8 @@ public class GestorBD {
 
             return barajas;
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            //e.printStackTrace();
             //con.rollback();
             return barajas;
         } finally {
@@ -769,12 +771,13 @@ public class GestorBD {
     }
 
     public ArrayList<Torneo> cargaTorneosDeUsuario(String nombre_usuario) throws SQLException {
-        ArrayList<Torneo> torneos = new ArrayList<Torneo>();
+        ArrayList<Torneo> torneos = new ArrayList<>();
         try {
             ConectaBD conectaBD = new ConectaBD();
             con = conectaBD.getConnection();
-            st = con.createStatement();
-            rs = st.executeQuery("select * from torneos where nombre = '" + nombre_usuario + "' order by puntos");
+            st = con.prepareStatement("SELECT * FROM torneos WHERE nombre = ? order by puntos");
+            st.setString(1, nombre_usuario);
+            rs = st.executeQuery();
 
             while (rs.next()) {
                 Torneo t = new Torneo();
@@ -786,8 +789,8 @@ public class GestorBD {
                 torneos.add(t);
             }
             return torneos;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            //e.printStackTrace();
             //con.rollback();
             return torneos;
         } finally {
