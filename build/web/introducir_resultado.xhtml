@@ -79,8 +79,10 @@
             <h:commandButton value="Aceptar" type="submit"
                              action="#{resultadoManagedBean.introducirResultado()}" />
             
-            <h:commandButton value="Volver" type="submit"
-                            action="#{formularioManagerBean.login()}" />
+            <h:form>
+            <h:commandButton value="Volver" type="action"
+                             action="#{formularioManagedBean.login()}" />
+            </h:form>
 
         </h:form>
 
