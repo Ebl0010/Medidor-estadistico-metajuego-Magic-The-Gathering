@@ -1,27 +1,34 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html">
     <h:head>
-        <title>ACCESO AL SISTEMA</title>
+        <title>MEDIDOR ESTADISTICO</title>
+		<link rel="stylesheet" type="text/css" 
+				href="css/css1.css" media="screen" />
     </h:head>
+    
+    <h1 class="titulo">MEDIDOR ESTADISTICO DE METAJUEGO MTG</h1>
+      
     <h:body>
-        <h:form id="form" style="width: 100%; padding: 20px 33px;">
+        <h:form class="cuadro_login" id="form" >
             
-            <span>Nombre: </span>
-            <h:inputText value="#{formularioManagedBean.nombre}"
-                         style=" width:25%;" />
-            <br/><br/>
+            <span class="bloque_entrar">ENTRAR</span>
+            
+            
+            <span class="bloque_login_nick">Nombre: </span>
+            <h:inputText class="bloque_login_nick_in" value="#{formularioManagedBean.nombre}" />
 
-            <span>Clave: </span>
-            <h:inputSecret value="#{formularioManagedBean.clave}"
-                         style=" width:25%;" />
-            <br/><br/>
-            <br/><br/>
-            <h:commandButton value="Acceder" type="submit"
+
+            <span class="bloque_login_pass">Clave: </span>
+            <h:inputSecret class="bloque_login_pass_in" value="#{formularioManagedBean.clave}"/>
+
+            <h:commandButton class="boton_login" value="Entrar" type="submit"
                              action="#{formularioManagedBean.login()}" />
             
-            
-            <h:commandButton value="Registrarse" action="agregar_Usuario.xhtml" />
-            
+            <div class="barra_registrarse">
+                <span>¿No estás registrado?</span>
+                <h:commandButton class="boton_registrarse" value="Registrarse" action="agregar_Usuario.xhtml" />
+            </div>
         </h:form>
+		
     </h:body>
 </html>

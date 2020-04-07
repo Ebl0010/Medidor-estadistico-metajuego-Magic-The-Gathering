@@ -10,11 +10,14 @@
         <h1>CUADRO DE WINRATES</h1>
 
         <h:dataTable value="#{cuadroManagedBean.porcentajes}"
-                     var="linea" border="2" 
+                     var="lineaDelCuadro" border="2" 
                      cellspacing="10" cellpadding="10">
-                     <f:facet name="header"> </f:facet>
-                            #{valorDelCuadro}
-  
+
+            <h:column>
+
+                        <f:facet name="header"></f:facet>
+                            #{lineaDelCuadro.toString}
+                    </h:column>
 
         </h:dataTable>
 

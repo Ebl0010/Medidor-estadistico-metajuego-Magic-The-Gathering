@@ -1,0 +1,92 @@
+body{
+	background-color: #14AFF3;
+}
+
+.titulo{
+	color: #005E89;
+	margin-top: 5%;
+	margin-left: 15%;
+}
+
+.cuadro_login{
+	position: absolute;
+	margin-left: 20%;
+	margin-top: 5%;
+	margin-bottom: 0px;
+	width: 35%;
+	height: 38%;
+	color: black;
+	background-color: white;
+	border: 1px solid #0F597A;
+	border-radius: 9px;
+}
+
+.bloque_entrar{
+	position: absolute;
+	width: 100%;
+	height: 20%;
+	background-color: 0A97D7;
+	color: #0F597A;	
+	font-size: 200%;
+	border-color: #0F597A;
+	border-radius: inherit;
+	text-indent: 2%;
+}
+
+.bloque_login_nick{
+	position: absolute;
+	width: 28%;
+	height: 24%;
+	margin-top: 18%;
+	text-align: right;
+}
+
+.bloque_login_nick_in{
+	position: absolute;
+	margin-top: 18%;
+	margin-left: 30%;
+	width: 35%;
+}
+
+.bloque_login_pass{
+	position: absolute;
+	width: 28%;
+	height: 24%;
+	margin-top: 26%;
+	text-align: right;
+}
+
+.bloque_login_pass_in{
+	position: absolute;
+	margin-top: 26%;
+	margin-left: 30%;
+	width: 35%;
+}
+
+.boton_login{
+	position: absolute;
+	margin-top: 37%;
+	margin-left: 30%;
+	width: 26%;
+	height: 14%;
+	background-color: #0C9FE0;
+	color: white;
+}
+
+.barra_registrarse{
+	position: relative;
+	margin-top: 52%;
+	margin-left: 0%;
+	width: 100%;
+	height: 14%;
+	background-color: #C3D5DD;
+	color: #0F597A;
+	text-align: center;
+}
+
+.boton_registrarse{
+	position: relavite;
+	margin-left: 5%;
+}
+
+
