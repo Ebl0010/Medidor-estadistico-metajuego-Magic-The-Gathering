@@ -38,31 +38,26 @@
             </h:form>
 
             <h:form>
-                <h:commandButton class="boton_navegacion boton_navegacion_2" value="Agregar baraja" type="action"
-                                 action="#{barajaManagedBean.carga_pagina_agregar_baraja_a_usuario()}" />
-            </h:form>
-
-            <h:form>
-                <h:commandButton class="boton_navegacion boton_navegacion_3" value="Mis barajas" 
+                <h:commandButton class="boton_navegacion boton_navegacion_2" value="Mis barajas" 
                                  action="desglose_barajas_usuario.xhtml" />
             </h:form>
 
             <h:form>
-                <h:commandButton class="boton_navegacion boton_navegacion_4" value="Introducir resultado" 
+                <h:commandButton class="boton_navegacion boton_navegacion_3" value="Introducir resultado" 
                                  action="#{resultadoManagedBean.carga_pagina_introducir_resultado()}" />
             </h:form>
 
             <h:form>
-                <h:commandButton class="boton_navegacion boton_navegacion_5" value="Introducir torneo" 
+                <h:commandButton class="boton_navegacion boton_navegacion_4" value="Introducir torneo" 
                                  action="#{resultadoManagedBean.introducirPrevioTorneo(formularioManagedBean.nombre)}" />
             </h:form>
 
             <h:form>
-                <h:commandButton class="boton_navegacion boton_navegacion_6" value="Ver torneos" 
+                <h:commandButton class="boton_navegacion boton_navegacion_5" value="Ver torneos" 
                                  action="#{historialTorneosManagedBean.cargaTorneosDeUsuario(formularioManagedBean.nombre)}" />
             </h:form>
 
-        </div>  
+        </div>   
 
 
         <table class="tabla_usuario_A" 
@@ -81,7 +76,7 @@
                 <td class="celda_num_A"><spam>#{formularioManagedBean.rg}</spam></td>
             </tr>
             <tr class="fila_tabla">
-                <td class="celda_num_A"><spam>Rondas empatadas</spam></td>
+                <td><spam>Rondas empatadas</spam></td>
                 <td class="celda_num_A"><spam>#{formularioManagedBean.re}</spam></td>
             </tr>
             <tr class="fila_tabla">
@@ -99,10 +94,12 @@
         </table>
 
 
-        <h:form class="tabla_usuario_A tabla_usuario_B">
-            <h:dataTable value="#{formularioManagedBean.lista_de_barajas_de_usuario}"
+        <h:form >
+            <h:dataTable class="tabla_usuario_A tabla_usuario_B"
+                         value="#{formularioManagedBean.lista_de_barajas_de_usuario}"
                          var="baraja"
-                         cellspacing="10" cellpadding="10">
+                         cellspacing="10" cellpadding="10" 
+                         columnClasses="celda_num_B" >
 
                 <h:column>
                     <f:facet name="header">
@@ -113,12 +110,12 @@
                 <h:column>
                     <f:facet name="header">
                         <spam class="texto_tabla_B">Total victorias</spam>
-                    </f:facet>                  
-                        <spam class="texto_tabla_B">#{baraja.ganadas_total}</spam>
+                    </f:facet>
+                    <spam class="texto_tabla_B">#{baraja.ganadas_total}</spam>
                 </h:column>
                 <h:column>
                     <f:facet name="header">
-                        <spam class="texto_tabla_B celda_num_B">% Victorias</spam>
+                        <spam class="texto_tabla_B">% Victorias</spam>
                     </f:facet>
                     <spam class="texto_tabla_B">#{baraja.porcentaje_total}</spam>
                 </h:column>

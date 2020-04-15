@@ -3,64 +3,124 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
-        <title>HOME USER</title>
+        <title>MEDIDOR ESTADISTICO/HOME</title>
+
+        <link href="#{request.contextPath}/css/css20.css" 
+              rel="stylesheet" type="text/css"/>
+
+        <link href="#{request.contextPath}/css/css30.css" 
+              rel="stylesheet" type="text/css"/>
+
     </h:head>
     <h:body>
-        <h2 style="color: blue;">DATOS DE #{formularioManagedBean.nombre}</h2>
-        
-        <h:form>
+        <div class="barra_superior_home">
 
-            <h:dataTable value="#{formularioManagedBean.lista_de_barajas_de_usuario}"
-                         var="baraja" border="2"
-                         cellspacing="10" cellpadding="10">
+            <div class="titulo">MEDIDOR EURISTICO DE METAJUEGO MAGIC</div>
 
-                <h:column>
-                    <f:facet name="header">Baraja</f:facet>
-                        #{baraja.nombre_baraja}
-                </h:column>
-                <h:column>
-                    <f:facet name="header">Victorias main</f:facet>
-                        #{baraja.gm}
-                </h:column>
-                <h:column>
-                    <f:facet name="header">Victorias side</f:facet>
-                        #{baraja.gs}
-                </h:column>
-                <h:column>
-                    <f:facet name="header">Victorias totales</f:facet>
-                        #{baraja.ganadas_total}
-                </h:column>
-                <h:column>
-                    <f:facet name="header">% Main</f:facet>
-                        #{baraja.porcentaje_main}
-                </h:column>
-                <h:column>
-                    <f:facet name="header">% Side</f:facet>
-                        #{baraja.porcentaje_side}
-                </h:column>
-                <h:column>
-                    <f:facet name="header">% Victorias total</f:facet>
-                        #{baraja.porcentaje_total}
-                </h:column>
-                <h:column>
-                    <f:facet name="header">Jugadas total</f:facet>
-                        #{baraja.jugadas_total}
-                </h:column>
-            </h:dataTable>
-        
-        </h:form>
-        
-        
-            
-        <h:form>
-            <h:commandButton value="Volver" type="action"
-                             action="#{formularioManagedBean.login()}" />
-        </h:form>
-        
-        <h:form>
-            <h:commandButton value="Salir" type="submit"
-                             action="#{formularioManagedBean.salir()}" />
-        </h:form>
-        
+            <div class="perfil_home">#{formularioManagedBean.nombre}</div>
+
+            <h:form>
+                <h:commandButton class="boton_logout" value="Salir" type="submit"
+                                 action="#{formularioManagedBean.salir()}" />
+            </h:form>
+
+
+
+
+        </div>
+
+        <div class="menu_izquierda"> 
+
+            <h:form>
+                <h:commandButton class="boton_navegacion" value="Inicio" type="submit"
+                                 action="#{formularioManagedBean.login()}" />
+            </h:form>
+
+            <h:form>
+                <h:commandButton class="boton_navegacion boton_navegacion_2" value="Mis barajas" 
+                                 action="desglose_barajas_usuario.xhtml" />
+            </h:form>
+
+            <h:form>
+                <h:commandButton class="boton_navegacion boton_navegacion_3" value="Introducir resultado" 
+                                 action="#{resultadoManagedBean.carga_pagina_introducir_resultado()}" />
+            </h:form>
+
+            <h:form>
+                <h:commandButton class="boton_navegacion boton_navegacion_4" value="Introducir torneo" 
+                                 action="#{resultadoManagedBean.introducirPrevioTorneo(formularioManagedBean.nombre)}" />
+            </h:form>
+
+            <h:form>
+                <h:commandButton class="boton_navegacion boton_navegacion_5" value="Ver torneos" 
+                                 action="#{historialTorneosManagedBean.cargaTorneosDeUsuario(formularioManagedBean.nombre)}" />
+            </h:form>
+
+        </div> 
+
+        <div class="cuadro_principal">
+            <h:form>
+
+                <h:dataTable class="tabla_barajas" value="#{formularioManagedBean.lista_de_barajas_de_usuario}"
+                             var="baraja" columnClasses="celda_num"
+                             cellspacing="10" cellpadding="10" >
+
+                    <h:column>
+                        <f:facet name="header">Baraja</f:facet>
+                            #{baraja.nombre_baraja}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header" >Victorias main</f:facet>
+                            #{baraja.gm}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Victorias side</f:facet>
+                            #{baraja.gs}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Victorias totales</f:facet>
+                            #{baraja.ganadas_total}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">% Main</f:facet>
+                            #{baraja.porcentaje_main}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">% Side</f:facet>
+                            #{baraja.porcentaje_side}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">% Victorias total</f:facet>
+                            #{baraja.porcentaje_total}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Jugadas total</f:facet>
+                            #{baraja.jugadas_total}
+                    </h:column>
+                </h:dataTable>
+
+            </h:form>
+
+        </div>
+
+        <div class="cuadro_agregar_baraja">
+            <h:form>
+                <h:outputLabel value="Barajas: "/>
+                <h:selectOneMenu value="#{barajaManagedBean.nombre_nueva_baraja_usuario}">
+                    <f:selectItems value="#{barajaManagedBean.nombres_barajas}" />
+                </h:selectOneMenu>
+
+                <h:commandButton value="Agregar baraja" type="submit"
+                                 action="#{barajaManagedBean.agregar_baraja_a_usuario(formularioManagedBean.nombre)}" />
+            </h:form>
+
+            <h:form>
+                <h:commandButton value="Volver" type="submit"
+                                 action="#{formularioManagedBean.login()}" />
+            </h:form>
+        </div>
+
+
+
     </h:body>
 </html>

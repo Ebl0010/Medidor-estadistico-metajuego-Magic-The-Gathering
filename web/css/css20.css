@@ -24,12 +24,17 @@ body{
     color: white;
     border-radius: 7em;
     border: 0;
+    transition: 0.5s;
+}
+
+.boton_logout:hover{
+    background-color: #F10707;
 }
 
 .titulo{
     position: absolute;
     right: 18%;
-    top: 4%;
+    top: 25%;
     width: 64%;
     color: #12047E;
     font-size: 200%;
@@ -64,12 +69,17 @@ body{
     left: 10%;
     top: 10%;
     width: 80%;
-    height: 4%;
-    background-color: #011C69;
-    color: white;
+    height: 4%;  
     text-align: center;
     border-radius: 6px;
     border: 2px solid #0016b0;
+    transition-duration: 0.6s;
+    background-color: #011C69;
+    color: white;
+}
+
+.boton_navegacion:hover{
+    background-color: #134BEA;
 }
 
 .boton_navegacion_2{
@@ -91,3 +101,4 @@ body{
 .boton_navegacion_6{
     top: 60%;
 }
+

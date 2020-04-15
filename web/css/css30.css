@@ -1,0 +1,24 @@
+.cuadro_principal{
+    position: absolute;
+    top: 32%;
+    left: 15%;
+}
+
+.cuadro_agregar_baraja{
+    position: absolute;
+    top: 16%;
+    left: 15%;
+    height: 10%;
+}
+
+.tabla_barajas{
+    position: absolute;
+    border: #12047E 5px solid;
+    background-color: #0C9FE0;
+    color: white;
+}
+
+.td.celda_num{
+    color: red;
+    background-color: black;
+}
