@@ -848,9 +848,10 @@ public class GestorBD {
         }
     }
 
-    public ArrayList<ArrayList<ValorDelCuadro>> cargaCuadro(ArrayList<String> todas_las_barajas) throws SQLException {
-        ArrayList<ValorDelCuadro> linea = new ArrayList<ValorDelCuadro>();
-        ArrayList<ArrayList<ValorDelCuadro>> porcentajes = new ArrayList<ArrayList<ValorDelCuadro>>();
+    public ArrayList<LineaDelCuadro> cargaCuadro(ArrayList<String> todas_las_barajas) throws SQLException {
+        //ArrayList<ValorDelCuadro> linea = new ArrayList<ValorDelCuadro>();
+        LineaDelCuadro linea = new LineaDelCuadro();
+        ArrayList<LineaDelCuadro> porcentajes = new ArrayList<LineaDelCuadro>();
         String baraja1, baraja2, float_toString;
         ValorDelCuadro valorDelCuadro;
         Float val_porcentaje;
@@ -858,9 +859,9 @@ public class GestorBD {
         // necesito que la celda (0,0) de porcentajes este vacia.
         // itero sobre las barajas cogiendo los Strings y añadiendolos a la primera columna de porcentajes
         valorDelCuadro = new ValorDelCuadro("");
-        linea.add(valorDelCuadro);
+        linea.addValor(valorDelCuadro);
         for (int i=0; i<todas_las_barajas.size(); i++){
-            linea.add(new ValorDelCuadro(todas_las_barajas.get(i)));
+            linea.addValor(new ValorDelCuadro(todas_las_barajas.get(i)));
         }
         porcentajes.add(linea);
 
@@ -871,23 +872,23 @@ public class GestorBD {
 
             for (int i = 0; i < todas_las_barajas.size(); i++) {
                 baraja1 = todas_las_barajas.get(i);
-                linea = new ArrayList<ValorDelCuadro>();
+                linea = new LineaDelCuadro();
                 //lo primero que añado es la baraja B2
-                linea.add(new ValorDelCuadro(baraja1));
+                linea.addValor(new ValorDelCuadro(baraja1));
                 st.setString(1, baraja1);
                 for (int j = 0; j < todas_las_barajas.size(); j++) {
                     baraja2 = todas_las_barajas.get(j);
                     if (baraja1.equals(baraja2)) {
-                        linea.add(new ValorDelCuadro("XX"));
+                        linea.addValor(new ValorDelCuadro("XX"));
                     } else {
                         st.setString(2, baraja2);
                         rs = st.executeQuery();
                         if (!rs.next()) {
-                            linea.add(new ValorDelCuadro("no hay datos"));
+                            linea.addValor(new ValorDelCuadro("no hay datos"));
                         } else {
                             val_porcentaje = rs.getFloat(1);
                             float_toString = val_porcentaje.toString();
-                            linea.add(new ValorDelCuadro(float_toString));
+                            linea.addValor(new ValorDelCuadro(float_toString));
                         }
                     }
                 } // termina el bucle que itera con la segunda baraja

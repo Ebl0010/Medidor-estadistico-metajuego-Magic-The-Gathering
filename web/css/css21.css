@@ -1,0 +1,32 @@
+.tabla_usuario_A{
+    position: absolute;
+    left: 20%;
+    top: 20%;
+    border-collapse: collapse;
+    border: #12047E 5px solid;
+    background-color: #0C9FE0;
+    color: white;
+}
+
+.fila_tabla{
+    border: #12047E 3px solid;   
+}
+
+.celda_num_A{
+    text-align: right;
+}
+
+.tabla_usuario_B{
+    position: absolute;
+    left: 50%;
+    top: 20%;
+    color: white;
+}
+
+.texto_tabla_B{
+    color: white;
+}
+
+.celda_num_B{
+    text-align: center;
+}

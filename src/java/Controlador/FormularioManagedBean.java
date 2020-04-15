@@ -161,7 +161,7 @@ public class FormularioManagedBean {
                 try {
                     FacesContext.getCurrentInstance()
                             .getExternalContext()
-                            .redirect("homeSuperUser.xhtml");
+                            .redirect("homeUser.xhtml"); //AQUI TIENE QUE SER HOMESUPERUSER
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

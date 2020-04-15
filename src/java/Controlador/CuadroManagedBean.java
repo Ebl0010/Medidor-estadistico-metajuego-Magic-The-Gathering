@@ -3,6 +3,7 @@ package Controlador;
 import Modelo.Baraja;
 import Modelo.Baraja_de_usuario;
 import Modelo.GestorBD;
+import Modelo.LineaDelCuadro;
 import Modelo.Usuario;
 import Modelo.ValorDelCuadro;
 import java.io.IOException;
@@ -19,9 +20,8 @@ import javax.faces.context.FacesContext;
 @SessionScoped
 public class CuadroManagedBean {
 
-    private ArrayList<String> linea;
     private ArrayList<String> barajas_ordenadas;
-    private ArrayList<ArrayList<ValorDelCuadro>> porcentajes;
+    private ArrayList<LineaDelCuadro> porcentajes;
     private GestorBD gestorBD;
 
     public CuadroManagedBean() throws SQLException {
@@ -32,11 +32,8 @@ public class CuadroManagedBean {
         return barajas_ordenadas;
     }
     
-    public ArrayList<String> getLinea(){
-        return linea;
-    }
     
-    public ArrayList<ArrayList<ValorDelCuadro>> getPorcentajes(){
+    public ArrayList<LineaDelCuadro> getPorcentajes(){
         return porcentajes;
     }
     

@@ -1,0 +1,93 @@
+body{
+    font-family: helvetica;
+}
+
+.barra_superior_home{
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 12%;
+    background-color: #0C9FE0;
+    border-bottom-color: #29487D;
+    border-bottom-style: solid;
+    border-bottom-width: 2px;
+}
+
+.boton_logout{
+    position: fixed;
+    right: 2%;
+    top: 5%;
+    width: 6%;
+    height: 4%;
+    background-color: black;
+    color: white;
+    border-radius: 7em;
+    border: 0;
+}
+
+.titulo{
+    position: absolute;
+    right: 18%;
+    top: 4%;
+    width: 64%;
+    color: #12047E;
+    font-size: 200%;
+    text-align: center;
+}
+
+.perfil_home{
+    position: fixed;
+    left: 3%;
+    top: 4%;
+    font-size: 125%;
+    color: white;
+}
+
+.menu_izquierda{
+    background-color: #0C9FE0;
+    position: fixed;
+    left: 0;
+    top: 12%;
+    width: 12%;
+    height: 100%;
+    border-right-color: #29487D;
+    border-right-style: solid;
+    border-right-width: 2px;
+    border-top-color: #29487D;
+    border-top-style: solid;
+    border-top-width: 2px;
+}
+
+.boton_navegacion{
+    position: absolute;
+    left: 10%;
+    top: 10%;
+    width: 80%;
+    height: 4%;
+    background-color: #011C69;
+    color: white;
+    text-align: center;
+    border-radius: 6px;
+    border: 2px solid #0016b0;
+}
+
+.boton_navegacion_2{
+    top: 20%;
+}
+
+.boton_navegacion_3{
+    top: 30%;
+}
+
+.boton_navegacion_4{
+    top: 40%;
+}
+
+.boton_navegacion_5{
+    top: 50%;
+}
+
+.boton_navegacion_6{
+    top: 60%;
+}

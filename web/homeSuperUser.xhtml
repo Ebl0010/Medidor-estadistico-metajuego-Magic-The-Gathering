@@ -3,12 +3,31 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
-        <title>HOME SUPER USER</title>
+        <title>MEDIDOR ESTADISTICO/HOME</title>
+        
+        
+        <link href="#{request.contextPath}/css/css2.css" 
+                      rel="stylesheet" type="text/css"/>
+        
     </h:head>
     <h:body>
+        <div class="barra_superior_home">
+        
+            <!-- 
         <h2 style="color: blue;">USUARIO: #{formularioManagedBean.nombre} </h2>
 
         <h2 style="color: blue;">Privilegios de administrador</h2>
+        <div class="perfil_home">#{formularioManagedBean.nombre}</div>
+        -->
+        
+        <div class="titulo">MEDIDOR EURISTICO DE METAJUEGO MAGIC</div>
+        
+        <h:form>
+            <h:commandButton class="boton_logout" value="Salir" type="submit"
+                             action="#{formularioManagedBean.salir()}" />
+        </h:form>
+        
+        </div>
 
         <table border="2" cellspacing="10" cellpadding="10">
             <tr>
@@ -88,10 +107,7 @@
         </h:form>
 
 
-        <h:form>
-            <h:commandButton value="Salir" type="submit"
-                             action="#{formularioManagedBean.salir()}" />
-        </h:form>
+        
 
     </h:body>
 </html>

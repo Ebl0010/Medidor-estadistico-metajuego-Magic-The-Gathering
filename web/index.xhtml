@@ -2,16 +2,19 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html">
     <h:head>
         <title>MEDIDOR ESTADISTICO</title>
-		<link rel="stylesheet" type="text/css" 
-				href="css/css1.css" media="screen" />
+                    
+            <link href="#{request.contextPath}/css/css11.css" 
+                                    rel="stylesheet" type="text/css"/>
+                
     </h:head>
-    
-    <h1 class="titulo">MEDIDOR ESTADISTICO DE METAJUEGO MTG</h1>
-      
+ 
     <h:body>
+ 
+        <h1 class="titulo">Medidor estadístico de metajuego MTG</h1>
+        
         <h:form class="cuadro_login" id="form" >
             
-            <span class="bloque_entrar">ENTRAR</span>
+            <div class="bloque_entrar">Entrar</div>
             
             
             <span class="bloque_login_nick">Nombre: </span>
@@ -25,7 +28,6 @@
                              action="#{formularioManagedBean.login()}" />
             
             <div class="barra_registrarse">
-                <span>¿No estás registrado?</span>
                 <h:commandButton class="boton_registrarse" value="Registrarse" action="agregar_Usuario.xhtml" />
             </div>
         </h:form>
