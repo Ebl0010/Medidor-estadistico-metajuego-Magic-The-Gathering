@@ -1,14 +1,11 @@
 package Controlador;
 
 import Modelo.Baraja;
-import Modelo.Baraja_de_usuario;
 import Modelo.GestorBD;
-import Modelo.Usuario;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 
@@ -26,7 +23,7 @@ public class BarajaManagedBean {
     private int tier, tier_nuevo;
     private ArrayList<Baraja> barajas;
     private ArrayList<String> nombres_barajas;
-    private GestorBD gestorBD;
+    private final GestorBD gestorBD;
 
     public BarajaManagedBean() throws SQLException {
         gestorBD = new GestorBD();
@@ -92,7 +89,7 @@ public class BarajaManagedBean {
 
     public void carga_pagina_gestionar_barajas() throws SQLException {
         modificar = null;
-        barajas = gestorBD.leeBarajas();
+        barajas = gestorBD.lee_nombres_barajas();
         try {
             FacesContext.getCurrentInstance()
                     .getExternalContext()
@@ -105,7 +102,7 @@ public class BarajaManagedBean {
     public void guardarBaraja() throws SQLException {
         Baraja barajaNueva = new Baraja(nombre, tier);
         gestorBD.guardarBaraja(barajaNueva);
-        barajas = gestorBD.leeBarajas();
+        barajas = gestorBD.lee_nombres_barajas();
         try {
             FacesContext.getCurrentInstance()
                     .getExternalContext()
@@ -146,7 +143,7 @@ public class BarajaManagedBean {
         if (gestorBD.actualizarBaraja(modificar, nuevo_nombre, tier_nuevo)) {
             modificar = null;
             tier_nuevo = 0;
-            barajas = gestorBD.leeBarajas();
+            barajas = gestorBD.lee_nombres_barajas();
             try {
                 FacesContext.getCurrentInstance()
                         .getExternalContext()
@@ -169,7 +166,24 @@ public class BarajaManagedBean {
         }
 
     }
+    
+    public void carga_pagina_desglose_barajas_usuario() throws SQLException {
+        barajas = gestorBD.lee_nombres_barajas();
+        nombres_barajas = new ArrayList<>();
+        barajas.forEach((baraja) -> {
+            nombres_barajas.add(baraja.getNombre());
+        });
 
+        try {
+            FacesContext.getCurrentInstance()
+                    .getExternalContext()
+                    .redirect("desglose_barajas_usuario.xhtml");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /*
     public void carga_pagina_agregar_baraja_a_usuario() throws SQLException {
         barajas = gestorBD.leeBarajas();
         nombres_barajas = new ArrayList<String>();
@@ -185,10 +199,11 @@ public class BarajaManagedBean {
             e.printStackTrace();
         }
     }
+    */
+
 
     public void agregar_baraja_a_usuario(String nombre_usuario) throws SQLException {
         if (gestorBD.agregar_baraja_a_usuario(nombre_usuario, nombre_nueva_baraja_usuario)) {
-            //nombre_nueva_baraja_usuario = null;
             try {
                 FacesContext.getCurrentInstance()
                         .getExternalContext()

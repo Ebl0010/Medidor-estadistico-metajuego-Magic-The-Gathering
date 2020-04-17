@@ -39,7 +39,7 @@
 
             <h:form>
                 <h:commandButton class="boton_navegacion boton_navegacion_2" value="Mis barajas" 
-                                 action="desglose_barajas_usuario.xhtml" />
+                                 action="#{barajaManagedBean.carga_pagina_desglose_barajas_usuario()}" />
             </h:form>
 
             <h:form>
@@ -65,35 +65,36 @@
 
             <tr>
                 <td ><spam>% Rondas</spam></td>
-                <td class="celda_num_A"><spam>#{formularioManagedBean.por_rondas}</spam></td>
+                <td class="celda_num_A"><spam>#{formularioManagedBean.porcentaje_rondas}</spam></td>
             </tr>
             <tr class="fila_tabla">
                 <td><spam>% Partidas</spam></td>
-                <td class="celda_num_A"><spam>#{formularioManagedBean.por_partidas}</spam></td>
+                <td class="celda_num_A"><spam>#{formularioManagedBean.porcentaje_partidas}</spam></td>
             </tr>
             <tr class="fila_tabla">
                 <td><spam>Rondas ganadas</spam></td>
-                <td class="celda_num_A"><spam>#{formularioManagedBean.rg}</spam></td>
+                <td class="celda_num_A"><spam>#{formularioManagedBean.rondas_ganadas}</spam></td>
             </tr>
             <tr class="fila_tabla">
                 <td><spam>Rondas empatadas</spam></td>
-                <td class="celda_num_A"><spam>#{formularioManagedBean.re}</spam></td>
+                <td class="celda_num_A"><spam>#{formularioManagedBean.rondas_empatadas}</spam></td>
             </tr>
             <tr class="fila_tabla">
                 <td><spam>Rondas perdidas</spam></td>
-                <td class="celda_num_A"><spam>#{formularioManagedBean.rp}</spam></td>
+                <td class="celda_num_A"><spam>#{formularioManagedBean.rondas_perdidas}</spam></td>
             </tr>
             <tr class="fila_tabla">
                 <td><spam>Partidas ganadas</spam></td>
-                <td class="celda_num_A"><spam>#{formularioManagedBean.pg}</spam></td>
+                <td class="celda_num_A"><spam>#{formularioManagedBean.partidas_ganadas}</spam></td>
             </tr>
             <tr class="fila_tabla">
                 <td><spam>Partidas perdidas</spam></td>
-                <td class="celda_num_A"><spam>#{formularioManagedBean.pp}</spam></td>
+                <td class="celda_num_A"><spam>#{formularioManagedBean.partidas_perdidas}</spam></td>
             </tr>
         </table>
 
 
+        
         <h:form >
             <h:dataTable class="tabla_usuario_A tabla_usuario_B"
                          value="#{formularioManagedBean.lista_de_barajas_de_usuario}"
@@ -107,20 +108,30 @@
                     </f:facet>
                     <spam class="texto_tabla_B">#{baraja.nombre_baraja}</spam>
                 </h:column>
+                
                 <h:column>
                     <f:facet name="header">
-                        <spam class="texto_tabla_B">Total victorias</spam>
+                        <spam class="texto_tabla_B">Rondas ganadas</spam>
                     </f:facet>
-                    <spam class="texto_tabla_B">#{baraja.ganadas_total}</spam>
+                    <spam class="texto_tabla_B">#{baraja.rondas_ganadas}</spam>
                 </h:column>
+                
                 <h:column>
                     <f:facet name="header">
-                        <spam class="texto_tabla_B">% Victorias</spam>
+                        <spam class="texto_tabla_B">% Rondas</spam>
                     </f:facet>
-                    <spam class="texto_tabla_B">#{baraja.porcentaje_total}</spam>
+                    <spam class="texto_tabla_B">#{baraja.porcentaje_rondas_ganadas}</spam>
                 </h:column>
+                
+                <h:column>
+                    <f:facet name="header">
+                        <spam class="texto_tabla_B">% Partidas</spam>
+                    </f:facet>
+                    <spam class="texto_tabla_B">#{baraja.porcentaje_partidas_ganadas_total}</spam>
+                </h:column>
+                
             </h:dataTable>            
-        </h:form>
+        </h:form> 
 
 
     </h:body>

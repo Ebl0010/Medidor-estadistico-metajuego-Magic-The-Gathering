@@ -12,130 +12,152 @@ package Modelo;
 public class Baraja_de_usuario {
     
     private String nombre_baraja;
-    private int gm;
-    private int em;
-    private int pm;
-    private int gs;
-    private int es;
-    private int ps;
+    private int rondas_ganadas,
+                rondas_perdidas,
+                rondas_empatadas,
+                partidas_ganadas_main,
+                partidas_perdidas_main,
+                partidas_ganadas_side,
+                partidas_perdidas_side,
+                partidas_ganadas_total,
+                partidas_jugadas_total,
+                rondas_ganadas_total;
+                
     
-    private int ganadas_total;
-    private int jugadas_total;
+    private float porcentaje_partidas_ganadas_main,
+                  porcentaje_partidas_ganadas_side,
+                  porcentaje_partidas_ganadas_total,
+                  porcentaje_rondas_ganadas;
     
-    private int porcentaje_main;
-    private int porcentaje_side;
-    private int porcentaje_total;
-    
-    public Baraja_de_usuario(){
-        
-    }
-        
-    public void setNombre_baraja(String nombre_baraja){
-        this.nombre_baraja = nombre_baraja;
-    }
-    
-    public String getNombre_baraja(){
+    public Baraja_de_usuario(){ }
+
+    public String getNombre_baraja() {
         return nombre_baraja;
     }
 
-    public int getGm() {
-        return gm;
+    public int getRondas_ganadas() {
+        return rondas_ganadas;
     }
 
-    public int getEm() {
-        return em;
+    public int getRondas_perdidas() {
+        return rondas_perdidas;
     }
 
-    public int getPm() {
-        return pm;
+    public int getRondas_empatadas() {
+        return rondas_empatadas;
     }
 
-    public int getGs() {
-        return gs;
+    public int getPartidas_ganadas_main() {
+        return partidas_ganadas_main;
     }
 
-    public int getEs() {
-        return es;
+    public int getPartidas_perdidas_main() {
+        return partidas_perdidas_main;
     }
 
-    public int getPs() {
-        return ps;
+    public int getPartidas_ganadas_side() {
+        return partidas_ganadas_side;
     }
 
-    public void setGm(int gm) {
-        this.gm = gm;
+    public int getPartidas_perdidas_side() {
+        return partidas_perdidas_side;
     }
 
-    public void setEm(int em) {
-        this.em = em;
+    public int getPartidas_ganadas_total() {
+        return partidas_ganadas_total;
     }
 
-    public void setPm(int pm) {
-        this.pm = pm;
+    public int getPartidas_jugadas_total() {
+        return partidas_jugadas_total;
     }
 
-    public void setGs(int gs) {
-        this.gs = gs;
+    public int getRondas_ganadas_total() {
+        return rondas_ganadas_total;
     }
 
-    public void setEs(int es) {
-        this.es = es;
+    public float getPorcentaje_partidas_ganadas_main() {
+        return porcentaje_partidas_ganadas_main;
     }
 
-    public void setPs(int ps) {
-        this.ps = ps;
+    public float getPorcentaje_partidas_ganadas_side() {
+        return porcentaje_partidas_ganadas_side;
     }
 
-    public int getPorcentaje_main() {
-        return porcentaje_main;
+    public float getPorcentaje_partidas_ganadas_total() {
+        return porcentaje_partidas_ganadas_total;
     }
 
-    public int getPorcentaje_side() {
-        return porcentaje_side;
+    public float getPorcentaje_rondas_ganadas() {
+        return porcentaje_rondas_ganadas;
     }
 
-    public int getPorcentaje_total() {
-        return porcentaje_total;
+    public void setNombre_baraja(String nombre_baraja) {
+        this.nombre_baraja = nombre_baraja;
+    }
+
+    public void setRondas_ganadas(int rondas_ganadas) {
+        this.rondas_ganadas = rondas_ganadas;
+    }
+
+    public void setRondas_perdidas(int rondas_perdidas) {
+        this.rondas_perdidas = rondas_perdidas;
+    }
+
+    public void setRondas_empatadas(int rondas_empatadas) {
+        this.rondas_empatadas = rondas_empatadas;
+    }
+
+    public void setPartidas_ganadas_main(int partidas_ganadas_main) {
+        this.partidas_ganadas_main = partidas_ganadas_main;
+    }
+
+    public void setPartidas_perdidas_main(int partidas_perdidas_main) {
+        this.partidas_perdidas_main = partidas_perdidas_main;
+    }
+
+    public void setPartidas_ganadas_side(int partidas_ganadas_side) {
+        this.partidas_ganadas_side = partidas_ganadas_side;
+    }
+
+    public void setPartidas_perdidas_side(int partidas_perdidas_side) {
+        this.partidas_perdidas_side = partidas_perdidas_side;
+    }
+
+    public void setPartidas_ganadas_total(int partidas_ganadas_total) {
+        this.partidas_ganadas_total = partidas_ganadas_total;
+    }
+
+    public void setPartidas_jugadas_total(int partidas_jugadas_total) {
+        this.partidas_jugadas_total = partidas_jugadas_total;
+    }
+
+    public void setRondas_ganadas_total(int rondas_ganadas_total) {
+        this.rondas_ganadas_total = rondas_ganadas_total;
+    }
+
+    public void setPorcentaje_partidas_ganadas_main(float porcentaje_partidas_ganadas_main) {
+        this.porcentaje_partidas_ganadas_main = porcentaje_partidas_ganadas_main;
+    }
+
+    public void setPorcentaje_partidas_ganadas_side(float porcentaje_partidas_ganadas_side) {
+        this.porcentaje_partidas_ganadas_side = porcentaje_partidas_ganadas_side;
+    }
+
+    public void setPorcentaje_partidas_ganadas_total(float porcentaje_partidas_ganadas_total) {
+        this.porcentaje_partidas_ganadas_total = porcentaje_partidas_ganadas_total;
+    }
+
+    public void setPorcentaje_rondas_ganadas(float porcentaje_rondas_ganadas) {
+        this.porcentaje_rondas_ganadas = porcentaje_rondas_ganadas;
     }
     
-    public int getGanadas_total(){
-        return ganadas_total;
-    }
-    
-    public int getJugadas_total(){
-        return jugadas_total;
-    }
-    
-    
-    public void calculaTotales(){
-              
-        ganadas_total = gm+gs;
-        jugadas_total = gm+gs+em+es+pm+ps;
         
-        int jugadas_main = gm+pm+em;      
-        if (jugadas_main != 0){
-            porcentaje_main = (gm / jugadas_main) * 100;
-        } else {
-            porcentaje_main = 0;
-        }
-        
-        int jugadas_side = gs+ps+es;
-        if (jugadas_side != 0){
-            porcentaje_side = (gs / jugadas_side) * 100;
-        } else {
-            porcentaje_side = 0;
-        }
-        
-        if (porcentaje_main == 0 && porcentaje_side == 0){
-            porcentaje_total = 0;
-        } else {
-             porcentaje_total = (ganadas_total / jugadas_total) * 100;
-        }
-        
-        
-        
+    public void recalcula_porcentajes(){
        
-        
+        porcentaje_partidas_ganadas_main = partidas_ganadas_main * 100 / (partidas_ganadas_main + partidas_perdidas_main);
+        porcentaje_partidas_ganadas_side = partidas_ganadas_side * 100 / (partidas_ganadas_side + partidas_perdidas_side);
+        porcentaje_partidas_ganadas_total = partidas_ganadas_total + 100 / (partidas_ganadas_total + partidas_perdidas_side + partidas_perdidas_main);
+        porcentaje_rondas_ganadas = rondas_ganadas * 100 / rondas_ganadas + rondas_empatadas + rondas_perdidas;
     }
     
 }

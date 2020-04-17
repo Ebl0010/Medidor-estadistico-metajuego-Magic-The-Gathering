@@ -17,8 +17,15 @@ public class Usuario {
     
     
     private String nombre, clave;
-    private int pj, pg, pe, pp, rj, rg, re, rp;
-    private float por_partidas, por_rondas;
+    private int rondas_ganadas,
+                rondas_perdidas,
+                rondas_empatadas,
+                partidas_ganadas,
+                partidas_perdidas;
+    
+    private float porcentaje_rondas,
+                  porcentaje_partidas;
+            
     
     private ArrayList<Baraja_de_usuario> lista_de_barajas_de_usuario;
     
@@ -47,9 +54,33 @@ public class Usuario {
     public String getClave() {
         return clave;
     }
-    
-    public float getPor_rondas(){
-        return por_rondas;
+
+    public int getRondas_ganadas() {
+        return rondas_ganadas;
+    }
+
+    public int getRondas_perdidas() {
+        return rondas_perdidas;
+    }
+
+    public int getRondas_empatadas() {
+        return rondas_empatadas;
+    }
+
+    public int getPartidas_ganadas() {
+        return partidas_ganadas;
+    }
+
+    public int getPartidas_perdidas() {
+        return partidas_perdidas;
+    }
+
+    public float getPorcentaje_rondas() {
+        return porcentaje_rondas;
+    }
+
+    public float getPorcentaje_partidas() {
+        return porcentaje_partidas;
     }
 
     public void setNombre(String nombre) {
@@ -60,81 +91,34 @@ public class Usuario {
         this.clave = clave;
     }
 
-    public int getPj() {
-        return pj;
+    public void setRondas_ganadas(int rondas_ganadas) {
+        this.rondas_ganadas = rondas_ganadas;
     }
 
-    public int getPg() {
-        return pg;
+    public void setRondas_perdidas(int rondas_perdidas) {
+        this.rondas_perdidas = rondas_perdidas;
     }
 
-    public int getPe() {
-        return pe;
+    public void setRondas_empatadas(int rondas_empatadas) {
+        this.rondas_empatadas = rondas_empatadas;
     }
 
-    public int getPp() {
-        return pp;
+    public void setPartidas_ganadas(int partidas_ganadas) {
+        this.partidas_ganadas = partidas_ganadas;
     }
 
-    public int getRj() {
-        return rj;
+    public void setPartidas_perdidas(int partidas_perdidas) {
+        this.partidas_perdidas = partidas_perdidas;
     }
 
-    public int getRg() {
-        return rg;
+    public void setPorcentaje_rondas(float porcentaje_rondas) {
+        this.porcentaje_rondas = porcentaje_rondas;
     }
 
-    public int getRe() {
-        return re;
+    public void setPorcentaje_partidas(float porcentaje_partidas) {
+        this.porcentaje_partidas = porcentaje_partidas;
     }
-
-    public int getRp() {
-        return rp;
-    }
-
-    public float getPor_partidas() {
-        return por_partidas;
-    }
-
-    public void setPj(int pj) {
-        this.pj = pj;
-    }
-
-    public void setPg(int pg) {
-        this.pg = pg;
-    }
-
-    public void setPe(int pe) {
-        this.pe = pe;
-    }
-
-    public void setPp(int pp) {
-        this.pp = pp;
-    }
-
-    public void setRj(int rj) {
-        this.rj = rj;
-    }
-
-    public void setRg(int rg) {
-        this.rg = rg;
-    }
-
-    public void setRe(int re) {
-        this.re = re;
-    }
-
-    public void setRp(int rp) {
-        this.rp = rp;
-    }
-
-    public void setPor_partidas(float por_partidas) {
-        this.por_partidas = por_partidas;
-    }
-
-    public void setPor_rondas(float por_rondas) {
-        this.por_rondas = por_rondas;
-    }
+    
     
     public ArrayList<Baraja_de_usuario> getLista_de_barajas_de_usuario(){
         return lista_de_barajas_de_usuario;

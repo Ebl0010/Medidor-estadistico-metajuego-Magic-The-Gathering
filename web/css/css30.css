@@ -9,7 +9,41 @@
     top: 16%;
     left: 15%;
     height: 10%;
+    width: 51.5%;
+    border: #12047E 5px solid;
+    background-color: #0C9FE0;
 }
+
+.titulo_agregar_baraja{
+    color: #12047E;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+    font-size: 145%;
+}
+
+.agregar_baraja_2{
+    position: absolute;
+    left: 35%;
+    top: 50%;
+    width: 100%;
+}
+
+
+.menu_seleccion{
+   background-color: #134BEA;
+   color: white;
+   font-size: 110%;
+   width: 35%;
+}
+
+.boton_agregar_baraja{
+    position: absolute;
+    left: 40%;
+    width: 20%;
+    height: 80%;
+}
+
 
 .tabla_barajas{
     position: absolute;

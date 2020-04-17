@@ -15,8 +15,17 @@ import javax.faces.context.FacesContext;
 public class FormularioManagedBean {
 
     private String nombre, clave;
-    private int pj, pg, pe, pp, rj, rg, re, rp;
-    private float por_partidas, por_rondas;
+    private int rondas_jugadas,
+                rondas_ganadas,
+                rondas_empatadas,
+                rondas_perdidas,
+                partidas_jugadas,
+                partidas_ganadas,
+                partidas_perdidas;
+                    
+    private float porcentaje_rondas,
+                  porcentaje_partidas;
+    
     private ArrayList<Baraja_de_usuario> lista_de_barajas_de_usuario;
 
     private GestorBD gestorBD;
@@ -29,97 +38,103 @@ public class FormularioManagedBean {
         return nombre;
     }
 
-    public int getPj() {
-        return pj;
-    }
-
-    public int getPg() {
-        return pg;
-    }
-
-    public int getPe() {
-        return pe;
-    }
-
-    public int getPp() {
-        return pp;
-    }
-
-    public int getRj() {
-        return rj;
-    }
-
-    public int getRg() {
-        return rg;
-    }
-
-    public int getRe() {
-        return re;
-    }
-
-    public int getRp() {
-        return rp;
-    }
-
-    public float getPor_partidas() {
-        return por_partidas;
-    }
-
-    public float getPor_rondas() {
-        return por_rondas;
-    }
-
-    public void setNombre(String s) {
-        nombre = s;
-    }
-
     public String getClave() {
         return clave;
     }
 
-    public void setClave(String c) {
-        clave = c;
+    public int getRondas_jugadas() {
+        return rondas_jugadas;
     }
 
-    public void setPj(int pj) {
-        this.pj = pj;
+    public int getRondas_ganadas() {
+        return rondas_ganadas;
     }
 
-    public void setPg(int pg) {
-        this.pg = pg;
+    public int getRondas_empatadas() {
+        return rondas_empatadas;
     }
 
-    public void setPe(int pe) {
-        this.pe = pe;
+    public int getRondas_perdidas() {
+        return rondas_perdidas;
     }
 
-    public void setPp(int pp) {
-        this.pp = pp;
+    public int getPartidas_jugadas() {
+        return partidas_jugadas;
     }
 
-    public void setRj(int rj) {
-        this.rj = rj;
+    public int getPartidas_ganadas() {
+        return partidas_ganadas;
     }
 
-    public void setRg(int rg) {
-        this.rg = rg;
+    public int getPartidas_perdidas() {
+        return partidas_perdidas;
     }
 
-    public void setRe(int re) {
-        this.re = re;
+    public float getPorcentaje_rondas() {
+        return porcentaje_rondas;
     }
 
-    public void setRp(int rp) {
-        this.rp = rp;
+    public float getPorcentaje_partidas() {
+        return porcentaje_partidas;
     }
 
-    public void setPor_partidas(float por_partidas) {
-        this.por_partidas = por_partidas;
+    public GestorBD getGestorBD() {
+        return gestorBD;
     }
 
-    public void setPor_rondas(float por_rondas) {
-        this.por_rondas = por_rondas;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
+
+    public void setClave(String clave) {
+        this.clave = clave;
+    }
+
+    public void setRondas_jugadas(int rondas_jugadas) {
+        this.rondas_jugadas = rondas_jugadas;
+    }
+
+    public void setRondas_ganadas(int rondas_ganadas) {
+        this.rondas_ganadas = rondas_ganadas;
+    }
+
+    public void setRondas_empatadas(int rondas_empatadas) {
+        this.rondas_empatadas = rondas_empatadas;
+    }
+
+    public void setRondas_perdidas(int rondas_perdidas) {
+        this.rondas_perdidas = rondas_perdidas;
+    }
+
+    public void setPartidas_jugadas(int partidas_jugadas) {
+        this.partidas_jugadas = partidas_jugadas;
+    }
+
+    public void setPartidas_ganadas(int partidas_ganadas) {
+        this.partidas_ganadas = partidas_ganadas;
+    }
+
+    public void setPartidas_perdidas(int partidas_perdidas) {
+        this.partidas_perdidas = partidas_perdidas;
+    }
+
+    public void setPorcentaje_rondas(float porcentaje_rondas) {
+        this.porcentaje_rondas = porcentaje_rondas;
+    }
+
+    public void setPorcentaje_partidas(float porcentaje_partidas) {
+        this.porcentaje_partidas = porcentaje_partidas;
+    }
+
+    public void setLista_de_barajas_de_usuario(ArrayList<Baraja_de_usuario> lista_de_barajas_de_usuario) {
+        this.lista_de_barajas_de_usuario = lista_de_barajas_de_usuario;
+    }
+
+    public void setGestorBD(GestorBD gestorBD) {
+        this.gestorBD = gestorBD;
+    }
+
+    
 
     public ArrayList<Baraja_de_usuario> getLista_de_barajas_de_usuario() {
         return lista_de_barajas_de_usuario;
@@ -141,7 +156,7 @@ public class FormularioManagedBean {
                             .getExternalContext()
                             .redirect("index.xhtml");
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 }
                 break;
 
@@ -152,7 +167,7 @@ public class FormularioManagedBean {
                             .getExternalContext()
                             .redirect("homeUser.xhtml");
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 }
                 break;
 
@@ -163,7 +178,7 @@ public class FormularioManagedBean {
                             .getExternalContext()
                             .redirect("homeUser.xhtml"); //AQUI TIENE QUE SER HOMESUPERUSER
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 }
                 break;
         }
@@ -182,23 +197,48 @@ public class FormularioManagedBean {
         }
     }
 
+    
     public void cargarUsuario(Usuario usuario) throws SQLException {
 
-        pj = usuario.getPj();
-        pg = usuario.getPg();
-        //pe = usuario.getPe();
-        pp = usuario.getPp();
-        rj = usuario.getRj();
-        rg = usuario.getRg();
-        re = usuario.getRe();
-        rp = usuario.getRp();
-        por_partidas = usuario.getPor_partidas();
-        por_rondas = usuario.getPor_rondas();
+        rondas_ganadas = usuario.getRondas_ganadas();
+        rondas_perdidas = usuario.getRondas_perdidas();
+        rondas_empatadas = usuario.getRondas_empatadas();
+        rondas_jugadas = rondas_ganadas + rondas_empatadas + rondas_perdidas;
+        partidas_ganadas = usuario.getPartidas_ganadas();
+        partidas_perdidas = usuario.getPartidas_perdidas();
+        partidas_jugadas = partidas_ganadas + partidas_perdidas;
+        porcentaje_partidas = usuario.getPorcentaje_partidas();
+        porcentaje_rondas = usuario.getPorcentaje_rondas();
+        
+        
         lista_de_barajas_de_usuario = usuario.getLista_de_barajas_de_usuario();
-        for (Baraja_de_usuario baraja : lista_de_barajas_de_usuario) {
-            baraja.calculaTotales();
-        }
 
+    }
+    
+    public void crear_usuario(){
+        Usuario nuevoUsuario = new Usuario(nombre, clave);
+        boolean creado = gestorBD.guardarUsuario(nuevoUsuario);
+        nombre = null;
+        clave = null;
+        if (creado) {
+            try {
+                FacesContext.getCurrentInstance()
+                        .getExternalContext()
+                        .redirect("resultado_introducido.xhtml");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            try {
+                FacesContext.getCurrentInstance()
+                        .getExternalContext()
+                        .redirect("resultado_no_introducido.xhtml");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        
     }
 
 }

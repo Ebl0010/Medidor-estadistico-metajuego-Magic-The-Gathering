@@ -1,29 +1,37 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html">
     <h:head>
-        <title>REGISTRO DE NUEVO USUARIO</title>
+        <title>MEDIDOR ESTADISTICO/NUEVO USUARIO</title>
+                    
+            <link href="#{request.contextPath}/css/css11.css" 
+                                    rel="stylesheet" type="text/css"/>
+                
     </h:head>
+ 
     <h:body>
-        <h:form id="form" style="width: 100%; padding: 20px 33px;">
-            <h2 style="color: blue;">Proporciona los datos del usuario nuevo</h2>
-            <span>Nombre: </span>
-            <h:inputText value="#{registroManagedBean.nombre}"
-                         style=" width:25%;" />
-            <br/><br/>
-
-            <span>Clave: </span>
-            <h:inputSecret value="#{registroManagedBean.clave}"
-                         style=" width:25%;" />
-            <br/><br/>
-            <br/><br/>
-            <h:commandButton value="Agregar" type="submit"
-                             action="#{registroManagedBean.guardarUsuario()}" />
-
-        </h:form>
+ 
+        <h1 class="titulo">Medidor estadístico de metajuego MTG</h1>
         
-        <h:form>
-            <h:commandButton value="Salir" type="submit"
-                             action="#{formularioManagedBean.salir()}" />
+        <h:form class="cuadro_login" id="form" >
+            
+            <div class="bloque_entrar">Registro nuevo usuario</div>
+            
+            
+            <span class="bloque_login_nick">Nombre: </span>
+            <h:inputText class="bloque_login_nick_in" value="#{formularioManagedBean.nombre}" />
+
+
+            <span class="bloque_login_pass">Clave: </span>
+            <h:inputSecret class="bloque_login_pass_in" value="#{formularioManagedBean.clave}"/>
+
+            <h:commandButton class="boton_login" value="Validar" type="submit"
+                             action="#{formularioManagedBean.crear_usuario()}" />
+            
+            <div class="barra_registrarse">
+                <h:commandButton class="boton_registrarse" value="Atrás" action="agregar_Usuario.xhtml" />
+            </div>
         </h:form>
+    
+    
     </h:body>
 </html>
