@@ -227,18 +227,18 @@ public class GestorBD {
         }
     }
 
-    public ArrayList<String> devolver_barajas_de_usuario(String nombre_usuario) throws SQLException {
+    public ArrayList<String> devolver_nombres_barajas_de_usuario(String nombre_usuario) throws SQLException {
         ArrayList<String> barajas = new ArrayList<>();
         try {
             ConectaBD conectaBD = new ConectaBD();
             con = conectaBD.getConnection();
             st = con.prepareStatement(
-                    "SELECT nombre_baraja from barajas_usuarios where nombre = ?");
+                    "SELECT nombre_baraja from barajas_usuarios where nombre_usuario = ?");
             st.setString(1, nombre_usuario);
             rs = st.executeQuery();
 
             while (rs.next()) {
-                barajas.add(rs.getString("baraja"));
+                barajas.add(rs.getString("nombre_baraja"));
             }
             return barajas;
 
@@ -292,19 +292,19 @@ public class GestorBD {
         }
     }
 
-    public ArrayList<Baraja> lee_nombres_barajas() throws SQLException {
-        ArrayList<Baraja> barajas = new ArrayList<>();
+    public ArrayList<String> lee_nombres_barajas() throws SQLException {
+        ArrayList<String> barajas = new ArrayList<>();
         try {
             ConectaBD conectaBD = new ConectaBD();
             con = conectaBD.getConnection();
-            st = con.prepareStatement("SELECT * FROM barajas order by tier");
+            st = con.prepareStatement("SELECT nombre_baraja FROM barajas order by tier");
             rs = st.executeQuery();
 
             if (!rs.next()) {
                 return barajas;
             } else {
                 do {
-                    barajas.add(new Baraja(rs.getString("nombre_baraja"), rs.getInt("tier")));
+                    barajas.add(rs.getString("nombre_baraja"));
                 } while (rs.next());
                 return barajas;
             }
@@ -434,80 +434,158 @@ public class GestorBD {
 
     public boolean introducirResultado(String baraja1, String baraja2, int main1, int main2,
             int side1, int side2) throws SQLException {
-        // NOTA: LAS BARAJAS YA DEBEN VENIR ORDENADAS
-        boolean retorno = true;
-        float porcentaje;
-        try {
+        
+// NOTA: LAS BARAJAS DEBEN SER DISTINTAS se añaden resultados espejo, consideracion de diseño
+        // deben venir ordenadas alfabéticamente para facilitar la busqueda
+        float porcentaje_main, porcentaje_side, porcentaje_total;
+        boolean retorno = !(baraja1.equals(baraja2));
 
-            ConectaBD conectaBD = new ConectaBD();
-            con = conectaBD.getConnection();
-            st = con.prepareStatement(
-                    "SELECT * FROM cruces WHERE (baraja1 = ? and baraja2 = ?)");
-            st.setString(1, baraja1);
-            st.setString(2, baraja2);
-            rs = st.executeQuery();
+        if (retorno) {
+            try {
 
-            if (!rs.next()) {
-                porcentaje = (main1 + side1) / (main1 + main2 + side1 + side2);
-
+                ConectaBD conectaBD = new ConectaBD();
+                con = conectaBD.getConnection();
                 st = con.prepareStatement(
-                        "INSERT INTO cruces VALUES (?, ?, ?, ?, ?, ?, ?)");
-
+                        "SELECT * FROM cruces WHERE (nombre_baraja_1 = ? and nombre_baraja_2 = ?)");
                 st.setString(1, baraja1);
                 st.setString(2, baraja2);
-                st.setInt(3, main1);
-                st.setInt(4, main2);
-                st.setInt(5, side1);
-                st.setInt(6, side2);
-                st.setFloat(7, porcentaje);
+                rs = st.executeQuery();
 
-                resultUpdate = st.executeUpdate();
+                if (!rs.next()) {
+                    
+                    porcentaje_main = main1 * 100 / (main1 + main2);
+                    porcentaje_side = side1 * 100 / (side1 + side2);
+                    porcentaje_total = (main1 + side1) * 100 / (main1 + main2 + side1 + side2);
 
-                if (resultUpdate != 1) {
-                    retorno = false;
+                    st = con.prepareStatement(
+                            "insert into cruces values (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+                    st.setString(1, baraja1);
+                    st.setString(2, baraja2);
+                    st.setInt(3, main1);
+                    st.setInt(4, main2);
+                    st.setInt(5, side1);
+                    st.setInt(6, side2);
+                    st.setFloat(7, porcentaje_main);
+                    st.setFloat(8, porcentaje_side);
+                    st.setFloat(9, porcentaje_total);
+
+                    resultUpdate = st.executeUpdate();
+                    
+                    // si no hay fila actualizada devuelvo falso y salgo
+                    if (resultUpdate != 1) {
+                        retorno = false;
+                    }
+                    
+                    // si se ha actualizado la primera fila, sigo, meto la fila para la segunda baraja
+                    if (retorno) {
+                        porcentaje_main = main2 * 100 / (main1 + side2);
+                        porcentaje_side = side2 * 100 / (side1 + side2);
+                        porcentaje_total = (main2 + side2) * 100 / (main1 + side1 + main2 + side2);
+                    
+                        st.setString(1, baraja2);
+                        st.setString(2, baraja1);
+                        st.setInt(3, main2);
+                        st.setInt(4, main1);
+                        st.setInt(5, side2);
+                        st.setInt(6, side1);
+                        st.setFloat(7, porcentaje_main);
+                        st.setFloat(8, porcentaje_side);
+                        st.setFloat(9, porcentaje_total);
+
+                        resultUpdate = st.executeUpdate();
+                    
+                        if (resultUpdate != 1){
+                            retorno = false;
+                        }
+                    }
+                    
+                // si rs sí tenia next, es decir, existe ya el emparejamiento, tengo que actualizar sin insertar    
+                } else {
+
+                    // se recalculan los valores de victorias y derrotas main y side y los porcentajes...
+                    main1 = main1 + rs.getInt("ganadas_main_1");
+                    main2 = main2 + rs.getInt("perdidas_main_1");
+                    side1 = side1 + rs.getInt("ganadas_side_1");
+                    side2 = side2 + rs.getInt("perdidas_side_1");
+                    
+                    porcentaje_main = main2 * 100 / (main1 + side2);
+                    porcentaje_side = side2 * 100 / (side1 + side2);
+                    porcentaje_total = (main2 + side2) * 100 / (main1 + side1 + main2 + side2);
+
+                    st = con.prepareStatement(
+                            "update cruces set "
+                                    + "ganadas_main_1 = ?, "
+                                    + "perdidas_side_1 = ?, "
+                                    + "perdidas_main_1 = ?, "
+                                    + "perdidas_side_1 = ?, "
+                                    + "porcentaje_main_1 = ?, "
+                                    + "porcentaje_side_1 = ?, "
+                                    + "porcentaje_total_1 = ? "
+                                    + "where nombre_baraja_1 = ? and "
+                                    + "nombre_baraja_2 = ?");
+
+                    st.setInt(1, main1);
+                    st.setInt(2, main2);
+                    st.setInt(3, side1);
+                    st.setInt(4, side2);
+                    st.setFloat(5, porcentaje_main);
+                    st.setFloat(6, porcentaje_side);
+                    st.setFloat(7, porcentaje_total);
+                    st.setString(8, baraja1);
+                    st.setString(9, baraja2);
+                    
+                    resultUpdate = st.executeUpdate();
+
+                    if (resultUpdate != 1) {
+                        retorno = false;
+                    }
+                    
+                    if (retorno) {
+                                        
+                    porcentaje_main = main2 * 100 / (main1 + side2);
+                    porcentaje_side = side2 * 100 / (side1 + side2);
+                    porcentaje_total = (main2 + side2) * 100 / (main1 + side1 + main2 + side2);
+                    
+                    st.setInt(1, main2);
+                    st.setInt(2, main1);
+                    st.setInt(3, side2);
+                    st.setInt(4, side1);
+                    st.setFloat(5, porcentaje_main);
+                    st.setFloat(6, porcentaje_side);
+                    st.setFloat(7, porcentaje_total);
+                    st.setString(8, baraja2);
+                    st.setString(9, baraja1);
+                    
+                    resultUpdate = st.executeUpdate();
+
+                    if (resultUpdate != 1) {
+                        retorno = false;
+                    }
+                    
+                    }
                 }
-            } else {
+                //con.commit();
+                return retorno;
 
-                main1 = main1 + rs.getInt(3);
-                main2 = main2 + rs.getInt(4);
-                side1 = side1 + rs.getInt(5);
-                side2 = side2 + rs.getInt(6);
-                porcentaje = (main1 + side1) / (main1 + main2 + side1 + side2);
+            } catch (SQLException e) {
+                //con.rollback();
+                return false;
+            } finally {
 
-                st = con.prepareStatement(
-                        "UPDATE cruces SET gm1 = ?, gm2 = ?, gs1 = ?, gs2 = ?, porcentaje = ? where baraja1 = ? and baraja2 = ?");
-
-                st.setInt(1, main1);
-                st.setInt(2, main2);
-                st.setInt(3, side1);
-                st.setInt(4, side2);
-                st.setFloat(5, porcentaje);
-                st.setString(6, baraja1);
-                st.setString(7, baraja2);
-
-                resultUpdate = st.executeUpdate();
-
-                if (resultUpdate != 1) {
-                    retorno = false;
+                if (rs != null) {
+                    rs.close();
+                }
+                if (st != null) {
+                    st.close();
+                }
+                if (con != null) {
+                    con.close();
                 }
             }
-            //con.commit();
+
+        } else {
             return retorno;
-
-        } catch (SQLException e) {
-            //con.rollback();
-            return false;
-        } finally {
-
-            if (rs != null) {
-                rs.close();
-            }
-            if (st != null) {
-                st.close();
-            }
-            if (con != null) {
-                con.close();
-            }
         }
     }
 

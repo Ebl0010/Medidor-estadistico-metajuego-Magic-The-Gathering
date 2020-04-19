@@ -89,7 +89,7 @@ public class BarajaManagedBean {
 
     public void carga_pagina_gestionar_barajas() throws SQLException {
         modificar = null;
-        barajas = gestorBD.lee_nombres_barajas();
+        nombres_barajas = gestorBD.lee_nombres_barajas();
         try {
             FacesContext.getCurrentInstance()
                     .getExternalContext()
@@ -99,6 +99,7 @@ public class BarajaManagedBean {
         }
     }
 
+    /*
     public void guardarBaraja() throws SQLException {
         Baraja barajaNueva = new Baraja(nombre, tier);
         gestorBD.guardarBaraja(barajaNueva);
@@ -134,7 +135,8 @@ public class BarajaManagedBean {
             }
         }
     }
-
+    
+    /*
     public void actualizarBaraja() throws SQLException {
         // como el managed bean es una variable de sesion aun no he tocado "modificar", que tiene
         // los datos de la baraja vieja. Asi que aqui es donde la pongo a nulo
@@ -166,14 +168,11 @@ public class BarajaManagedBean {
         }
 
     }
+    */
     
     public void carga_pagina_desglose_barajas_usuario() throws SQLException {
-        barajas = gestorBD.lee_nombres_barajas();
-        nombres_barajas = new ArrayList<>();
-        barajas.forEach((baraja) -> {
-            nombres_barajas.add(baraja.getNombre());
-        });
-
+        nombres_barajas = gestorBD.lee_nombres_barajas();
+        
         try {
             FacesContext.getCurrentInstance()
                     .getExternalContext()
@@ -183,23 +182,6 @@ public class BarajaManagedBean {
         }
     }
 
-    /*
-    public void carga_pagina_agregar_baraja_a_usuario() throws SQLException {
-        barajas = gestorBD.leeBarajas();
-        nombres_barajas = new ArrayList<String>();
-        for (Baraja baraja : barajas) {
-            nombres_barajas.add(baraja.getNombre());
-        }
-
-        try {
-            FacesContext.getCurrentInstance()
-                    .getExternalContext()
-                    .redirect("agregar_baraja_a_usuario.xhtml");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    */
 
 
     public void agregar_baraja_a_usuario(String nombre_usuario) throws SQLException {

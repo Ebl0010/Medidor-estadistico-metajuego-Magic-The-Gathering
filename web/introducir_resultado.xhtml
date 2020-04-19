@@ -7,7 +7,7 @@
         <link href="#{request.contextPath}/css/css20.css" 
               rel="stylesheet" type="text/css"/>
 
-        <link href="#{request.contextPath}/css/css30.css" 
+        <link href="#{request.contextPath}/css/css40.css" 
               rel="stylesheet" type="text/css"/>
 
 
@@ -55,77 +55,81 @@
 
         </div> 
 
-        <div class="cuadro_principal">
+        <div class="borde_fondo cuadro_principal">
 
-            <h:form id="form" style="width: 100%; padding: 20px 33px;">
-                <h2 style="color: blue;">#{resultadoManagedBean.encabezado}</h2>
+            <h:form>
 
-                <br/><br/>
-
-                <h:outputLabel value="Baraja 1: "/>
-                <h:selectOneMenu value="#{resultadoManagedBean.baraja1}">
-                    <f:selectItems value="#{resultadoManagedBean.todas_las_barajas}" />
-                </h:selectOneMenu>
-
-                <h:outputLabel value="Baraja 2: "/>
-                <h:selectOneMenu value="#{resultadoManagedBean.baraja2}">
-                    <f:selectItems value="#{resultadoManagedBean.todas_las_barajas}" />
-                </h:selectOneMenu>
+                <div class="bloque_baraja_1">
+                    <h:outputLabel value="Baraja 1: "/>
 
 
-                <br/><br/>
-                <span>Victorias de main: </span>
-                <h:selectOneMenu value="#{resultadoManagedBean.main1}">
-                    <f:selectItem itemValue="0" itemLabel="0"/>
-                    <f:selectItem itemValue="1" itemLabel="1"/>
-                    <f:selectItem itemValue="2" itemLabel="2"/>
-                    <f:selectItem itemValue="3" itemLabel="3"/>
-                    <f:selectItem itemValue="4" itemLabel="4"/>
-                    <f:selectItem itemValue="5" itemLabel="5"/>
-                </h:selectOneMenu>
+                    <h:selectOneMenu class="menu_seleccion menu_seleccion_baraja" value="#{resultadoManagedBean.baraja1}">
+                        <f:selectItems value="#{resultadoManagedBean.todas_las_barajas}" />
+                    </h:selectOneMenu>
+
+                </div>
+
+                <div class="bloque_baraja_2">
+                    <h:outputLabel value="Baraja 2: "/>
+                    <h:selectOneMenu class="menu_seleccion menu_seleccion_baraja" value="#{resultadoManagedBean.baraja2}">
+                        <f:selectItems value="#{resultadoManagedBean.todas_las_barajas}" />
+                    </h:selectOneMenu>
+                </div>
 
 
-                <br/><br/>
-                <span>Derrotas de main: </span>
-                <h:selectOneMenu value="#{resultadoManagedBean.main2}">
-                    <f:selectItem itemValue="0" itemLabel="0"/>
-                    <f:selectItem itemValue="1" itemLabel="1"/>
-                    <f:selectItem itemValue="2" itemLabel="2"/>
-                    <f:selectItem itemValue="3" itemLabel="3"/>
-                    <f:selectItem itemValue="4" itemLabel="4"/>
-                    <f:selectItem itemValue="5" itemLabel="5"/>
-                </h:selectOneMenu>
+                <div class="bloque_victorias_main" >
+                    <span>Victorias de main: </span>
+                    <h:selectOneMenu class="menu_seleccion_numerico" value="#{resultadoManagedBean.main1}">
+                        <f:selectItem itemValue="0" itemLabel="0"/>
+                        <f:selectItem itemValue="1" itemLabel="1"/>
+                        <f:selectItem itemValue="2" itemLabel="2"/>
+                        <f:selectItem itemValue="3" itemLabel="3"/>
+                        <f:selectItem itemValue="4" itemLabel="4"/>
+                        <f:selectItem itemValue="5" itemLabel="5"/>
+                    </h:selectOneMenu>
+                </div>
 
-                <br/><br/>
-                <span>Victorias de side: </span>
-                <h:selectOneMenu value="#{resultadoManagedBean.side1}">
-                    <f:selectItem itemValue="0" itemLabel="0"/>
-                    <f:selectItem itemValue="1" itemLabel="1"/>
-                    <f:selectItem itemValue="2" itemLabel="2"/>
-                    <f:selectItem itemValue="3" itemLabel="3"/>
-                    <f:selectItem itemValue="4" itemLabel="4"/>
-                    <f:selectItem itemValue="5" itemLabel="5"/>
-                    <f:selectItem itemValue="6" itemLabel="6"/>
-                    <f:selectItem itemValue="7" itemLabel="7"/>
-                </h:selectOneMenu>
+                <div class="bloque_derrotas_main">
+                    <span>Victorias de main: </span>
+                    <h:selectOneMenu class="menu_seleccion_numerico" value="#{resultadoManagedBean.main2}">
+                        <f:selectItem itemValue="0" itemLabel="0"/>
+                        <f:selectItem itemValue="1" itemLabel="1"/>
+                        <f:selectItem itemValue="2" itemLabel="2"/>
+                        <f:selectItem itemValue="3" itemLabel="3"/>
+                        <f:selectItem itemValue="4" itemLabel="4"/>
+                        <f:selectItem itemValue="5" itemLabel="5"/>
+                    </h:selectOneMenu>
+                </div>
 
-                <br/><br/>
-                <span>Derrotas de side: </span>
-                <h:selectOneMenu value="#{resultadoManagedBean.side2}">
-                    <f:selectItem itemValue="0" itemLabel="0"/>
-                    <f:selectItem itemValue="1" itemLabel="1"/>
-                    <f:selectItem itemValue="2" itemLabel="2"/>
-                    <f:selectItem itemValue="3" itemLabel="3"/>
-                    <f:selectItem itemValue="4" itemLabel="4"/>
-                    <f:selectItem itemValue="5" itemLabel="5"/>
-                    <f:selectItem itemValue="6" itemLabel="6"/>
-                    <f:selectItem itemValue="7" itemLabel="7"/>
-                </h:selectOneMenu>
-                <br/><br/>
+                <div class="bloque_victorias_side">
+                    <span>Victorias de side: </span>
+                    <h:selectOneMenu class="menu_seleccion_numerico" value="#{resultadoManagedBean.side1}">
+                        <f:selectItem itemValue="0" itemLabel="0"/>
+                        <f:selectItem itemValue="1" itemLabel="1"/>
+                        <f:selectItem itemValue="2" itemLabel="2"/>
+                        <f:selectItem itemValue="3" itemLabel="3"/>
+                        <f:selectItem itemValue="4" itemLabel="4"/>
+                        <f:selectItem itemValue="5" itemLabel="5"/>
+                        <f:selectItem itemValue="6" itemLabel="6"/>
+                        <f:selectItem itemValue="7" itemLabel="7"/>
+                    </h:selectOneMenu>
+                </div>
 
+                <div class="bloque_derrotas_side">
+                    <span>Victorias de side: </span>
+                    <h:selectOneMenu class="menu_seleccion_numerico" value="#{resultadoManagedBean.side2}">
+                        <f:selectItem itemValue="0" itemLabel="0"/>
+                        <f:selectItem itemValue="1" itemLabel="1"/>
+                        <f:selectItem itemValue="2" itemLabel="2"/>
+                        <f:selectItem itemValue="3" itemLabel="3"/>
+                        <f:selectItem itemValue="4" itemLabel="4"/>
+                        <f:selectItem itemValue="5" itemLabel="5"/>
+                        <f:selectItem itemValue="6" itemLabel="6"/>
+                        <f:selectItem itemValue="7" itemLabel="7"/>
+                    </h:selectOneMenu>
+                </div>
 
-
-                <h:commandButton value="Aceptar" type="submit"
+                <h:commandButton class="boton_navegacion boton_validar_resultado" value="Introducir" type="submit"
                                  action="#{resultadoManagedBean.introducirResultado()}" />
 
 

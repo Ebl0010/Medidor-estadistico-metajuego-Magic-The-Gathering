@@ -1,17 +1,13 @@
 .cuadro_principal{
-    position: absolute;
     top: 32%;
     left: 15%;
+    width: 50%;
 }
-
 .cuadro_agregar_baraja{
-    position: absolute;
     top: 16%;
     left: 15%;
     height: 10%;
-    width: 51.5%;
-    border: #12047E 5px solid;
-    background-color: #0C9FE0;
+    width: 50%;
 }
 
 .titulo_agregar_baraja{
@@ -29,13 +25,6 @@
     width: 100%;
 }
 
-
-.menu_seleccion{
-   background-color: #134BEA;
-   color: white;
-   font-size: 110%;
-   width: 35%;
-}
 
 .boton_agregar_baraja{
     position: absolute;

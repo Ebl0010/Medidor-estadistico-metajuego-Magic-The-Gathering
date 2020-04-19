@@ -2,33 +2,93 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
-        <title>INTRODUCIR DATOS DE TORNEO (1)</title>
+        <title>MEDIDOR ESTADISTICO/MIS BARAJAS</title>
+
+        <link href="#{request.contextPath}/css/css20.css" 
+              rel="stylesheet" type="text/css"/>
+
+        <link href="#{request.contextPath}/css/css40.css" 
+              rel="stylesheet" type="text/css"/>
+
+
     </h:head>
     <h:body>
-        <h:form id="form" style="width: 100%; padding: 20px 33px;">
-            <h2 style="color: blue;">Introduce la baraja que has jugado y el nº de rondas que has jugado</h2>
-            
-            <h:outputLabel value="Baraja usada en el torneo: "/>
-            <h:selectOneMenu value="#{resultadoManagedBean.baraja1}">
-                <f:selectItems value="#{resultadoManagedBean.barajas_de_usuario}" />
-            </h:selectOneMenu>
-            
-            
-            <br/><br/>
+        <div class="barra_superior_home">
 
-            <span>Rondas: </span>
-            <h:inputText value="#{resultadoManagedBean.num_rondas}"
-                         style=" width:25%;" />
-            <br/><br/>
-            <br/><br/>
-            <h:commandButton value="Aceptar" type="submit"
-                             action="#{resultadoManagedBean.introducirTorneo1()}" />
-            
+            <div class="titulo">MEDIDOR EURISTICO DE METAJUEGO MAGIC</div>
+
+            <div class="perfil_home">#{formularioManagedBean.nombre}</div>
+
             <h:form>
-            <h:commandButton value="Volver" type="action"
-                             action="#{formularioManagedBean.login()}" />
+                <h:commandButton class="boton_logout" value="Salir" type="submit"
+                                 action="#{formularioManagedBean.salir()}" />
             </h:form>
 
-        </h:form>
+        </div>
+
+        <div class="menu_izquierda"> 
+
+            <h:form>
+                <h:commandButton class="boton_navegacion" value="Inicio" type="submit"
+                                 action="#{formularioManagedBean.login()}" />
+            </h:form>
+
+            <h:form>
+                <h:commandButton class="boton_navegacion boton_navegacion_2" value="Mis barajas" 
+                                 action="desglose_barajas_usuario.xhtml" />
+            </h:form>
+
+            <h:form>
+                <h:commandButton class="boton_navegacion boton_navegacion_3" value="Introducir resultado" 
+                                 action="#{resultadoManagedBean.carga_pagina_introducir_resultado()}" />
+            </h:form>
+
+            <h:form>
+                <h:commandButton class="boton_navegacion boton_navegacion_4" value="Introducir torneo" 
+                                 action="#{resultadoManagedBean.introducirPrevioTorneo(formularioManagedBean.nombre)}" />
+            </h:form>
+
+            <h:form>
+                <h:commandButton class="boton_navegacion boton_navegacion_5" value="Ver torneos" 
+                                 action="#{historialTorneosManagedBean.cargaTorneosDeUsuario(formularioManagedBean.nombre)}" />
+            </h:form>
+        </div> 
+
+
+        <div class="borde_fondo cuadro_principal">
+            <h:form>
+                <h2 class="bloque_baraja_1">Introducir torneo: </h2>
+
+                <div class="bloque_victorias_main">
+
+                    <h:outputLabel value="Baraja usada en el torneo: "/>
+                    <h:selectOneMenu class="menu_seleccion menu_seleccion_baraja" value="#{resultadoManagedBean.baraja1}">
+                        <f:selectItems value="#{resultadoManagedBean.barajas_de_usuario}" />
+                    </h:selectOneMenu>
+                </div>
+
+
+                <div class="bloque_derrotas_main">
+                    <span>Rondas jugadas: </span>
+                    <h:selectOneMenu class="menu_seleccion_numerico" value="#{resultadoManagedBean.num_rondas}">
+                        <f:selectItem itemValue="0" itemLabel="0"/>
+                        <f:selectItem itemValue="1" itemLabel="1"/>
+                        <f:selectItem itemValue="2" itemLabel="2"/>
+                        <f:selectItem itemValue="3" itemLabel="3"/>
+                        <f:selectItem itemValue="4" itemLabel="4"/>
+                        <f:selectItem itemValue="5" itemLabel="5"/>
+                        <f:selectItem itemValue="6" itemLabel="6"/>
+                        <f:selectItem itemValue="7" itemLabel="7"/>
+                        <f:selectItem itemValue="8" itemLabel="8"/>
+                    </h:selectOneMenu>
+                </div>
+
+                <h:commandButton class="boton_navegacion boton_validar_resultado" value="Siguiente" type="submit"
+                                 action="#{resultadoManagedBean.introducirTorneo1()}" />
+
+
+            </h:form>
+
+        </div>
     </h:body>
 </html>

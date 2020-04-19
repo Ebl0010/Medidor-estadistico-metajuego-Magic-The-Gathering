@@ -56,7 +56,7 @@
 
         </div> 
 
-        <div class="cuadro_principal">
+        <div class="borde_fondo cuadro_principal">
             <h:form>
 
                 <h:dataTable class="tabla_barajas" value="#{formularioManagedBean.lista_de_barajas_de_usuario}"
@@ -72,13 +72,13 @@
                             #{baraja.partidas_ganadas_main}
                     </h:column>
                     <h:column>
-                        <f:facet name="header">% Victorias main</f:facet>
-                            #{baraja.porcentaje_partidas_ganadas_main}
-                    </h:column>
-                    <h:column>
                         <f:facet name="header">Victorias side</f:facet>
                             #{baraja.partidas_ganadas_side}
                     </h:column>
+                    <h:column>
+                        <f:facet name="header">% Victorias main</f:facet>
+                            #{baraja.porcentaje_partidas_ganadas_main}
+                    </h:column>                  
                     <h:column>
                         <f:facet name="header">% Victorias side</f:facet>
                             #{baraja.porcentaje_partidas_ganadas_side}
@@ -87,29 +87,14 @@
                         <f:facet name="header">% Victorias total</f:facet>
                             #{baraja.porcentaje_partidas_ganadas_total}
                     </h:column>
-                    <h:column>
-                        <f:facet name="header">Rondas ganadas</f:facet>
-                            #{baraja.rondas_ganadas}
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">Rondas perdidas</f:facet>
-                            #{baraja.rondas_perdidas}
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">Rondas empatadas</f:facet>
-                            #{baraja.rondas_empatadas}
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">% Rondas</f:facet>
-                            #{baraja.porcentaje_rondas_ganadas}
-                    </h:column>
                 </h:dataTable>
 
             </h:form>
 
         </div>
 
-        <div class="cuadro_agregar_baraja">
+        
+        <div class="borde_fondo cuadro_agregar_baraja">
 
             <div class="titulo_agregar_baraja">AGREGAR BARAJA NUEVA</div>
 
@@ -125,7 +110,7 @@
                 
             </h:form>
 
-        </div>
+        </div> 
 
 
 

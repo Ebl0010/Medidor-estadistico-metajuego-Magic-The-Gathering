@@ -1,16 +1,12 @@
 package Controlador;
 
-import Modelo.Baraja;
-import Modelo.Baraja_de_usuario;
 import Modelo.GestorBD;
 import Modelo.ResultadoRonda;
-import Modelo.Usuario;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 
@@ -20,7 +16,7 @@ public class ResultadoManagedBean {
 
     private String baraja1, baraja2, usuario, resultado_torneo, encabezado;
     private int main1, main2, side1, side2, num_rondas;
-    private GestorBD gestorBD;
+    private final GestorBD gestorBD;
     private ArrayList<String> todas_las_barajas, barajas_de_usuario;
     private ArrayList<ResultadoRonda> resultadosRondas;
 
@@ -39,11 +35,11 @@ public class ResultadoManagedBean {
     }
 
     private void carga_todas_las_barajas() throws SQLException {
-        todas_las_barajas = gestorBD.carga_todas_las_barajas();
+        todas_las_barajas = gestorBD.lee_nombres_barajas();
     }
 
-    private void carga_barajas_de_usuario() throws SQLException {
-        barajas_de_usuario = gestorBD.devolver_barajas_de_usuario(usuario);
+    private void carga_nombres_barajas_de_usuario(String nombre_usuario) throws SQLException {
+        barajas_de_usuario = gestorBD.devolver_nombres_barajas_de_usuario(usuario);
     }
 
     public ArrayList<String> getTodas_las_barajas() {
@@ -129,7 +125,7 @@ public class ResultadoManagedBean {
                     .getExternalContext()
                     .redirect("introducir_resultado.xhtml");
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 
@@ -151,7 +147,7 @@ public class ResultadoManagedBean {
                         .getExternalContext()
                         .redirect("resultado_introducido.xhtml");
             } catch (IOException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
 
         } else {
@@ -167,7 +163,7 @@ public class ResultadoManagedBean {
 
     public void introducirPrevioTorneo(String usuario) throws SQLException {
         this.usuario = usuario;
-        barajas_de_usuario = gestorBD.devolver_barajas_de_usuario(usuario);
+        carga_nombres_barajas_de_usuario(usuario);
         try {
             FacesContext.getCurrentInstance()
                     .getExternalContext()

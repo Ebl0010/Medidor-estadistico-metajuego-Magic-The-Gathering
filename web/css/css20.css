@@ -2,6 +2,13 @@ body{
     font-family: helvetica;
 }
 
+.borde_fondo{
+    position: absolute;
+    border: #12047E 5px solid;
+    background-color: #0C9FE0;
+    color: white;
+}
+
 .barra_superior_home{
     position: fixed; 
     top: 0;
@@ -100,5 +107,12 @@ body{
 
 .boton_navegacion_6{
     top: 60%;
+}
+
+.menu_seleccion{
+   background-color: #134BEA;
+   color: white;
+   font-size: 110%;
+   width: 35%;
 }
 

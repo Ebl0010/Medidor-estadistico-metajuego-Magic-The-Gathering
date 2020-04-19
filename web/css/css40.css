@@ -1,5 +1,62 @@
 .cuadro_principal{
-    position: absolute;
-    top: 32%;
+    top: 20%;
     left: 15%;
+    width: 60%;
+    height: 40%;
+    font-size: 110%;
+}
+
+.bloque_baraja_1{
+    position: absolute;
+    top: 8%;
+    left: 15%;
+    font-size: 130%;
+}
+
+.bloque_baraja_2{
+    position: absolute;
+    top: 8%;
+    left: 65%;
+    font-size: 130%;
+}
+
+.bloque_victorias_main{
+    position: absolute;
+    top: 40%;
+    left: 15%;
+}
+
+.bloque_derrotas_main{
+    position: absolute;
+    top: 40%;
+    left: 65%;
+}
+
+.bloque_victorias_side{
+    position: absolute;
+    top: 60%;
+    left: 15%;
+}
+
+.bloque_derrotas_side{
+    position: absolute;
+    top: 60%;
+    left: 65%;
+}
+
+.boton_validar_resultado{
+    width: 15%;
+    height: 10%;
+    left: 83%;
+    top: 85%;
+}
+
+.menu_seleccion_baraja{
+    font-size: 80%;
+    width: 100%;
+}
+
+.menu_seleccion_numerico{
+   color: #134BEA;
+   width: 35%;
 }
