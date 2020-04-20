@@ -589,66 +589,7 @@ public class GestorBD {
         }
     }
 
-    public boolean usuario_tiene_baraja(String nombre_usuario, String baraja) throws SQLException {
-        try {
-            ConectaBD conectaBD = new ConectaBD();
-            con = conectaBD.getConnection();
-
-            st = con.prepareStatement(
-                    "SELECT * FROM barajas_usuarios WHERE nombre = ? and baraja = ?");
-
-            st.setString(1, nombre_usuario);
-            st.setString(2, baraja);
-
-            rs = st.executeQuery();
-
-            return rs.next();
-
-        } catch (SQLException e) {
-            //con.rollback();
-            return false;
-
-        } finally {
-
-            if (rs != null) {
-                rs.close();
-            }
-            if (st != null) {
-                st.close();
-            }
-            if (con != null) {
-                con.close();
-            }
-        }
-    }
-
-    public boolean existeBaraja(String baraja) throws SQLException {
-        try {
-            ConectaBD conectaBD = new ConectaBD();
-            con = conectaBD.getConnection();
-            st = con.prepareStatement(
-                    "SELECT * from barajas WHERE baraja = ?");
-            st.setString(1, baraja);
-
-            rs = st.executeQuery();
-
-            return rs.next();
-        } catch (SQLException e) {
-            //con.rollback();
-            return false;
-        } finally {
-            if (rs != null) {
-                rs.close();
-            }
-            if (st != null) {
-                st.close();
-            }
-            if (con != null) {
-                con.close();
-            }
-        }
-    }
-
+   
     /*
     public boolean guardar_torneo(String usuario, String baraja1, String baraja2, int main1, int main2, int side1, int side2,
             int rondas_ganadas, int rondas_perdidas, int rondas_empatadas) throws SQLException {
@@ -663,9 +604,8 @@ public class GestorBD {
         try {
             ConectaBD conectaBD = new ConectaBD();
             con = conectaBD.getConnection();
-
             st = con.prepareStatement(
-                    "SELECT * FROM barajas_usuarios WHERE nombre = ? and baraja = ?");
+                    "SELECT * FROM barajas_usuarios WHERE nombre_usuario = ? and nombre_baraja = ?");
 
             st.setString(1, usuario);
             st.setString(2, baraja1);
@@ -680,30 +620,58 @@ public class GestorBD {
 
             if (control) {
 
-                int main1N = rs.getInt("gm") + main1;
-                int main2N = rs.getInt("pm") + main2;
-                int side1N = rs.getInt("gs") + side1;
-                int side2N = rs.getInt("ps") + side2;
+                int main1N = rs.getInt("partidas_ganadas_main") + main1;
+                int main2N = rs.getInt("partidas_perdidas_main") + main2;
+                int side1N = rs.getInt("partidas_ganadas_side") + side1;
+                int side2N = rs.getInt("partidas_perdidas_side") + side2;
+                int rondas_ganadasN = rs.getInt("rondas_ganadas") + rondas_ganadas;
+                int rondas_perdidasN = rs.getInt("rondas_perdidas") + rondas_perdidas;
+                int rondas_empatadasN = rs.getInt("rondas_empatadas") + rondas_empatadas;
 
                 int partidas_jugadas_total = main1N + main2N + side1N + side2N;
 
-                float por_main = (main1 * 100) / (main1 + main2);
-                float por_side = (side1 * 100) / (side1 + side2);
+                float por_main = main1 * 100 / (main1 + main2);
+                float por_side = side1 * 100 / (side1 + side2);
                 float por_partidas_total = (main1 + side1) * 100 / partidas_jugadas_total;
+                float por_rondas = rondas_ganadas * 100 / (rondas_ganadas + rondas_empatadas + rondas_perdidas);
 
                 // con los porcentajes y los datos tengo que hacer un update en barajas_usuario
                 st = con.prepareStatement(
-                        "UPDATE barajas_usuarios SET gm=?, pm=?, gs=?, ps=?, por_main=?, por_side=?, por_total=? "
-                        + "where nombre = ? and baraja = ?");
-                st.setInt(1, main1);
-                st.setInt(2, main2);
-                st.setInt(3, side1);
-                st.setInt(4, side2);
-                st.setFloat(5, por_main);
-                st.setFloat(6, por_side);
-                st.setFloat(7, por_partidas_total);
-                st.setString(8, usuario);
-                st.setString(9, baraja1);
+                        "UPDATE barajas_usuarios SET "
+                                + "partidas_ganadas_main = ?, "
+                                + "partidas_perdidas_main = ?, "
+                                + "partidas_ganadas_side = ?, "
+                                + "partidas_perdidas_side = ?, "
+                                + "rondas_ganadas = ?, "
+                                + "rondas_perdidas = ?, "
+                                + "rondas_empatadas = ?, "
+                                + "porcentaje_partidas_ganadas_main = ?, "
+                                + "porcentaje_partidas_ganadas_side = ?, "
+                                + "porcentaje_partidas_ganadas_total = ?, " 
+                                + "porcentaje_rondas_ganadas = ? "
+                                + "where nombre_usuario = ? "
+                                + "and nombre_baraja = ?");
+                
+                //1, 2, 3 y 4 son partidas
+                st.setInt(1, main1N);
+                st.setInt(2, main2N);
+                st.setInt(3, side1N);
+                st.setInt(4, side2N);
+                
+                // 5, 6 y 7 son rondas
+                st.setInt(5, rondas_ganadasN);
+                st.setInt(6, rondas_perdidasN);
+                st.setInt(7, rondas_empatadasN);
+                
+                //8,9 y 10 porcentajes de partidas, 11 porcentaje de rondas
+                st.setFloat(8, por_main);
+                st.setFloat(9, por_side);
+                st.setFloat(10, por_partidas_total);
+                st.setFloat(11, por_rondas);
+                
+                // 12 y 13 usuario y baraja
+                st.setString(12, usuario);
+                st.setString(13, baraja1);
 
                 resultUpdate = st.executeUpdate();
 
@@ -714,7 +682,9 @@ public class GestorBD {
 
             // esto actualizaria las barajas de usuario. Ahora faltaria actualizar los datos del usuario
             if (control) {
-                rs = st.executeQuery("select * from usuarios where nombre = '" + usuario + "'");
+                st = con.prepareStatement("select * from usuarios where nombre_ususario = ?");
+                rs = st.executeQuery();
+                
                 if (!rs.next()) {
                     control = false;
                 }
@@ -722,33 +692,45 @@ public class GestorBD {
 
             if (control) {
 
-                int partidas_ganadas = rs.getInt("pg") + main1 + side1;
-                int partidas_perdidas = rs.getInt("pp") + main2 + side2;
-                int partidas_jugadas = rs.getInt("pj") + partidas_ganadas + partidas_perdidas;
+                int partidas_ganadas = rs.getInt("partidas_ganadas") + main1 + side1;
+                int partidas_perdidas = rs.getInt("partidas_perdidas") + main2 + side2;
 
-                int rgN = rs.getInt("rg") + rondas_ganadas;
-                int rpN = rs.getInt("rp") + rondas_perdidas;
-                int reN = rs.getInt("re") + rondas_empatadas;
-                int rjN = rs.getInt("rj") + rondas_ganadas + rondas_perdidas + rondas_empatadas;
+                int rondas_ganadasN = rs.getInt("rondas_ganadas") + rondas_ganadas;
+                int rondas_perdidasN = rs.getInt("rondas_perdidas") + rondas_perdidas;
+                int rondas_empatadasN = rs.getInt("rondas_empatadas") + rondas_empatadas;
 
-                float por_rondas = (rgN / rjN) * 100;
-                float por_partidas = (partidas_ganadas / partidas_jugadas) * 100;
+                float porcentaje_rondas = rondas_ganadasN * 100 / (rondas_ganadasN + rondas_empatadasN + rondas_perdidasN);
+                float porcentaje_partidas = partidas_ganadas * 100 / (partidas_ganadas + partidas_perdidas);
+                
 
                 st = con.prepareStatement(
-                        "UPDATE usuarios SET pj=?, pg=?, pe=0, pp=?, rj=?, rg=?, re=?, rp=?, "
-                        + "por_rondas=?, por_partidas=? where nombre = ?");
+                        "update usuarios set "
+                                + "rondas_ganadas = ?, "
+                                + "rondas_empatadas = ?, "
+                                + "rondas_perdidas = ?, "
+                                + "partidas_ganadas = ?, "
+                                + "partidas_perdidas = ?, "
+                                + "porcentaje_rondas = ?, "
+                                + "porcentaje_partidas = ?, "
+                                + "where nombre_usuario = ?");
 
-                st.setInt(1, partidas_jugadas);
-                st.setInt(2, partidas_ganadas);
-                st.setInt(3, partidas_perdidas);
-                st.setInt(4, rjN);
-                st.setInt(5, rgN);
-                st.setInt(6, reN);
-                st.setInt(7, rpN);
-                st.setFloat(8, por_rondas);
-                st.setFloat(9, por_partidas);
-                st.setString(10, usuario);
-
+                //1, 2 y 3 rondas
+                st.setInt(1, rondas_ganadasN);
+                st.setInt(2, rondas_empatadasN);
+                st.setInt(3, rondas_perdidasN);
+                
+                //4 y 5 partidas
+                st.setInt(4, partidas_ganadas);
+                st.setInt(5, partidas_perdidas);
+                
+                //6 y 7 porcentajes
+                st.setFloat(6, porcentaje_rondas);
+                st.setFloat(7, porcentaje_partidas);
+                
+                // 8 nombre
+                st.setString(8, usuario);
+                
+                
                 resultUpdate = st.executeUpdate();
 
                 // y ahora compruebo que se ha actualizado una fila:

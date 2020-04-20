@@ -45,3 +45,11 @@
     color: red;
     background-color: black;
 }
+
+.boton_guardar_torneo{
+    position: absolute;
+    height: 35%;
+    width: 20%;
+    left: 75%;
+    top: 60%;
+}
