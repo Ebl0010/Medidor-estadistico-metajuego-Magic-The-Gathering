@@ -55,6 +55,7 @@
 
         </div>   
 
+        <h:form>
          
         <h:dataTable class="cuadro_principal tabla_barajas" value="#{resultadoManagedBean.resultadosRonda}"
                      var="resultado_ronda" border="2" 
@@ -92,12 +93,13 @@
         <div class="borde_fondo cuadro_agregar_baraja">
     
                 <div class="titulo_agregar_baraja">Validar torneo</div>
-    
+                
                 <h:commandButton class="boton_navegacion boton_guardar_torneo" 
                                      value="Guardar torneo" type="action"
                                      action="#{resultadoManagedBean.guardar_torneo()}" />
-    
+
             </div>
+         </h:form>   
         
     </h:body>
 </html>

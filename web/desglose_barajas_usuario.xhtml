@@ -10,7 +10,7 @@
 
         <link href="#{request.contextPath}/css/css30.css" 
               rel="stylesheet" type="text/css"/>
-        
+
 
     </h:head>
     <h:body>
@@ -56,56 +56,55 @@
 
         </div> 
 
-        
-         
-               <h:dataTable class="cuadro_principal tabla_barajas" value="#{formularioManagedBean.lista_de_barajas_de_usuario}"
-                             var="baraja" columnClasses="celda_num"
-                             cellspacing="10" cellpadding="10" >
+        <h:dataTable class="cuadro_principal tabla_barajas" 
+                     value="#{formularioManagedBean.lista_de_barajas_de_usuario}"
+                     var="baraja" columnClasses="celda_num"
+                     cellspacing="10" cellpadding="10" >
 
-                    <h:column>
-                        <f:facet name="header">Baraja</f:facet>
-                            #{baraja.nombre_baraja}
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header" >Victorias main</f:facet>
-                            #{baraja.partidas_ganadas_main}
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">Victorias side</f:facet>
-                            #{baraja.partidas_ganadas_side}
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">% Victorias main</f:facet>
-                            #{baraja.porcentaje_partidas_ganadas_main}
-                    </h:column>                  
-                    <h:column>
-                        <f:facet name="header">% Victorias side</f:facet>
-                            #{baraja.porcentaje_partidas_ganadas_side}
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">% Victorias total</f:facet>
-                            #{baraja.porcentaje_partidas_ganadas_total}
-                    </h:column>
-                </h:dataTable>
-
-           
+            <h:column>
+                <f:facet name="header">Baraja</f:facet>
+                    #{baraja.nombre_baraja}
+            </h:column>
+            <h:column>
+                <f:facet name="header" >Victorias main</f:facet>
+                    #{baraja.partidas_ganadas_main}
+            </h:column>
+            <h:column>
+                <f:facet name="header">Victorias side</f:facet>
+                    #{baraja.partidas_ganadas_side}
+            </h:column>
+            <h:column>
+                <f:facet name="header">% Victorias main</f:facet>
+                    #{baraja.porcentaje_partidas_ganadas_main}
+            </h:column>                  
+            <h:column>
+                <f:facet name="header">% Victorias side</f:facet>
+                    #{baraja.porcentaje_partidas_ganadas_side}
+            </h:column>
+            <h:column>
+                <f:facet name="header">% Victorias total</f:facet>
+                    #{baraja.porcentaje_partidas_ganadas_total}
+            </h:column>
+        </h:dataTable>
 
 
-        
+
+
+
         <div class="borde_fondo cuadro_agregar_baraja">
 
             <div class="titulo_agregar_baraja">AGREGAR BARAJA NUEVA</div>
 
             <h:form class="agregar_baraja_2">
-                    <h:selectOneMenu class="menu_seleccion" value="#{barajaManagedBean.nombre_nueva_baraja_usuario}">
-                        <f:selectItems value="#{barajaManagedBean.nombres_barajas}" />
-                    </h:selectOneMenu>
+                <h:selectOneMenu class="menu_seleccion" value="#{barajaManagedBean.nombre_nueva_baraja_usuario}">
+                    <f:selectItems value="#{barajaManagedBean.nombres_barajas}" />
+                </h:selectOneMenu>
 
-                
+
                 <h:commandButton class="boton_navegacion boton_agregar_baraja" 
                                  value="Agregar" type="submit"
                                  action="#{barajaManagedBean.agregar_baraja_a_usuario(formularioManagedBean.nombre)}" />
-                
+
             </h:form>
 
         </div> 

@@ -308,29 +308,26 @@ public class ResultadoManagedBean {
                 control = true;
             }
 
-            main_torneo1 = main_torneo1 + main1;
-            main_torneo2 = main_torneo2 + main2;
-            side_torneo1 = side_torneo1 + side1;
-            side_torneo2 = side_torneo2 + side2;
+            if (control) {
 
-            if (main1 + side1 > main2 + side2) {
-                rondas_ganadas++;
-            } else {
-                if (main1 + side1 < main2 + side2) {
-                    rondas_perdidas++;
+                main_torneo1 = main_torneo1 + main1;
+                main_torneo2 = main_torneo2 + main2;
+                side_torneo1 = side_torneo1 + side1;
+                side_torneo2 = side_torneo2 + side2;
+
+                if (main1 + side1 > main2 + side2) {
+                    rondas_ganadas++;
                 } else {
-                    rondas_empatadas++;
+                    if (main1 + side1 < main2 + side2) {
+                        rondas_perdidas++;
+                    } else {
+                        rondas_empatadas++;
+                    }
                 }
             }
 
         } // cierra el while
-        /*
-        baraja2 = null;
-        main1 = 0;
-        main2 = 0;
-        side1 = 0;
-        side2 = 0;*/
-
+ 
         // en este punto se ha recorrido entero el arraylist de resultados, se han introducido en la tabla cruces
         // todos los resultados y se tienen los valores totales de partidas y rondas ganadas, perdidas y empatadas
         // a lo largo del torneo, que se deberan introducir con una sola operacion en cada tabla, con un solo metodo
