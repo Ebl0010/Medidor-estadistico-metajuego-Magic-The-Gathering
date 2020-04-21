@@ -32,18 +32,18 @@ public class Usuario {
    
     
     public Usuario(){
-        lista_de_barajas_de_usuario = new ArrayList<Baraja_de_usuario>();
+        lista_de_barajas_de_usuario = new ArrayList<>();
     }
     
     public Usuario(String n){
         nombre = n;
-        lista_de_barajas_de_usuario = new ArrayList<Baraja_de_usuario>();
+        lista_de_barajas_de_usuario = new ArrayList<>();
     }
     
     public Usuario(String n, String c){
         nombre = n;
         clave = c;
-        lista_de_barajas_de_usuario = new ArrayList<Baraja_de_usuario>();
+        lista_de_barajas_de_usuario = new ArrayList<>();
     }
     
     

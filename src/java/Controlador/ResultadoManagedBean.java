@@ -141,31 +141,43 @@ public class ResultadoManagedBean {
         // entonces si baraja1.compareTo(baraja2) devuelve 1 es que baraja2 va ANTES.
         //si es 1 es porque b.ct(a), --> b2 va ANTES que b1 hay que invertirlas
 
-        boolean control;
-        if (baraja1.compareTo(baraja2) < 1) {
-            control = gestorBD.introducirResultado(baraja1, baraja2, main1, main2, side1, side2);
-        } else {
-            control = gestorBD.introducirResultado(baraja2, baraja1, main1, main2, side1, side2);
-        }
-        puestaCero();
-        if (control) {
+        if (baraja1.equals(baraja2)) {
+            puestaCero();
             try {
                 FacesContext.getCurrentInstance()
                         .getExternalContext()
-                        .redirect("resultado_introducido.xhtml");
+                        .redirect("introducir_resultado.xhtml");
             } catch (IOException e) {
                 //e.printStackTrace();
             }
-
         } else {
-            try {
-                FacesContext.getCurrentInstance()
-                        .getExternalContext()
-                        .redirect("resultado_no_introducido.xhtml");
-            } catch (IOException e) {
-                e.printStackTrace();
+            boolean control;
+            if (baraja1.compareTo(baraja2) < 1) {
+                control = gestorBD.introducirResultado(baraja1, baraja2, main1, main2, side1, side2);
+            } else {
+                control = gestorBD.introducirResultado(baraja2, baraja1, main1, main2, side1, side2);
+            }
+            puestaCero();
+            if (control) {
+                try {
+                    FacesContext.getCurrentInstance()
+                            .getExternalContext()
+                            .redirect("resultado_introducido.xhtml");
+                } catch (IOException e) {
+                    //e.printStackTrace();
+                }
+
+            } else {
+                try {
+                    FacesContext.getCurrentInstance()
+                            .getExternalContext()
+                            .redirect("resultado_no_introducido.xhtml");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
+
     }
 
     public void introducirPrevioTorneo(String usuario) throws SQLException {
@@ -327,7 +339,7 @@ public class ResultadoManagedBean {
             }
 
         } // cierra el while
- 
+
         // en este punto se ha recorrido entero el arraylist de resultados, se han introducido en la tabla cruces
         // todos los resultados y se tienen los valores totales de partidas y rondas ganadas, perdidas y empatadas
         // a lo largo del torneo, que se deberan introducir con una sola operacion en cada tabla, con un solo metodo

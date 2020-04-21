@@ -209,8 +209,7 @@ public class FormularioManagedBean {
         partidas_jugadas = partidas_ganadas + partidas_perdidas;
         porcentaje_partidas = usuario.getPorcentaje_partidas();
         porcentaje_rondas = usuario.getPorcentaje_rondas();
-        
-        
+           
         lista_de_barajas_de_usuario = usuario.getLista_de_barajas_de_usuario();
 
     }

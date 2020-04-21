@@ -3,7 +3,7 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
-        <title>MEDIDOR ESTADISTICO/MIS BARAJAS</title>
+        <title>MEDIDOR ESTADISTICO/ESTADISTICAS BARAJAS DETALLADAS</title>
 
         <link href="#{request.contextPath}/css/css20.css" 
               rel="stylesheet" type="text/css"/>
@@ -54,48 +54,72 @@
                                  action="#{historialTorneosManagedBean.cargaTorneosDeUsuario(formularioManagedBean.nombre)}" />
             </h:form>
 
-        </div> 
-
-        <h:dataTable class="cuadro_principal tabla_barajas" 
-                     value="#{historialTorneosManagedBean.filtrados}"
-                     var="torneo" columnClasses="celda_num"
-                     cellspacing="10" cellpadding="10" >
-
-            <h:column>
-                <f:facet name="header">Baraja</f:facet>
-                    #{torneo.nombre_baraja}
-            </h:column>
-            <h:column>
-                <f:facet name="header">Resultado</f:facet>
-                    #{torneo.resultado}
-            </h:column>
-            <h:column>
-                <f:facet name="header">Nº de veces</f:facet>
-                    #{torneo.repeticiones}
-            </h:column>
-        </h:dataTable>
-
-
-
-
-        <div class="borde_fondo cuadro_agregar_baraja">
-
-            <div class="titulo_agregar_baraja">RESULTADOS DE TORNEOS</div>
-
-            <h:form class="agregar_baraja_2">
-                <h:selectOneMenu class="menu_seleccion" value="#{historialTorneosManagedBean.nombre_baraja_filtro}">
-                    <f:selectItems value="#{historialTorneosManagedBean.barajas_usadas}" />
-                </h:selectOneMenu>
-
-
-                <h:commandButton class="boton_navegacion boton_agregar_baraja" 
-                                 value="Filtrar" type="submit"
-                                 action="#{historialTorneosManagedBean.filtrar_por_baraja()}" />
-
+            <h:form>
+                <h:commandButton class="boton_navegacion boton_navegacion_6" value="Estadisticas barajas" 
+                                 action="#{cuadroManagedBean.carga_pagina_estadisticas_barajas()}" />
             </h:form>
 
         </div> 
 
+        <h:dataTable class="cuadro_principal tabla_barajas" 
+                     value="#{cuadroManagedBean.cruces}"
+                     var="cruce" columnClasses="celda_num"
+                     cellspacing="10" cellpadding="10" >
+
+            <h:column>
+                <f:facet name="header">Baraja oponente</f:facet>
+                    #{cruce.baraja2}
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">Ganadas main</f:facet>
+                    #{cruce.ganadas_main}
+            </h:column>
+            <h:column>
+                <f:facet name="header">Perdidas main</f:facet>
+                    #{cruce.perdidas_main}
+            </h:column>
+            <h:column>
+                <f:facet name="header">Ganadas side</f:facet>
+                    #{cruce.ganadas_side}
+            </h:column>
+            <h:column>
+                <f:facet name="header">Perdidas side</f:facet>
+                    #{cruce.perdidas_side}
+            </h:column>
+            <h:column>
+                <f:facet name="header">Porcentaje main</f:facet>
+                    #{cruce.porcentaje_main}
+            </h:column>
+            <h:column>
+                <f:facet name="header">Porcentaje side</f:facet>
+                    #{cruce.porcentaje_side}
+            </h:column>
+            <h:column>
+                <f:facet name="header">Porcentaje total</f:facet>
+                    #{cruce.porcentaje_total}
+            </h:column>
+
+        </h:dataTable>
+
+
+        <div class="borde_fondo cuadro_agregar_baraja">
+
+            <div class="titulo_agregar_baraja">Detalles baraja</div>
+
+            <h:form class="agregar_baraja_2">
+                <h:selectOneMenu class="menu_seleccion" value="#{cuadroManagedBean.baraja_filtro}">
+                    <f:selectItems value="#{cuadroManagedBean.nombres_barajas}" />
+                </h:selectOneMenu>
+
+
+                <h:commandButton class="boton_navegacion boton_agregar_baraja" 
+                                 value="Detalles" type="submit"
+                                 action="#{cuadroManagedBean.detalles_baraja()}" />
+
+            </h:form>
+
+        </div> 
 
 
     </h:body>

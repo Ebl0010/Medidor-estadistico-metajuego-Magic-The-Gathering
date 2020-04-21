@@ -432,6 +432,104 @@ public class GestorBD {
         }
     }
 
+    public boolean introducirResultado_a_baraja(String baraja, int main1, int main2,
+            int side1, int side2) throws SQLException {
+        boolean control = true;
+        int main1N, main2N, side1N, side2N;
+        float porcentaje_main, porcentaje_side, porcentaje_total;
+        try {
+
+            ConectaBD conectaBD = new ConectaBD();
+            con = conectaBD.getConnection();
+            st = con.prepareStatement("Select * from barajas where nombre_baraja = ?");
+            st.setString(1, baraja);
+            rs = st.executeQuery();
+            
+            if(rs.next()){
+                main1N = rs.getInt("ganadas_main") + main1;
+                main2N = rs.getInt("perdidas_main") + main2;
+                side1N = rs.getInt("ganadas_side") + side1;
+                side2N = rs.getInt("perdidas_side") + side2;
+                
+                if (main1N == 0){
+                    porcentaje_main = 0;
+                } else {
+                    if (main2N == 0){
+                        porcentaje_main = 99;
+                    } else {
+                        porcentaje_main = main1N * 100 / (main1N + main2N);
+                    }
+                }
+                
+                if (side1N == 0){
+                    porcentaje_side = 0;
+                } else {
+                    if (side2N == 0){
+                        porcentaje_side = 99;
+                    } else {
+                        porcentaje_side = side1N * 100 / (side1N + side2N);
+                    }
+                }
+                
+                if (main1N + side1N == 0){
+                    porcentaje_total = 0;                 
+                } else {
+                    if (main2N + side2N == 0){
+                        porcentaje_total = 99;
+                    } else {
+                        porcentaje_total = (main1N + side1N) * 100 / (main1N + main2N + side1N + side2N);
+                    }
+                }
+                
+                st = con.prepareStatement(
+                        "update barajas set "
+                            + "ganadas_main = ?, "
+                            + "perdidas_main = ?, "
+                            + "ganadas_side = ?, "
+                            + "perdidas_side = ?, "
+                            + "porcentaje_main = ?, "
+                            + "porcentaje_side = ?, "
+                            + "porcentaje_total = ? "
+                            + "where nombre_baraja = ?");
+                
+                st.setInt(1, main1N);
+                st.setInt(2, main2N);
+                st.setInt(3, side1N);
+                st.setInt(4, side2N);
+                st.setFloat(5, porcentaje_main);
+                st.setFloat(6, porcentaje_side);
+                st.setFloat(7, porcentaje_total);
+                st.setString(8, baraja);
+                
+                
+                if (st.executeUpdate() != 1){
+                    control = false;
+                }        
+                
+            } else {
+                control = false;
+            }
+                    
+                    
+                    
+        } catch (SQLException e) {
+            //con.rollback();
+            return false;
+        } finally {
+
+            if (rs != null) {
+                rs.close();
+            }
+            if (st != null) {
+                st.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+        return control;
+    }
+
     public boolean introducirResultado(String baraja1, String baraja2, int main1, int main2,
             int side1, int side2) throws SQLException {
 
@@ -439,12 +537,20 @@ public class GestorBD {
         // deben venir ordenadas alfabéticamente para facilitar la busqueda
         float porcentaje_main, porcentaje_side, porcentaje_total;
         boolean retorno = !(baraja1.equals(baraja2));
+        /*
+        retorno = introducirResultado_a_baraja(baraja1, main1, main2, side1, side2);
+        
+        if(retorno){
+            retorno = introducirResultado_a_baraja(baraja2, main2, main1, side2, side1);
+        }
+        */
 
         if (retorno) {
             try {
 
                 ConectaBD conectaBD = new ConectaBD();
                 con = conectaBD.getConnection();
+
                 st = con.prepareStatement(
                         "SELECT * FROM cruces WHERE (nombre_baraja_1 = ? and nombre_baraja_2 = ?)");
                 st.setString(1, baraja1);
@@ -903,7 +1009,7 @@ public class GestorBD {
             con = conectaBD.getConnection();
             st = con.prepareStatement(
                     "update torneos set repeticiones = repeticiones +1 where nombre_usuario = ? "
-                            + "and nombre_baraja = ? and resultado = ?");
+                    + "and nombre_baraja = ? and resultado = ?");
             st.setString(1, nombre_usuario);
             st.setString(2, nombre_baraja);
             st.setString(3, cadena_resultado);
@@ -927,37 +1033,6 @@ public class GestorBD {
         } catch (SQLException e) {
             //con.rollback();
             return false;
-        } finally {
-            if (rs != null) {
-                rs.close();
-            }
-            if (st != null) {
-                st.close();
-            }
-            if (con != null) {
-                con.close();
-            }
-        }
-    }
-
-    public ArrayList<String> carga_todas_las_barajas() throws SQLException {
-        ArrayList<String> barajas = new ArrayList<>();
-        try {
-            ConectaBD conectaBD = new ConectaBD();
-            con = conectaBD.getConnection();
-            st = con.prepareStatement("SELECT baraja FROM barajas");
-            rs = st.executeQuery();
-
-            while (rs.next()) {
-                barajas.add(rs.getString(1));
-            }
-
-            return barajas;
-
-        } catch (SQLException e) {
-            //e.printStackTrace();
-            //con.rollback();
-            return barajas;
         } finally {
             if (rs != null) {
                 rs.close();
@@ -1007,6 +1082,85 @@ public class GestorBD {
         }
     }
 
-    
+    public ArrayList<Baraja> lee_todas_las_barajas() throws SQLException {
+        ArrayList<Baraja> barajas = new ArrayList<>();
+        Baraja baraja;
+        try {
+            ConectaBD conectaBD = new ConectaBD();
+            con = conectaBD.getConnection();
+            st = con.prepareStatement("select nombre_baraja, tier, porcentaje_main, porcentaje_side, porcentaje_total from barajas order by tier");
+            rs = st.executeQuery();
 
+            while (rs.next()) {
+                baraja = new Baraja();
+                baraja.setNombre(rs.getString("nombre_baraja"));
+                baraja.setTier(rs.getInt("tier"));
+                baraja.setPorcentaje_main(rs.getFloat("porcentaje_main"));
+                baraja.setPorcentaje_side(rs.getFloat("porcentaje_side"));
+                baraja.setPorcentaje_total(rs.getFloat("porcentaje_total"));
+                barajas.add(baraja);
+            }
+
+            return barajas;
+
+        } catch (SQLException e) {
+            //e.printStackTrace();
+            //con.rollback();
+            return barajas;
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+            if (st != null) {
+                st.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+    }
+
+    public ArrayList<Cruce> leerCruces(String nombre_baraja) throws SQLException {
+        ArrayList<Cruce> cruces = new ArrayList<Cruce>();
+        Cruce cruce;
+
+        try {
+            ConectaBD conectaBD = new ConectaBD();
+            con = conectaBD.getConnection();
+            st = con.prepareStatement("select * from cruces where nombre_baraja_1 = ?");
+            st.setString(1, nombre_baraja);
+            rs = st.executeQuery();
+
+            while (rs.next()) {
+                cruce = new Cruce();
+                cruce.setBaraja2(rs.getString("nombre_baraja_2"));
+                cruce.setGanadas_main(rs.getInt("ganadas_main_1"));
+                cruce.setPerdidas_main(rs.getInt("perdidas_main_1"));
+                cruce.setGanadas_side(rs.getInt("ganadas_side_1"));
+                cruce.setPerdidas_side(rs.getInt("perdidas_side_1"));
+                cruce.setPorcentaje_main(rs.getFloat("porcentaje_main_1"));
+                cruce.setPorcentaje_side(rs.getFloat("porcentaje_side_1"));
+                cruce.setPorcentaje_total(rs.getFloat("porcentaje_total_1"));
+                cruces.add(cruce);
+            }
+
+            return cruces;
+
+        } catch (SQLException e) {
+            //e.printStackTrace();
+            //con.rollback();
+            return cruces;
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+            if (st != null) {
+                st.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+
+    }
 }

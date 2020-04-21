@@ -15,7 +15,7 @@
     <h:body>
         <div class="barra_superior_home">
 
-            <div class="titulo">MEDIDOR EURISTICO DE METAJUEGO MAGIC</div>
+            <div class="titulo">MEDIDOR HEURISTICO DE METAJUEGO MAGIC</div>
 
             <div class="perfil_home">#{formularioManagedBean.nombre}</div>
 
@@ -35,7 +35,7 @@
 
             <h:form>
                 <h:commandButton class="boton_navegacion boton_navegacion_2" value="Mis barajas" 
-                                 action="desglose_barajas_usuario.xhtml" />
+                                 action="#{barajaManagedBean.carga_pagina_desglose_barajas_usuario()}" />
             </h:form>
 
             <h:form>
@@ -51,6 +51,11 @@
             <h:form>
                 <h:commandButton class="boton_navegacion boton_navegacion_5" value="Ver torneos" 
                                  action="#{historialTorneosManagedBean.cargaTorneosDeUsuario(formularioManagedBean.nombre)}" />
+            </h:form>
+            
+            <h:form>
+                <h:commandButton class="boton_navegacion boton_navegacion_6" value="Estadisticas barajas" 
+                                 action="#{cuadroManagedBean.carga_pagina_estadisticas_barajas()}" />
             </h:form>
 
         </div> 

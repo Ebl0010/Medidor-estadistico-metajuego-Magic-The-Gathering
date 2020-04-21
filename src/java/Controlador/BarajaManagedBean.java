@@ -170,6 +170,7 @@ public class BarajaManagedBean {
     }
     */
     
+    
     public void carga_pagina_desglose_barajas_usuario() throws SQLException {
         nombres_barajas = gestorBD.lee_nombres_barajas();
         
@@ -181,6 +182,7 @@ public class BarajaManagedBean {
             e.printStackTrace();
         }
     }
+
 
 
 
