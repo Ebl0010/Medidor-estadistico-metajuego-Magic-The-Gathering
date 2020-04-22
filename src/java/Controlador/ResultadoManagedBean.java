@@ -152,10 +152,11 @@ public class ResultadoManagedBean {
             }
         } else {
             boolean control;
+            // mando las barajas ordenadas pero si invierto el orden hay que invertirlo en los resultados
             if (baraja1.compareTo(baraja2) < 1) {
                 control = gestorBD.introducirResultado(baraja1, baraja2, main1, main2, side1, side2);
             } else {
-                control = gestorBD.introducirResultado(baraja2, baraja1, main1, main2, side1, side2);
+                control = gestorBD.introducirResultado(baraja2, baraja1, main2, main1, side2, side1);
             }
             puestaCero();
             if (control) {

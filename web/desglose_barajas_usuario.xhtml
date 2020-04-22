@@ -53,7 +53,7 @@
                 <h:commandButton class="boton_navegacion boton_navegacion_5" value="Ver torneos" 
                                  action="#{historialTorneosManagedBean.cargaTorneosDeUsuario(formularioManagedBean.nombre)}" />
             </h:form>
-            
+
             <h:form>
                 <h:commandButton class="boton_navegacion boton_navegacion_6" value="Estadisticas barajas" 
                                  action="#{cuadroManagedBean.carga_pagina_estadisticas_barajas()}" />
@@ -71,24 +71,24 @@
                     #{baraja.nombre_baraja}
             </h:column>
             <h:column>
-                <f:facet name="header" >Victorias main</f:facet>
-                    #{baraja.partidas_ganadas_main}
+                <f:facet name="header" >Victorias main</f:facet>                    
+                <div style="text-align: center">#{baraja.partidas_ganadas_main}</div>
             </h:column>
             <h:column>
                 <f:facet name="header">Victorias side</f:facet>
-                    #{baraja.partidas_ganadas_side}
+                <div style="text-align: center">#{baraja.partidas_ganadas_side}</div>
             </h:column>
             <h:column>
                 <f:facet name="header">% Victorias main</f:facet>
-                    #{baraja.porcentaje_partidas_ganadas_main}
+                <div style="text-align: center">#{baraja.porcentaje_partidas_ganadas_main}</div>                
             </h:column>                  
             <h:column>
                 <f:facet name="header">% Victorias side</f:facet>
-                    #{baraja.porcentaje_partidas_ganadas_side}
+                <div style="text-align: center">#{baraja.porcentaje_partidas_ganadas_side}</div>        
             </h:column>
             <h:column>
                 <f:facet name="header">% Victorias total</f:facet>
-                    #{baraja.porcentaje_partidas_ganadas_total}
+                <div style="text-align: center">#{baraja.porcentaje_partidas_ganadas_total}</div>        
             </h:column>
         </h:dataTable>
 

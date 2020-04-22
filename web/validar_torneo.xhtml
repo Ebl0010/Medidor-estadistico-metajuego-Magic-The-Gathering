@@ -52,54 +52,56 @@
                 <h:commandButton class="boton_navegacion boton_navegacion_5" value="Ver torneos" 
                                  action="#{historialTorneosManagedBean.cargaTorneosDeUsuario(formularioManagedBean.nombre)}" />
             </h:form>
+            
+            <h:form>
+                <h:commandButton class="boton_navegacion boton_navegacion_6" value="Estadisticas barajas" 
+                                 action="#{cuadroManagedBean.carga_pagina_estadisticas_barajas()}" />
+            </h:form>
 
         </div>   
 
         <h:form>
-         
-        <h:dataTable class="cuadro_principal tabla_barajas" value="#{resultadoManagedBean.resultadosRonda}"
-                     var="resultado_ronda" border="2" 
-                     cellspacing="10" cellpadding="10">
 
-            <h:column>
-                <f:facet name="header">Oponente:</f:facet>
-                    #{resultado_ronda.oponente}
-            </h:column>
+            <h:dataTable class="cuadro_principal tabla_barajas" value="#{resultadoManagedBean.resultadosRonda}"
+                         var="resultado_ronda"
+                         cellspacing="10" cellpadding="10">
 
+                <h:column>
+                    <f:facet name="header">Oponente:</f:facet>
+                        #{resultado_ronda.oponente}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Ganadas main:</f:facet>
+                    <div style="text-align: center">#{resultado_ronda.ganadas_main}</div>                
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Perdidas main:</f:facet>
+                    <div style="text-align: center">#{resultado_ronda.perdidas_main}</div>   
+                </h:column>
 
-            <h:column>
-                <f:facet name="header">Ganadas main:</f:facet>
-                    #{resultado_ronda.ganadas_main}
-            </h:column>
+                <h:column>
+                    <f:facet name="header">Ganadas side:</f:facet>
+                    <div style="text-align: center">#{resultado_ronda.ganadas_side}</div>
+                </h:column>
 
-            <h:column>
-                <f:facet name="header">Perdidas main:</f:facet>
-                    #{resultado_ronda.perdidas_main}
-            </h:column>
+                <h:column>
+                    <f:facet name="header">Perdidas side:</f:facet>
+                    <div style="text-align: center">#{resultado_ronda.perdidas_side}</div> 
+                </h:column>
 
-            <h:column>
-                <f:facet name="header">Ganadas side:</f:facet>
-                    #{resultado_ronda.ganadas_side}
-            </h:column>
-
-            <h:column>
-                <f:facet name="header">Perdidas side:</f:facet>
-                    #{resultado_ronda.perdidas_side}
-                 </h:column>
-
-        </h:dataTable>
+            </h:dataTable>
 
 
-        <div class="borde_fondo cuadro_agregar_baraja">
-    
+            <div class="borde_fondo cuadro_agregar_baraja">
+
                 <div class="titulo_agregar_baraja">Validar torneo</div>
-                
+
                 <h:commandButton class="boton_navegacion boton_guardar_torneo" 
-                                     value="Guardar torneo" type="action"
-                                     action="#{resultadoManagedBean.guardar_torneo()}" />
+                                 value="Guardar torneo" type="action"
+                                 action="#{resultadoManagedBean.guardar_torneo()}" />
 
             </div>
-         </h:form>   
-        
+        </h:form>   
+
     </h:body>
 </html>

@@ -536,14 +536,17 @@ public class GestorBD {
 // NOTA: LAS BARAJAS DEBEN SER DISTINTAS se añaden resultados espejo, consideracion de diseño
         // deben venir ordenadas alfabéticamente para facilitar la busqueda
         float porcentaje_main, porcentaje_side, porcentaje_total;
-        boolean retorno = !(baraja1.equals(baraja2));
-        /*
-        retorno = introducirResultado_a_baraja(baraja1, main1, main2, side1, side2);
         
+        boolean retorno = (!baraja1.equals(baraja2));
+        
+        if (retorno) {
+            retorno = introducirResultado_a_baraja(baraja1, main1, main2, side1, side2);
+        }
+             
         if(retorno){
             retorno = introducirResultado_a_baraja(baraja2, main2, main1, side2, side1);
         }
-        */
+        
 
         if (retorno) {
             try {

@@ -53,6 +53,11 @@
                 <h:commandButton class="boton_navegacion boton_navegacion_5" value="Ver torneos" 
                                  action="#{historialTorneosManagedBean.cargaTorneosDeUsuario(formularioManagedBean.nombre)}" />
             </h:form>
+            
+            <h:form>
+                <h:commandButton class="boton_navegacion boton_navegacion_6" value="Estadisticas barajas" 
+                                 action="#{cuadroManagedBean.carga_pagina_estadisticas_barajas()}" />
+            </h:form>
 
         </div> 
 
@@ -67,11 +72,11 @@
             </h:column>
             <h:column>
                 <f:facet name="header">Resultado</f:facet>
-                    #{torneo.resultado}
+                    <div style="text-align: center">#{torneo.resultado}</div>
             </h:column>
             <h:column>
                 <f:facet name="header">Nº de veces</f:facet>
-                    #{torneo.repeticiones}
+                    <div style="text-align: center">#{torneo.repeticiones}</div>
             </h:column>
         </h:dataTable>
 
