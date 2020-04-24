@@ -67,6 +67,7 @@ public class HistorialTorneosManagedBean {
     public void cargaTorneosDeUsuario(String nombre_de_usuario) throws SQLException {
         torneos = gestorBD.cargaTorneosDeUsuario(nombre_de_usuario);
         filtrados = new ArrayList<>();
+        String nombre_baraja;
         if (torneos.size() > 0) {
             barajas_usadas = new ArrayList<>();
             barajas_usadas.add("todas");
@@ -74,7 +75,10 @@ public class HistorialTorneosManagedBean {
             Iterator it = torneos.iterator();
             while (it.hasNext()) {
                 t = (Torneo) it.next();
-                barajas_usadas.add(t.getNombre_baraja());
+                nombre_baraja = t.getNombre_baraja();
+                if (!barajas_usadas.contains(nombre_baraja)){
+                    barajas_usadas.add(t.getNombre_baraja());
+                }
             }
             filtrados.addAll(torneos);
         }

@@ -16,7 +16,7 @@ public class Usuario {
 
     
     
-    private String nombre, clave;
+    private String nombre, clave, rol, rol_solicitado, correo;
     private int rondas_ganadas,
                 rondas_perdidas,
                 rondas_empatadas,
@@ -40,9 +40,11 @@ public class Usuario {
         lista_de_barajas_de_usuario = new ArrayList<>();
     }
     
-    public Usuario(String n, String c){
-        nombre = n;
-        clave = c;
+    public Usuario(String nombre, String clave, String correo, String rol_solicitado){
+        this.nombre = nombre;
+        this.clave = clave;
+        this.correo = correo;
+        this.rol_solicitado = rol_solicitado;
         lista_de_barajas_de_usuario = new ArrayList<>();
     }
     

@@ -1,0 +1,63 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>MEDIDOR ESTADISTICO/NUEVO USUARIO</title>
+
+        <link href="#{request.contextPath}/css/css11.css" 
+              rel="stylesheet" type="text/css"/>
+
+        <link href="#{request.contextPath}/css/css10.css" 
+              rel="stylesheet" type="text/css"/>
+
+    </h:head>
+
+    <h:body>    
+
+        <h1 class="titulo">Medidor estadístico de metajuego MTG</h1>
+
+        <h:form class="cuadro_login cuadro_registro" id="form" >
+
+            <div class="bloque_entrar bloque_entrar_registro">Registro nuevo usuario</div>
+
+
+            <span class="bloque_login_nick bloque_login_nick_registro">Nick: </span>
+            <h:inputText class="bloque_login_nick_in bloque_login_nick_registro" 
+                         value="#{registroManagedBean.nombre}" />
+
+
+            <span class="bloque_login_pass bloque_login_pass_registro">Clave: </span>
+            <h:inputSecret class="bloque_login_pass_in bloque_login_pass_registro" 
+                           value="#{registroManagedBean.clave}"/>
+
+            <span class="bloque_login_pass bloque_login_pass_repetir_registro">Repite la clave: </span>
+            <h:inputSecret class="bloque_login_pass_in bloque_login_pass_repetir_registro" 
+                           value="#{registroManagedBean.clave_repetir}"/>
+
+            <span class="bloque_login_pass bloque_login_correo">Correo: </span>
+            <h:inputText class="bloque_login_nick_in bloque_login_correo" 
+                         value="#{registroManagedBean.correo}"/>
+
+            <span class="bloque_login_pass bloque_login_roles">Rol: </span>
+            
+            <h:selectOneMenu class="selector_roles" value="#{registroManagedBean.rol_solicitado}">
+                 <f:selectItems value="#{registroManagedBean.rolesa}"/>
+            </h:selectOneMenu>
+            
+ 
+                    
+     
+
+            
+
+            <h:commandButton class="boton_login boton_login_registro" value="Validar" type="submit"
+                             action="#{registroManagedBean.crear_usuario()}" />
+
+            <div class="barra_registrarse">
+                <h:commandButton class="boton_registrarse" value="Atrás" action="agregar_Usuario.xhtml" />
+            </div>
+        </h:form>
+
+
+    </h:body>
+</html>

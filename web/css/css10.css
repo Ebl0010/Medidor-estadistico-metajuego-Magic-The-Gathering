@@ -1,0 +1,43 @@
+.cuadro_registro{
+    top: 20%;
+    height: 50%;
+}
+
+.bloque_entrar_registro{
+    height: 15%;
+}
+
+.bloque_login_nick_registro{
+    top: 18%;
+}
+
+.bloque_login_pass_registro{
+    top: 28%;
+}
+
+.bloque_login_pass_repetir_registro{
+    top: 38%;
+}
+
+.bloque_login_correo{
+    top: 48%;
+}
+
+.bloque_login_roles{
+    top: 58%;
+}
+
+.selector_roles{
+    position: absolute;
+    top: 58%;
+    left: 50%;
+    height: 10%;
+    width: 40%;
+    color: #0A97D7;
+}
+
+.boton_login_registro{
+    top: 87%;
+    height: 8%;
+    width: 20%;
+}

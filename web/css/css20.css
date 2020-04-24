@@ -48,13 +48,6 @@ body{
     text-align: center;
 }
 
-.perfil_home{
-    position: fixed;
-    left: 3%;
-    top: 4%;
-    font-size: 125%;
-    color: white;
-}
 
 .menu_izquierda{
     background-color: #0C9FE0;
@@ -87,6 +80,19 @@ body{
 
 .boton_navegacion:hover{
     background-color: #134BEA;
+}
+
+.boton_perfil{
+    position: fixed;
+    top: 1%;
+    left: 4%;
+    width: 15%;
+    height: 9%;
+    background-color: #134BEA;
+}
+
+.boton_perfil:hover{
+    background-color: #011C69;
 }
 
 .boton_navegacion_2{

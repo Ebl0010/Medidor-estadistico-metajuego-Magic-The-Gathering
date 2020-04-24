@@ -15,34 +15,31 @@ public class GestorBD {
     private ResultSet rs = null;
     private int resultUpdate = 0;
 
-    public ArrayList<Usuario> leerUsuarios() {
+    public ArrayList<String> leeRoles() {
 
-        ArrayList<Usuario> usuarios = new ArrayList<>();
-        Usuario usuarioHallado;
+        ArrayList<String> roles = new ArrayList<String>();
+        String rolHallado;
         try {
             ConectaBD conectaBD = new ConectaBD();
             con = conectaBD.getConnection();
-            st = con.prepareStatement("Select * from usuarios");
+            st = con.prepareStatement("Select descripcion from roles");
             rs = st.executeQuery();
 
             if (!rs.next()) {
                 //System.out.println("no se ha encontrado nada");
                 con.close();
-                return null;
+                return roles;
             } else {
                 do {
-                    String nombre = rs.getString("nombre");
-                    String clave = rs.getString("clave");
-                    usuarioHallado = new Usuario(nombre, clave);
-                    usuarios.add(usuarioHallado);
+                    roles.add(rs.getString("descripcion"));
                 } while (rs.next());
                 con.close();
-                return usuarios;
+                return roles;
             }
 
         } catch (SQLException e) {
         }
-        return null;
+        return roles;
     }
 
     public boolean guardarUsuario(Usuario usuario) {
@@ -147,7 +144,7 @@ public class GestorBD {
             if (!rs.next()) {
                 devolver = null;
             } else {
-                devolver = new Usuario(usuario.getNombre(), usuario.getClave());
+                //devolver = new Usuario(usuario.getNombre(), usuario.getClave());
                 devolver.setRondas_ganadas(rs.getInt("rondas_ganadas"));
                 devolver.setRondas_empatadas(rs.getInt("rondas_empatadas"));
                 devolver.setRondas_perdidas(rs.getInt("rondas_perdidas"));
@@ -1054,7 +1051,7 @@ public class GestorBD {
         try {
             ConectaBD conectaBD = new ConectaBD();
             con = conectaBD.getConnection();
-            st = con.prepareStatement("SELECT * FROM torneos WHERE nombre_usuario = ? order by puntos");
+            st = con.prepareStatement("SELECT * FROM torneos WHERE nombre_usuario = ? order by puntos desc");
             st.setString(1, nombre_usuario);
             rs = st.executeQuery();
 

@@ -18,7 +18,15 @@
 
             <div class="titulo">MEDIDOR HEURISTICO DE METAJUEGO MAGIC</div>
 
-            <div class="perfil_home">#{formularioManagedBean.nombre}</div>
+
+
+                <h:form class="perfil_home">
+                    <h:commandButton class="boton_navegacion boton_perfil" value="MODIFICAR PERFIL" type="submit"
+                                     action="#{formularioManagedBean.carga_pagina_perfil_usuario()}" />
+                </h:form>
+
+
+
             <h:form>
                 <h:commandButton class="boton_logout" value="Salir" type="submit"
                                  action="#{formularioManagedBean.salir()}" />

@@ -14,7 +14,7 @@ import javax.faces.context.FacesContext;
 @SessionScoped
 public class FormularioManagedBean {
 
-    private String nombre, clave;
+    private String nombre, clave, correo, rol_solicitado, rol, nombre_nuevo, clave_nueva, clave_nueva_confirmacion;
     private int rondas_jugadas,
                 rondas_ganadas,
                 rondas_empatadas,
@@ -27,6 +27,8 @@ public class FormularioManagedBean {
                   porcentaje_partidas;
     
     private ArrayList<Baraja_de_usuario> lista_de_barajas_de_usuario;
+    
+    private ArrayList<String> roles;
 
     private GestorBD gestorBD;
 
@@ -89,6 +91,58 @@ public class FormularioManagedBean {
     public void setClave(String clave) {
         this.clave = clave;
     }
+    
+    public String getNombre_nuevo(){
+        return nombre_nuevo;
+    }
+    
+    public void setNombre_nuevo(String nombre_nuevo){
+        this.nombre_nuevo = nombre_nuevo;
+    }
+    
+    public String getClave_nueva(){
+        return clave_nueva;
+    }
+    
+    public void setClave_nueva(String clave_nueva){
+        this.clave_nueva = clave_nueva;
+    }
+    
+    public String getClave_nueva_confirmacion(){
+        return clave_nueva_confirmacion;
+    }
+    
+    public void setClave_nueva_confirmacion(String clave_nueva_confirmacion){
+        this.clave_nueva_confirmacion = clave_nueva_confirmacion;
+    }
+
+    public String getCorreo() {
+        return correo;
+    }
+
+    public String getRol_solicitado() {
+        return rol_solicitado;
+    }
+
+    public String getRol() {
+        return rol;
+    }
+
+    public void setCorreo(String correo) {
+        this.correo = correo;
+    }
+
+    public void setRol_solicitado(String rol_solicitado) {
+        this.rol_solicitado = rol_solicitado;
+    }
+
+    public void setRol(String rol) {
+        this.rol = rol;
+    }
+    
+    public ArrayList<String> getRoles(){
+        return roles;
+    }
 
     public void setRondas_jugadas(int rondas_jugadas) {
         this.rondas_jugadas = rondas_jugadas;
@@ -145,7 +199,7 @@ public class FormularioManagedBean {
     }
 
     public void login() throws SQLException {
-        Usuario usuarioIntento = new Usuario(nombre, clave);
+        Usuario usuarioIntento = new Usuario(nombre, clave, correo, rol_solicitado);
         int login = gestorBD.existeUsuario(usuarioIntento);
         switch (login) {
             case (0):
@@ -214,9 +268,12 @@ public class FormularioManagedBean {
 
     }
     
+    
+    
+    /*
     public void crear_usuario(){
-        Usuario nuevoUsuario = new Usuario(nombre, clave);
-        boolean creado = gestorBD.guardarUsuario(nuevoUsuario);
+        //Usuario nuevoUsuario = new Usuario(nombre, clave);
+        //boolean creado = gestorBD.guardarUsuario(nuevoUsuario);
         nombre = null;
         clave = null;
         if (creado) {
@@ -236,6 +293,44 @@ public class FormularioManagedBean {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+        
+    }
+*/
+    
+    public void carga_pagina_perfil_usuario(){
+        nombre_nuevo = null;
+        clave_nueva = null;
+        clave_nueva_confirmacion = null;
+        try {
+                FacesContext.getCurrentInstance()
+                        .getExternalContext()
+                        .redirect("perfil_usuario.xhtml");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+    }
+    
+    public void confirmar_cambios(){
+        if (nombre_nuevo.length() <= 20 && 
+                clave_nueva.length() <= 20 && 
+                        clave_nueva.equals(clave_nueva_confirmacion)){
+            try {
+                FacesContext.getCurrentInstance()
+                        .getExternalContext()
+                        .redirect("resultado_introducido.xhtml");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        
+    } else {
+           try {
+                FacesContext.getCurrentInstance()
+                        .getExternalContext()
+                        .redirect("resultado_no_introducido.xhtml");
+            } catch (IOException e) {
+                e.printStackTrace();
+            } 
         }
         
     }
