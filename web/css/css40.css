@@ -14,10 +14,7 @@
 }
 
 .bloque_baraja_2{
-    position: absolute;
-    top: 8%;
     left: 65%;
-    font-size: 130%;
 }
 
 .bloque_victorias_main{
@@ -27,21 +24,11 @@
 }
 
 .bloque_derrotas_main{
-    position: absolute;
-    top: 40%;
     left: 65%;
 }
 
 .bloque_victorias_side{
-    position: absolute;
     top: 60%;
-    left: 15%;
-}
-
-.bloque_derrotas_side{
-    position: absolute;
-    top: 60%;
-    left: 65%;
 }
 
 .boton_validar_resultado{

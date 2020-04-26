@@ -82,12 +82,22 @@ body{
     background-color: #134BEA;
 }
 
+.perfil_nombre{
+    position: fixed;
+    top: 2%;
+    left: 4%;
+    color: white;
+    font-size: x-large;
+    width: 9%;
+    text-align: center;
+}
+
 .boton_perfil{
     position: fixed;
-    top: 1%;
+    top: 6%;
     left: 4%;
-    width: 15%;
-    height: 9%;
+    width: 9%;
+    height: 5%;
     background-color: #134BEA;
 }
 

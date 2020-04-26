@@ -72,7 +72,7 @@
 
                 </div>
 
-                <div class="bloque_baraja_2">
+                <div class="bloque_baraja_1 bloque_baraja_2">
                     <h:outputLabel value="Baraja 2: "/>
                     <h:selectOneMenu class="menu_seleccion menu_seleccion_baraja" value="#{resultadoManagedBean.baraja2}">
                         <f:selectItems value="#{resultadoManagedBean.todas_las_barajas}" />
@@ -92,7 +92,7 @@
                     </h:selectOneMenu>
                 </div>
 
-                <div class="bloque_derrotas_main">
+                <div class="bloque_victorias_main bloque_derrotas_main">
                     <span>Victorias de main: </span>
                     <h:selectOneMenu class="menu_seleccion_numerico" value="#{resultadoManagedBean.main2}">
                         <f:selectItem itemValue="0" itemLabel="0"/>
@@ -104,7 +104,7 @@
                     </h:selectOneMenu>
                 </div>
 
-                <div class="bloque_victorias_side">
+                <div class="bloque_victorias_main bloque_victorias_side">
                     <span>Victorias de side: </span>
                     <h:selectOneMenu class="menu_seleccion_numerico" value="#{resultadoManagedBean.side1}">
                         <f:selectItem itemValue="0" itemLabel="0"/>
@@ -118,7 +118,7 @@
                     </h:selectOneMenu>
                 </div>
 
-                <div class="bloque_derrotas_side">
+                <div class="bloque_victorias_main bloque_derrotas_main bloque_victorias_side">
                     <span>Victorias de side: </span>
                     <h:selectOneMenu class="menu_seleccion_numerico" value="#{resultadoManagedBean.side2}">
                         <f:selectItem itemValue="0" itemLabel="0"/>

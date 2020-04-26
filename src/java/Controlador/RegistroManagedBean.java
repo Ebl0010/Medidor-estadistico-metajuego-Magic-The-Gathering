@@ -16,8 +16,6 @@ public class RegistroManagedBean {
     private String nombre, clave, clave_repetir, correo, rol_solicitado;
     private ArrayList<String> roles;
     private GestorBD gestorBD;
-    
-        
 
     public RegistroManagedBean() {
         gestorBD = new GestorBD();
@@ -34,16 +32,16 @@ public class RegistroManagedBean {
     public String getCorreo() {
         return correo;
     }
-    
-    public String getClave_repetir(){
+
+    public String getClave_repetir() {
         return clave_repetir;
     }
-    
-    public void setClave_repetir(String clave_repetir){
+
+    public void setClave_repetir(String clave_repetir) {
         this.clave_repetir = clave_repetir;
     }
 
-    public ArrayList<String> getRolesa() {
+    public ArrayList<String> getRoles() {
         return roles;
     }
 
@@ -62,7 +60,7 @@ public class RegistroManagedBean {
     public void setCorreo(String correo) {
         this.correo = correo;
     }
-    
+
     public void setRoles(ArrayList<String> roles) {
         this.roles = roles;
     }
@@ -71,36 +69,38 @@ public class RegistroManagedBean {
         this.rol_solicitado = rol_solicitado;
     }
 
-    
-   
-    public void carga_pagina_registro(){
-        roles = gestorBD.leeRoles();
+    public void carga_pagina_registro() {
         try {
-                FacesContext.getCurrentInstance()
-                        .getExternalContext()
-                        .redirect("agregar_usuario.xhtml");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-    }
-
-    
-    /*
-    public void guardarUsuario() {
-        Usuario usuarioNuevo = new Usuario(nombre, clave);
-        if (gestorBD.guardarUsuario(usuarioNuevo) ){
-            try {
-                FacesContext.getCurrentInstance()
-                        .getExternalContext()
-                        .redirect("index.xhtml");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        
+            FacesContext.getCurrentInstance()
+                    .getExternalContext()
+                    .redirect("");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
-*/
-    
-    
+
+    public void crearUsuario() {
+        String error = "ok";
+        if (nombre.length() > 20 || nombre.length() <= 6) {
+            error = "El nombre debe tener entre 6 y 20 caracteres.";
+        } else {
+            if (!clave.equals(clave_repetir)) {
+                error = "Las contraseñas no son iguales.";
+            } else {
+                if (clave.length() > 16 || clave.length() <= 6) {
+                    error = "La contraseña debe tener entre 6 y 16 caracteres";
+                }
+            }
+        }
+
+        if (error.equals("ok")) {
+            Usuario usuarioNuevo = new Usuario(nombre, clave, correo);
+            if (gestorBD.crearUsuario(usuarioNuevo)) {
+                
+
+            }
+        }
+
+    }
 
 }

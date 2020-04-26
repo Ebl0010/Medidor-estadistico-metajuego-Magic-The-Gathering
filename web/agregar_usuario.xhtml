@@ -23,35 +23,24 @@
 
             <span class="bloque_login_nick bloque_login_nick_registro">Nick: </span>
             <h:inputText class="bloque_login_nick_in bloque_login_nick_registro" 
-                         value="#{registroManagedBean.nombre}" />
+                         value="#{formularioManagedBean.nombre}" />
 
 
             <span class="bloque_login_pass bloque_login_pass_registro">Clave: </span>
             <h:inputSecret class="bloque_login_pass_in bloque_login_pass_registro" 
-                           value="#{registroManagedBean.clave}"/>
+                           value="#{formularioManagedBean.clave}"/>
 
             <span class="bloque_login_pass bloque_login_pass_repetir_registro">Repite la clave: </span>
             <h:inputSecret class="bloque_login_pass_in bloque_login_pass_repetir_registro" 
-                           value="#{registroManagedBean.clave_repetir}"/>
+                           value="#{formularioManagedBean.clave_repetir}"/>
 
             <span class="bloque_login_pass bloque_login_correo">Correo: </span>
             <h:inputText class="bloque_login_nick_in bloque_login_correo" 
-                         value="#{registroManagedBean.correo}"/>
+                         value="#{formularioManagedBean.correo}"/>
 
-            <span class="bloque_login_pass bloque_login_roles">Rol: </span>
-            
-            <h:selectOneMenu class="selector_roles" value="#{registroManagedBean.rol_solicitado}">
-                 <f:selectItems value="#{registroManagedBean.rolesa}"/>
-            </h:selectOneMenu>
-            
- 
-                    
-     
-
-            
 
             <h:commandButton class="boton_login boton_login_registro" value="Validar" type="submit"
-                             action="#{registroManagedBean.crear_usuario()}" />
+                             action="#{formularioManagedBean.crearUsuario()}" />
 
             <div class="barra_registrarse">
                 <h:commandButton class="boton_registrarse" value="Atrás" action="agregar_Usuario.xhtml" />

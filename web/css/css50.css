@@ -1,3 +1,17 @@
-.bloque_gestionar_nombre{
-    
+.cuadro_principal_grande{
+    height: 70%;
+}
+
+.bloque_cambiar_nombre{
+    position: absolute;
+    top: 20%;
+    left: 20%;
+}
+
+.bloque_cambiar_clave{
+    top: 40%;
+}
+
+.bloque_permisos{
+    left: 60%;
 }

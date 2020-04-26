@@ -14,20 +14,20 @@ import javax.faces.context.FacesContext;
 @SessionScoped
 public class FormularioManagedBean {
 
-    private String nombre, clave, correo, rol_solicitado, rol, nombre_nuevo, clave_nueva, clave_nueva_confirmacion;
+    private String nombre, clave, clave_repetir, correo, rol_solicitado, rol, nombre_nuevo, clave_nueva, clave_nueva_confirmacion;
     private int rondas_jugadas,
-                rondas_ganadas,
-                rondas_empatadas,
-                rondas_perdidas,
-                partidas_jugadas,
-                partidas_ganadas,
-                partidas_perdidas;
-                    
+            rondas_ganadas,
+            rondas_empatadas,
+            rondas_perdidas,
+            partidas_jugadas,
+            partidas_ganadas,
+            partidas_perdidas;
+
     private float porcentaje_rondas,
-                  porcentaje_partidas;
-    
+            porcentaje_partidas;
+
     private ArrayList<Baraja_de_usuario> lista_de_barajas_de_usuario;
-    
+
     private ArrayList<String> roles;
 
     private GestorBD gestorBD;
@@ -42,6 +42,10 @@ public class FormularioManagedBean {
 
     public String getClave() {
         return clave;
+    }
+
+    public String getClave_repetir() {
+        return clave_repetir;
     }
 
     public int getRondas_jugadas() {
@@ -91,28 +95,32 @@ public class FormularioManagedBean {
     public void setClave(String clave) {
         this.clave = clave;
     }
-    
-    public String getNombre_nuevo(){
+
+    public void setClave_repetir(String clave_repetir) {
+        this.clave_repetir = clave_repetir;
+    }
+
+    public String getNombre_nuevo() {
         return nombre_nuevo;
     }
-    
-    public void setNombre_nuevo(String nombre_nuevo){
+
+    public void setNombre_nuevo(String nombre_nuevo) {
         this.nombre_nuevo = nombre_nuevo;
     }
-    
-    public String getClave_nueva(){
+
+    public String getClave_nueva() {
         return clave_nueva;
     }
-    
-    public void setClave_nueva(String clave_nueva){
+
+    public void setClave_nueva(String clave_nueva) {
         this.clave_nueva = clave_nueva;
     }
-    
-    public String getClave_nueva_confirmacion(){
+
+    public String getClave_nueva_confirmacion() {
         return clave_nueva_confirmacion;
     }
-    
-    public void setClave_nueva_confirmacion(String clave_nueva_confirmacion){
+
+    public void setClave_nueva_confirmacion(String clave_nueva_confirmacion) {
         this.clave_nueva_confirmacion = clave_nueva_confirmacion;
     }
 
@@ -139,8 +147,8 @@ public class FormularioManagedBean {
     public void setRol(String rol) {
         this.rol = rol;
     }
-    
-    public ArrayList<String> getRoles(){
+
+    public ArrayList<String> getRoles() {
         return roles;
     }
 
@@ -184,38 +192,47 @@ public class FormularioManagedBean {
         this.lista_de_barajas_de_usuario = lista_de_barajas_de_usuario;
     }
 
-    public void setGestorBD(GestorBD gestorBD) {
-        this.gestorBD = gestorBD;
-    }
-
-    
-
     public ArrayList<Baraja_de_usuario> getLista_de_barajas_de_usuario() {
         return lista_de_barajas_de_usuario;
     }
 
-    public void setLista_de_barajas_de_ususario(ArrayList<Baraja_de_usuario> lista) {
-        lista_de_barajas_de_usuario = lista;
+    private String tratar_nombre(String nombre_bruto){
+        nombre_bruto = nombre_bruto.toLowerCase();
+        char[] nombre_array = nombre_bruto.toCharArray();
+        nombre_array[0] = Character.toUpperCase(nombre_array[0]);
+        return String.valueOf(nombre_array);
     }
-
-    public void login() throws SQLException {
-        Usuario usuarioIntento = new Usuario(nombre, clave, correo, rol_solicitado);
-        int login = gestorBD.existeUsuario(usuarioIntento);
-        switch (login) {
-            case (0):
-                nombre = null;
-                clave = null;
-                try {
-                    FacesContext.getCurrentInstance()
-                            .getExternalContext()
-                            .redirect("index.xhtml");
-                } catch (IOException e) {
-                    //e.printStackTrace();
+    
+    public void crearUsuario() {
+        String error = "ok";
+        if (nombre.length() > 20 || nombre.length() <= 6) {
+            error = "El nombre debe tener entre 6 y 20 caracteres.";
+        } else {
+            if (!clave.equals(clave_repetir)) {
+                error = "Las contraseñas no son iguales.";
+            } else {
+                if (clave.length() > 16 || clave.length() <= 6) {
+                    error = "La contraseña debe tener entre 6 y 16 caracteres";
                 }
-                break;
+            }
+        }
 
-            case (1):
-                cargarUsuario(gestorBD.cargarUsuario(usuarioIntento));
+        if (!"ok".equals(error)) {
+            nombre = null;
+            clave = null;
+            clave_repetir = null;
+            correo = null;
+            try {
+                FacesContext.getCurrentInstance()
+                        .getExternalContext()
+                        .redirect("agregar_usuario.xhtml");
+            } catch (IOException e) {
+                //e.printStackTrace();
+            }
+        } else {
+            nombre = tratar_nombre(nombre);
+            Usuario usuarioNuevo = new Usuario(nombre, clave, correo);
+            if (gestorBD.crearUsuario(usuarioNuevo)) {
                 try {
                     FacesContext.getCurrentInstance()
                             .getExternalContext()
@@ -223,20 +240,42 @@ public class FormularioManagedBean {
                 } catch (IOException e) {
                     //e.printStackTrace();
                 }
-                break;
 
-            case (2):
-                cargarUsuario(gestorBD.cargarUsuario(usuarioIntento));
-                try {
-                    FacesContext.getCurrentInstance()
-                            .getExternalContext()
-                            .redirect("homeUser.xhtml"); //AQUI TIENE QUE SER HOMESUPERUSER
-                } catch (IOException e) {
-                    //e.printStackTrace();
-                }
-                break;
+            }
         }
 
+    }
+
+    public void login() throws SQLException {
+        nombre = tratar_nombre(nombre);
+        Usuario usuarioIntento = new Usuario(nombre, clave);
+        int login = gestorBD.existeUsuario(usuarioIntento);
+        String error;
+
+        if (login == 1) {
+            try {
+                FacesContext.getCurrentInstance()
+                        .getExternalContext()
+                        .redirect("homeUser.xhtml");
+            } catch (IOException e) {
+                //e.printStackTrace();
+            }
+        } else {
+            if (login == -1) {
+                error = "Clave incorrecta";
+            } else {
+                if (login == 0) {
+                    error = "No existe ningún usuario con ese nombre";
+                }
+            }
+            try {
+                FacesContext.getCurrentInstance()
+                        .getExternalContext()
+                        .redirect("index.xhtml");
+            } catch (IOException e) {
+                //e.printStackTrace();
+            }
+        }
     }
 
     public void salir() {
@@ -251,7 +290,6 @@ public class FormularioManagedBean {
         }
     }
 
-    
     public void cargarUsuario(Usuario usuario) throws SQLException {
 
         rondas_ganadas = usuario.getRondas_ganadas();
@@ -263,20 +301,30 @@ public class FormularioManagedBean {
         partidas_jugadas = partidas_ganadas + partidas_perdidas;
         porcentaje_partidas = usuario.getPorcentaje_partidas();
         porcentaje_rondas = usuario.getPorcentaje_rondas();
-           
+
         lista_de_barajas_de_usuario = usuario.getLista_de_barajas_de_usuario();
 
     }
+
     
-    
-    
-    /*
-    public void crear_usuario(){
-        //Usuario nuevoUsuario = new Usuario(nombre, clave);
-        //boolean creado = gestorBD.guardarUsuario(nuevoUsuario);
-        nombre = null;
-        clave = null;
-        if (creado) {
+    public void carga_pagina_perfil_usuario() throws SQLException {
+        nombre_nuevo = null;
+        clave_nueva = null;
+        clave_nueva_confirmacion = null;
+        roles = gestorBD.carga_todos_los_roles();
+        try {
+            FacesContext.getCurrentInstance()
+                    .getExternalContext()
+                    .redirect("perfil_usuario.xhtml");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void confirmar_cambios() {
+        if (nombre_nuevo.length() <= 20
+                && clave_nueva.length() <= 20
+                && clave_nueva.equals(clave_nueva_confirmacion)) {
             try {
                 FacesContext.getCurrentInstance()
                         .getExternalContext()
@@ -294,45 +342,7 @@ public class FormularioManagedBean {
                 e.printStackTrace();
             }
         }
-        
-    }
-*/
-    
-    public void carga_pagina_perfil_usuario(){
-        nombre_nuevo = null;
-        clave_nueva = null;
-        clave_nueva_confirmacion = null;
-        try {
-                FacesContext.getCurrentInstance()
-                        .getExternalContext()
-                        .redirect("perfil_usuario.xhtml");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-    }
-    
-    public void confirmar_cambios(){
-        if (nombre_nuevo.length() <= 20 && 
-                clave_nueva.length() <= 20 && 
-                        clave_nueva.equals(clave_nueva_confirmacion)){
-            try {
-                FacesContext.getCurrentInstance()
-                        .getExternalContext()
-                        .redirect("resultado_introducido.xhtml");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        
-    } else {
-           try {
-                FacesContext.getCurrentInstance()
-                        .getExternalContext()
-                        .redirect("resultado_no_introducido.xhtml");
-            } catch (IOException e) {
-                e.printStackTrace();
-            } 
-        }
-        
+
     }
 
 }

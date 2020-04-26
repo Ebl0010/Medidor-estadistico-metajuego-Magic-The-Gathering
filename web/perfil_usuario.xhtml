@@ -11,6 +11,9 @@
 
         <link href="#{request.contextPath}/css/css40.css" 
               rel="stylesheet" type="text/css"/>
+        
+        <link href="#{request.contextPath}/css/css50.css" 
+              rel="stylesheet" type="text/css"/>
 
 
 
@@ -19,6 +22,17 @@
         <div class="barra_superior_home">
 
             <div class="titulo">MEDIDOR HEURISTICO DE METAJUEGO MAGIC</div>
+
+
+            <div class="perfil_nombre">#{formularioManagedBean.nombre}</div>
+            
+                <h:form>
+                    <h:commandButton class="boton_navegacion boton_perfil" 
+                                     value="Modificar perfil" type="submit"
+                                     action="#{formularioManagedBean.carga_pagina_perfil_usuario()}" />
+                </h:form>
+                  
+
 
             <h:form>
                 <h:commandButton class="boton_logout" value="Salir" type="submit"
@@ -62,30 +76,32 @@
         </div> 
 
 
-        <div class="borde_fondo cuadro_principal">
+        <div class="borde_fondo cuadro_principal cuadro_principal_grande">
 
             <h:form>
 
                 <div class="bloque_baraja_1">MODIFICAR DATOS DEL PERFIL</div>
 
-                <div class="bloque_victorias_main">
-                    <a>NOMBRE ACTUAL: <br/>#{formularioManagedBean.nombre}</a>
+                <div class="bloque_cambiar_nombre">
+                    <a>NOMBRE:<br/>#{formularioManagedBean.nombre}<br/></a>
+                        <h:inputText value="#{formularioManagedBean.nombre_nuevo}"/>
                 </div>
 
-                <div class="bloque_victorias_side">
-                    <a>modificar nombre: <br/></a> 
-                    <h:inputText value="#{formularioManagedBean.nombre_nuevo}" />
-                </div>
-
-
-                <div class="bloque_derrotas_main">
-                    <a>modificar contraseña: <br/></a> 
-                    <h:inputText value="#{formularioManagedBean.clave_nueva}" />
+                
+                <div class="bloque_cambiar_nombre bloque_cambiar_clave">
+                    <a>Contraseña nueva:<br/>
+                        <h:inputSecret value="#{formularioManagedBean.clave_nueva}"/><br/>
+                        Confirmar contraseña:<br/>
+                        <h:inputSecret value="#{formularioManagedBean.clave_nueva_confirmacion}"/>
+                    </a>
                 </div>
                 
-                <div class="bloque_derrotas_side">
-                    <a>confirmar contraseña: <br/></a> 
-                    <h:inputText value="#{formularioManagedBean.clave_nueva_confirmacion}" />
+                <div class="bloque_cambiar_nombre bloque_permisos">
+                    <h:outputLabel value="Tipo de cuenta: #{formularioManagedBean.rol}"/>
+                    <h:selectOneMenu class="menu_seleccion menu_seleccion_baraja" 
+                                     value="#{formularioManagedBean.rol_solicitado}">
+                        <f:selectItems value="#{formularioManagedBean.roles}" />
+                    </h:selectOneMenu>
                 </div>
 
                 <h:commandButton class="boton_navegacion boton_validar_resultado" value="Guardar cambios" type="submit"
