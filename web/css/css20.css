@@ -85,18 +85,17 @@ body{
 .perfil_nombre{
     position: fixed;
     top: 2%;
-    left: 4%;
+    left: 2%;
     color: white;
     font-size: x-large;
-    width: 9%;
-    text-align: center;
+    width: 25%;
 }
 
 .boton_perfil{
     position: fixed;
     top: 6%;
-    left: 4%;
-    width: 9%;
+    left: 2%;
+    width: 17%;
     height: 5%;
     background-color: #134BEA;
 }

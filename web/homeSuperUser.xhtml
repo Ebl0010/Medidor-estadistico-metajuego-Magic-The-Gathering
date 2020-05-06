@@ -4,110 +4,161 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
         <title>MEDIDOR ESTADISTICO/HOME</title>
-        
-        
-        <link href="#{request.contextPath}/css/css2.css" 
-                      rel="stylesheet" type="text/css"/>
+
+
+        <link href="#{request.contextPath}/css/css20.css" 
+              rel="stylesheet" type="text/css"/>
+
+        <link href="#{request.contextPath}/css/css21.css" 
+              rel="stylesheet" type="text/css"/>
+
         
     </h:head>
     <h:body>
         <div class="barra_superior_home">
-        
-            <!-- 
-        <h2 style="color: blue;">USUARIO: #{formularioManagedBean.nombre} </h2>
 
-        <h2 style="color: blue;">Privilegios de administrador</h2>
-        <div class="perfil_home">#{formularioManagedBean.nombre}</div>
-        -->
-        
-        <div class="titulo">MEDIDOR EURISTICO DE METAJUEGO MAGIC</div>
-        
-        <h:form>
-            <h:commandButton class="boton_logout" value="Salir" type="submit"
-                             action="#{formularioManagedBean.salir()}" />
-        </h:form>
-        
+            <div class="titulo">MEDIDOR HEURISTICO DE METAJUEGO MAGIC</div>
+
+
+            <div class="perfil_nombre">#{formularioManagedBean.nombre} [#{formularioManagedBean.rol}]</div>
+
+            <h:form>
+                <h:commandButton class="boton_navegacion boton_perfil" 
+                                 value="Modificar perfil" type="submit"
+                                 action="#{formularioManagedBean.carga_pagina_perfil_usuario()}" />
+            </h:form>
+
+
+
+            <h:form>
+                <h:commandButton class="boton_logout" value="Salir" type="submit"
+                                 action="#{formularioManagedBean.salir()}" />
+            </h:form>
+
         </div>
 
-        <table border="2" cellspacing="10" cellpadding="10">
+
+        <div class="menu_izquierda"> 
+
+            <h:form>
+                <h:commandButton class="boton_navegacion" value="Inicio" type="submit"
+                                 action="#{formularioManagedBean.login()}" />
+            </h:form>
+
+            <h:form>
+                <h:commandButton class="boton_navegacion boton_navegacion_2" value="Mis barajas" 
+                                 action="#{barajaManagedBean.carga_pagina_desglose_barajas_usuario()}" />
+            </h:form>
+
+            <h:form>
+                <h:commandButton class="boton_navegacion boton_navegacion_3" value="Introducir resultado" 
+                                 action="#{resultadoManagedBean.carga_pagina_introducir_resultado()}" />
+            </h:form>
+
+            <h:form>
+                <h:commandButton class="boton_navegacion boton_navegacion_4" value="Introducir torneo" 
+                                 action="#{resultadoManagedBean.introducirPrevioTorneo(formularioManagedBean.nombre)}" />
+            </h:form>
+
+            <h:form>
+                <h:commandButton class="boton_navegacion boton_navegacion_5" value="Ver torneos" 
+                                 action="#{historialTorneosManagedBean.cargaTorneosDeUsuario(formularioManagedBean.nombre)}" />
+            </h:form>
+
+            <h:form>
+                <h:commandButton class="boton_navegacion boton_navegacion_6" value="Estadisticas barajas" 
+                                 action="#{cuadroManagedBean.carga_pagina_estadisticas_barajas()}" />
+            </h:form>
+
+        </div>   
+
+
+        <table class="borde_fondo tabla_usuario_A" 
+               cellspacing="10" cellpadding="10">
+
             <tr>
-                <td><spam>PARTIDAS GANADAS</spam></td>
-                <td><spam>PARTIDAS PERDIDAS</spam></td>
-                <td><spam>RONDAS GANADAS</spam></td>
-                <td><spam>RONDAS EMPATADAS</spam></td>
-                <td><spam>RONDAS PERDIDAS</spam></td>
-                <td><spam>% PARTIDAS</spam></td>
-                <td><spam>% RONDAS</spam></td>
+                <td ><spam>% Rondas</spam></td>
+                <td class="celda_num_A"><spam>#{formularioManagedBean.porcentaje_rondas}</spam></td>
             </tr>
-            <tr>
-                <td align="center"><spam>#{formularioManagedBean.pg}</spam></td>
-                <td align="center"><spam>#{formularioManagedBean.pp}</spam></td>
-                <td align="center"><spam>#{formularioManagedBean.rg}</spam></td>
-                <td align="center"><spam>#{formularioManagedBean.re}</spam></td>
-                <td align="center"><spam>#{formularioManagedBean.rp}</spam></td>
-                <td align="center"><spam>#{formularioManagedBean.por_partidas}</spam></td>
-                <td align="center"><spam>#{formularioManagedBean.por_rondas}</spam></td>
+            <tr class="fila_tabla">
+                <td><spam>% Partidas</spam></td>
+                <td class="celda_num_A"><spam>#{formularioManagedBean.porcentaje_partidas}</spam></td>
+            </tr>
+            <tr class="fila_tabla">
+                <td><spam>Rondas ganadas</spam></td>
+                <td class="celda_num_A"><spam>#{formularioManagedBean.rondas_ganadas}</spam></td>
+            </tr>
+            <tr class="fila_tabla">
+                <td><spam>Rondas empatadas</spam></td>
+                <td class="celda_num_A"><spam>#{formularioManagedBean.rondas_empatadas}</spam></td>
+            </tr>
+            <tr class="fila_tabla">
+                <td><spam>Rondas perdidas</spam></td>
+                <td class="celda_num_A"><spam>#{formularioManagedBean.rondas_perdidas}</spam></td>
+            </tr>
+            <tr class="fila_tabla">
+                <td><spam>Partidas ganadas</spam></td>
+                <td class="celda_num_A"><spam>#{formularioManagedBean.partidas_ganadas}</spam></td>
+            </tr>
+            <tr class="fila_tabla">
+                <td><spam>Partidas perdidas</spam></td>
+                <td class="celda_num_A"><spam>#{formularioManagedBean.partidas_perdidas}</spam></td>
             </tr>
         </table>
-        
-        <br></br>
 
-        <h:form>
-            <h:dataTable value="#{formularioManagedBean.lista_de_barajas_de_usuario}"
-                         var="baraja" border="2"
-                         cellspacing="10" cellpadding="10">
+
+
+        <h:form >
+            <h:dataTable class="borde_fondo tabla_usuario_A tabla_usuario_B"
+                         value="#{formularioManagedBean.lista_de_barajas_de_usuario}"
+                         var="baraja"
+                         cellspacing="10" cellpadding="10" 
+                         columnClasses="celda_num_B" >
 
                 <h:column>
-                    <f:facet name="header">Baraja:</f:facet>
-                        #{baraja.nombre_baraja}
+                    <f:facet name="header">
+                        <spam class="texto_tabla_B">Baraja</spam>
+                    </f:facet>                   
+                    <div align="left"><h:outputText value="#{baraja.nombre_baraja}" /></div>
                 </h:column>
+
                 <h:column>
-                    <f:facet name="header">Total victorias:</f:facet>
-                        #{baraja.ganadas_total}
-                </h:column>
+                    <f:facet name="header">
+                        <spam class="texto_tabla_B">Rondas ganadas</spam>
+                    </f:facet>
+                    <div style="text-align: center">#{baraja.rondas_ganadas}</div>
+                </h:column>     
                 <h:column>
-                    <f:facet name="header">% victorias:</f:facet>
-                        #{baraja.porcentaje_total}
+                    <f:facet name="header">
+                        <spam class="texto_tabla_B">% Rondas</spam>
+                    </f:facet>
+                    <div style="text-align: center">#{baraja.porcentaje_rondas_ganadas}</div>
                 </h:column>
+
+                <h:column>
+                    <f:facet name="header">
+                        <spam class="texto_tabla_B">% Partidas</spam>
+                    </f:facet>
+                    <div style="text-align: center">#{baraja.porcentaje_partidas_ganadas_total}</div>
+                </h:column>
+
             </h:dataTable>            
-        </h:form>
+        </h:form> 
         
-        <h:form>
-            <h:commandButton value="Agregar nueva baraja" type="action"
-                             action="#{barajaManagedBean.carga_pagina_agregar_baraja_a_usuario()}" />
-        </h:form>
-        
-        <h:form>
-            <h:commandButton value="Desglose por barajas" action="desglose_barajas_usuario.xhtml" />
-        </h:form>
-        
-        <h:form>
-            <h:commandButton value="Ver historial de torneos" 
-                         action="#{historialTorneosManagedBean.cargaTorneosDeUsuario(formularioManagedBean.nombre)}" />
-        </h:form>     
-        
-        <h:form>
-        <h:commandButton value="Registrar torneo" 
-                             action="#{resultadoManagedBean.introducirPrevioTorneo(formularioManagedBean.nombre)}" />
-        </h:form>        
-        <h:form>
-            <h:commandButton value="Introducir resultado individual" 
-                             action="#{resultadoManagedBean.carga_pagina_introducir_resultado()}" />
-        </h:form>
-        
-         <h:form>
-            <h:commandButton value="Ver cuadro" type="submit"
-                             action="#{cuadroManagedBean.cargaCuadro()}" />
-        </h:form>
-        
+        <div class="borde_fondo tabla_usuario_A bloque_admin">
+            <h:form>
+                <h:commandButton class="boton_usuarios" 
+                                 value="Gestionar usuarios" type="submit"
+                                 action="#{formularioManagedBean.carga_pagina_perfil_usuario()}" />
+            </h:form>
+            
+            <h:form>
+                <h:commandButton class="boton_usuarios boton_barajas" 
+                                 value="Gestionar barajas" type="submit"
+                                 action="#{barajaManagedBean.carga_pagina_gestionar_barajas()}" />
+            </h:form>
+        </div> 
 
-        <h:form>
-            <h:commandButton value="Gestionar barajas" type="submit"
-                             action="#{barajaManagedBean.carga_pagina_gestionar_barajas()}" />
-        </h:form>
-
-
-        
 
     </h:body>
-</html>
+</html> 

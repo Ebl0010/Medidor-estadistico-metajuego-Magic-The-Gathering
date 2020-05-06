@@ -42,12 +42,20 @@ public class GestorBD {
         return roles;
     }
 
-    public boolean crearUsuario(Usuario usuario) {
+    public boolean crearUsuario(Usuario usuario) throws SQLException {
         boolean retorno = false;
+        boolean primero = false;
         try {
             ConectaBD conectaBD = new ConectaBD();
-
             con = conectaBD.getConnection();
+            st = con.prepareStatement("select * from usuarios");
+            
+            rs = st.executeQuery();
+            if (!rs.next()){
+                primero = true;
+            }
+            
+            
             st = con.prepareStatement("INSERT INTO usuarios VALUES"
                     + " (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             // 1, 2 y 3 nombre de usuario, clave y correo
@@ -73,8 +81,12 @@ public class GestorBD {
             if (retorno){
                 st = con.prepareStatement("insert into roles_usuarios values (?, ?, ?)");
                 st.setString(1, usuario.getNombre());
-                st.setInt(2, 0);
                 st.setInt(3, 0);
+                if (primero){
+                    st.setInt(2, 0);
+                } else {
+                    st.setInt(2, 1);
+                }
                 resultUpdate = st.executeUpdate();
                 
                 if (resultUpdate != 0){
@@ -84,11 +96,16 @@ public class GestorBD {
             }
 
             //con.commit();
+            return retorno;
 
         } catch (SQLException e) {
             return false;
+        } finally {
+            if (rs != null){rs.close();}
+            if (st != null){st.close();}
+            if (con != null){con.close();}
         }
-        return retorno;
+        
     }
 
  
@@ -192,7 +209,9 @@ public class GestorBD {
                                 + "where nombre_usuario = ?");
                 st.setString(1, usuario.getNombre());
                 rs = st.executeQuery();
-                devolver.setRol(rs.getString("descripcion"));
+                rs.next();
+                String rol = rs.getString("descripcion");
+                devolver.setRol(rol);
 
                 ArrayList<Baraja_de_usuario> barajas = leeBarajas_de_usuario(usuario);
                 devolver.setLista_de_barajas_de_usuario(barajas);
@@ -200,6 +219,7 @@ public class GestorBD {
 
         } catch (SQLException e) {
             //con.rollback();
+            e.printStackTrace();
         } finally {
             if (rs != null) {
                 rs.close();
@@ -300,23 +320,24 @@ public class GestorBD {
         try {
             ConectaBD conectaBD = new ConectaBD();
             con = conectaBD.getConnection();
-            st = con.prepareStatement("INSERT INTO barajas VALUES (?, ?, ?, ?, ?, ?, ?)");
+            st = con.prepareStatement("INSERT INTO barajas VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            // 1 y 2 nombre y tier
             st.setString(1, baraja.getNombre());
             st.setInt(2, baraja.getTier());
+            // 3, 4, 5 y 6 enteros
             st.setInt(3, 0);
             st.setInt(4, 0);
-            st.setFloat(5, 0);
-            st.setFloat(6, 0);
+            st.setInt(5, 0);
+            st.setInt(6, 0);
+            // 7, 8 y 9 decimales.
             st.setFloat(7, 0);
+            st.setFloat(8, 0);
+            st.setFloat(9, 0);
 
             resultUpdate = st.executeUpdate();
 
-            if (resultUpdate != 0) {
-                return true;
-            } else {
-                //System.out.println("no se ha agregado la baraja");
-                return false;
-            }
+            return resultUpdate == 1;
+            
         } catch (SQLException e) {
             //con.rollback();
             return false;
@@ -421,6 +442,25 @@ public class GestorBD {
             if (con != null) {
                 con.close();
             }
+        }
+    }
+    
+    public boolean borrarBaraja(String nombre_baraja) throws SQLException{
+        int rs;
+        try{
+            ConectaBD conectaBD = new ConectaBD();
+            con = conectaBD.getConnection();
+            st = con.prepareStatement("delete from barajas where nombre_baraja = ?");
+            st.setString(1, nombre_baraja);
+            rs = st.executeUpdate();
+            
+            return rs == 1;
+            
+        } catch (SQLException e){
+            return false;
+        } finally {
+            if (st != null){ st.close();}
+            if (con != null){ con.close();}
         }
     }
 

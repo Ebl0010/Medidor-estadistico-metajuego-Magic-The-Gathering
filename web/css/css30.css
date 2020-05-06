@@ -33,6 +33,12 @@
     height: 80%;
 }
 
+.boton_baraja_nueva{
+    left: 7%;
+    top: 52%;
+    height: 35%;
+}
+
 
 .tabla_barajas{
     position: absolute;

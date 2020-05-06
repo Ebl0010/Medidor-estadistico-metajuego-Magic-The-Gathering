@@ -18,5 +18,32 @@
     top: 20%;
 }
 
+.bloque_admin{
+    top: 70%;
+    height: 18%;
+}
+
+.boton_usuarios{
+    position: absolute;
+    top: 12%;
+    left: 10%;
+    width: 80%;
+    height: 30%;
+    background-color: #FFD700;
+    color: black;
+    border-radius: 1em;
+    border: 0;
+    transition: 0.5s;
+}
+
+.boton_usuarios:hover{
+    background-color: 	#DAA520;
+}
+
+.boton_barajas{
+    top: 55%;
+}
+
+
 
 

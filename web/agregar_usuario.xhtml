@@ -43,7 +43,8 @@
                              action="#{formularioManagedBean.crearUsuario()}" />
 
             <div class="barra_registrarse">
-                <h:commandButton class="boton_registrarse" value="Atrás" action="agregar_Usuario.xhtml" />
+                <h:commandButton class="boton_registrarse" value="Atrás" type="submit"
+                                 action="#{formularioManagedBean.volverAlIndex()}" />
             </div>
         </h:form>
 

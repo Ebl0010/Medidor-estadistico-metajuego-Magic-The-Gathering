@@ -1,13 +1,17 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
-        <title>MEDIDOR ESTADISTICO/MODIFICAR BARAJA</title>
+        <title>MEDIDOR ESTADISTICO/ADMINISTRACION BARAJAS</title>
 
         <link href="#{request.contextPath}/css/css20.css" 
               rel="stylesheet" type="text/css"/>
 
-        <link href="#{request.contextPath}/css/css40.css" 
+        <link href="#{request.contextPath}/css/css30.css" 
+              rel="stylesheet" type="text/css"/>
+        
+        <link href="#{request.contextPath}/css/bloques_charlie.css" 
               rel="stylesheet" type="text/css"/>
 
 
@@ -35,7 +39,7 @@
 
             <h:form>
                 <h:commandButton class="boton_navegacion boton_navegacion_2" value="Mis barajas" 
-                                 action="#{barajaManagedBean.carga_pagina_desglose_barajas_usuario()}" />
+                                 action="desglose_barajas_usuario.xhtml" />
             </h:form>
 
             <h:form>
@@ -52,7 +56,7 @@
                 <h:commandButton class="boton_navegacion boton_navegacion_5" value="Ver torneos" 
                                  action="#{historialTorneosManagedBean.cargaTorneosDeUsuario(formularioManagedBean.nombre)}" />
             </h:form>
-            
+
             <h:form>
                 <h:commandButton class="boton_navegacion boton_navegacion_6" value="Estadisticas barajas" 
                                  action="#{cuadroManagedBean.carga_pagina_estadisticas_barajas()}" />
@@ -60,53 +64,62 @@
 
         </div> 
 
-        <div class="borde_fondo cuadro_principal">
+        <h:dataTable class="cuadro_principal tabla_barajas anchura_reducida" 
+                     value="#{barajaManagedBean.barajas}"
+                     var="baraja" columnClasses="celda_num"
+                     cellspacing="10" cellpadding="10" >
 
-            <h:form>
+            <h:column>
+                <f:facet name="header">Baraja</f:facet>
+                    #{baraja.nombre}
+            </h:column>
+            <h:column>
+                <f:facet name="header" >Tier</f:facet>                    
+                <div style="text-align: center">#{baraja.tier}</div>
+            </h:column>
+           
+        </h:dataTable>
 
-                <div class="bloque_baraja_1">
-                    NOMBRE
-                </div>
 
-                <div class="bloque_baraja_1 bloque_baraja_2">
-                   TIER
-                </div>
+        <div class="borde_fondo cuadro_agregar_baraja anchura_reducida">
 
+            <div class="titulo_agregar_baraja">MODIFICAR O BORRAR UNA BARAJA</div>
+            
+            
+            <h:form class="agregar_baraja_2">
+                <h:selectOneMenu class="menu_seleccion" value="#{barajaManagedBean.modificar}">
+                    <f:selectItems value="#{barajaManagedBean.nombres_barajas}" />
+                </h:selectOneMenu>
+                
+                <h:commandButton class="boton_navegacion boton_agregar_baraja" 
+                                 value="Modificar" type="submit"
+                                 action="#{barajaManagedBean.carga_pagina_modificar_baraja()}" />
+                                
+            </h:form>
 
-                <div class="bloque_victorias_main" >
-                    #{barajaManagedBean.modificar}
-                </div>
-
-                <div class="bloque_victorias_main bloque_derrotas_main">
-                    #{barajaManagedBean.tier}
-                </div>
-
-                <div class="bloque_victorias_main bloque_victorias_side">
-                    <span>Nombre nuevo:<br/></span>
-                    <h:inputText value="#{barajaManagedBean.nuevo_nombre}"/>
-                </div>
-
-                <div class="bloque_victorias_main bloque_derrotas_main bloque_victorias_side">
-                    <span>Tier nuevo:</span>
-                    <h:selectOneMenu class="menu_seleccion_numerico" value="#{barajaManagedBean.tier_nuevo}">
+        </div>
+        
+        <h:form class="borde_fondo cuadro_aniadir_baraja">
+            <div class="titulo_agregar_baraja">AGREGAR BARAJA</div>
+            <spam class="nueva_baraja_nombre">Nombre de la baraja nueva:</spam>
+            <h:inputText class="nueva_baraja_nombre meter_nombre"
+                         value="#{barajaManagedBean.nuevo_nombre}"/>
+            <spam class="nueva_baraja_nombre nueva_baraja_tier">Tier:</spam>
+            <h:selectOneMenu class="nueva_baraja_tier menu_seleccion_tier" value="#{barajaManagedBean.tier_nuevo}">
                         <f:selectItem itemValue="0" itemLabel="0"/>
                         <f:selectItem itemValue="1" itemLabel="1"/>
                         <f:selectItem itemValue="2" itemLabel="2"/>
                         <f:selectItem itemValue="3" itemLabel="3"/>
                         <f:selectItem itemValue="4" itemLabel="4"/>
                     </h:selectOneMenu>
-                </div>
-                
-                <h:commandButton class="boton_navegacion boton_validar_resultado boton_eliminar" value="Eliminar" 
-                                 type="submit" action="#{barajaManagedBean.borrarBaraja()}" />
+            
+            <h:commandButton class="boton_navegacion boton_agregar_baraja_nueva" 
+                                 value="Agregar" type="submit"
+                                 action="#{barajaManagedBean.guardar_baraja()}" />
+            
+        </h:form>
 
-                <h:commandButton class="boton_navegacion boton_validar_resultado" value="Actualizar" 
-                                 type="submit" action="#{barajaManagedBean.actualizarBaraja()}" />
 
-
-            </h:form>
-
-        </div>
 
     </h:body>
 </html>

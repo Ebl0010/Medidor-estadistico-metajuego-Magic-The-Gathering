@@ -12,6 +12,7 @@
         <link href="#{request.contextPath}/css/css21.css" 
               rel="stylesheet" type="text/css"/>
 
+        
     </h:head>
     <h:body>
         <div class="barra_superior_home">
@@ -19,14 +20,14 @@
             <div class="titulo">MEDIDOR HEURISTICO DE METAJUEGO MAGIC</div>
 
 
-            <div class="perfil_nombre">#{formularioManagedBean.nombre}</div>
-            
-                <h:form>
-                    <h:commandButton class="boton_navegacion boton_perfil" 
-                                     value="Modificar perfil" type="submit"
-                                     action="#{formularioManagedBean.carga_pagina_perfil_usuario()}" />
-                </h:form>
-                  
+            <div class="perfil_nombre">#{formularioManagedBean.nombre} [#{formularioManagedBean.rol}]</div>
+
+            <h:form>
+                <h:commandButton class="boton_navegacion boton_perfil" 
+                                 value="Modificar perfil" type="submit"
+                                 action="#{formularioManagedBean.carga_pagina_perfil_usuario()}" />
+            </h:form>
+
 
 
             <h:form>
@@ -35,6 +36,7 @@
             </h:form>
 
         </div>
+
 
         <div class="menu_izquierda"> 
 
@@ -142,6 +144,8 @@
 
             </h:dataTable>            
         </h:form> 
+        
+        
 
 
     </h:body>

@@ -1,0 +1,41 @@
+.anchura_reducida{
+    width: 38%;
+}
+
+.cuadro_aniadir_baraja{
+    height: 33%;
+    left: 63%;
+    top: 16%;
+    width: 24%;
+}
+
+.nueva_baraja_nombre{
+    position: absolute;
+    top: 20%;
+    left: 15%;
+    width: 70%;
+}
+
+.meter_nombre{
+    top: 28%;
+    height: 10%;
+    width: 60%;
+}
+
+.nueva_baraja_tier{
+    top: 50%;
+    width: 15%;
+}
+
+.menu_seleccion_tier{
+    position: absolute;
+    left: 35%;
+    height: 10%;
+}
+
+.boton_agregar_baraja_nueva{
+    top: 85%;
+    left: 69%;
+    width: 23%;
+    height: 10%;
+}

@@ -79,6 +79,7 @@ public class RegistroManagedBean {
         }
     }
 
+    /*
     public void crearUsuario() {
         String error = "ok";
         if (nombre.length() > 20 || nombre.length() <= 6) {
@@ -101,6 +102,6 @@ public class RegistroManagedBean {
             }
         }
 
-    }
+    }*/
 
 }

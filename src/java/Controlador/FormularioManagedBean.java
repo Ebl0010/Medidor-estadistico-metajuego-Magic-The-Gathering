@@ -3,6 +3,7 @@ package Controlador;
 import Modelo.Baraja_de_usuario;
 import Modelo.GestorBD;
 import Modelo.Usuario;
+import Util.Herramientas;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -196,13 +197,6 @@ public class FormularioManagedBean {
         return lista_de_barajas_de_usuario;
     }
 
-    private String tratar_nombre(String nombre_bruto){
-        nombre_bruto = nombre_bruto.toLowerCase();
-        char[] nombre_array = nombre_bruto.toCharArray();
-        nombre_array[0] = Character.toUpperCase(nombre_array[0]);
-        return String.valueOf(nombre_array);
-    }
-    
     public void crearUsuario() {
         String error = "ok";
         if (nombre.length() > 20 || nombre.length() <= 6) {
@@ -230,9 +224,43 @@ public class FormularioManagedBean {
                 //e.printStackTrace();
             }
         } else {
-            nombre = tratar_nombre(nombre);
+            nombre = Herramientas.tratar_nombre(nombre);
             Usuario usuarioNuevo = new Usuario(nombre, clave, correo);
-            if (gestorBD.crearUsuario(usuarioNuevo)) {
+            try {
+                if (gestorBD.crearUsuario(usuarioNuevo)) {
+                    rol = "estandar";
+                    try {
+                        FacesContext.getCurrentInstance()
+                                .getExternalContext()
+                                .redirect("homeUser.xhtml");
+                    } catch (IOException e) {
+                        //e.printStackTrace();
+                    }
+                }
+            } catch (SQLException e) {
+                // HACER COSAS
+            }
+
+        }
+    }
+
+    public void login() throws SQLException {
+        nombre = Herramientas.tratar_nombre(nombre);
+        Usuario usuarioIntento = new Usuario(nombre, clave);
+        int login = gestorBD.existeUsuario(usuarioIntento);
+        String error;
+
+        if (login == 1) {
+            cargarUsuario(usuarioIntento);
+            if (rol.equals("administrador")) {
+                try {
+                    FacesContext.getCurrentInstance()
+                            .getExternalContext()
+                            .redirect("homeSuperUser.xhtml");
+                } catch (IOException e) {
+                    //e.printStackTrace();
+                }
+            } else {
                 try {
                     FacesContext.getCurrentInstance()
                             .getExternalContext()
@@ -240,26 +268,8 @@ public class FormularioManagedBean {
                 } catch (IOException e) {
                     //e.printStackTrace();
                 }
-
             }
-        }
 
-    }
-
-    public void login() throws SQLException {
-        nombre = tratar_nombre(nombre);
-        Usuario usuarioIntento = new Usuario(nombre, clave);
-        int login = gestorBD.existeUsuario(usuarioIntento);
-        String error;
-
-        if (login == 1) {
-            try {
-                FacesContext.getCurrentInstance()
-                        .getExternalContext()
-                        .redirect("homeUser.xhtml");
-            } catch (IOException e) {
-                //e.printStackTrace();
-            }
         } else {
             if (login == -1) {
                 error = "Clave incorrecta";
@@ -290,7 +300,9 @@ public class FormularioManagedBean {
         }
     }
 
-    public void cargarUsuario(Usuario usuario) throws SQLException {
+    public void cargarUsuario(Usuario intento) throws SQLException {
+
+        Usuario usuario = gestorBD.cargarUsuario(intento);
 
         rondas_ganadas = usuario.getRondas_ganadas();
         rondas_perdidas = usuario.getRondas_perdidas();
@@ -301,12 +313,12 @@ public class FormularioManagedBean {
         partidas_jugadas = partidas_ganadas + partidas_perdidas;
         porcentaje_partidas = usuario.getPorcentaje_partidas();
         porcentaje_rondas = usuario.getPorcentaje_rondas();
+        rol = usuario.getRol();
 
         lista_de_barajas_de_usuario = usuario.getLista_de_barajas_de_usuario();
 
     }
 
-    
     public void carga_pagina_perfil_usuario() throws SQLException {
         nombre_nuevo = null;
         clave_nueva = null;
@@ -343,6 +355,35 @@ public class FormularioManagedBean {
             }
         }
 
+    }
+
+    private void poner_a_cero() {
+        nombre = null;
+        clave = null;
+        clave_repetir = null;
+        correo = null;
+    }
+
+    public void volverAlIndex() {
+        poner_a_cero();
+        try {
+            FacesContext.getCurrentInstance()
+                    .getExternalContext()
+                    .redirect("index.xhtml");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void carga_pagina_registrarse() {
+        poner_a_cero();
+        try {
+            FacesContext.getCurrentInstance()
+                    .getExternalContext()
+                    .redirect("agregar_usuario.xhtml");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
