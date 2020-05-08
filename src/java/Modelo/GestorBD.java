@@ -49,13 +49,12 @@ public class GestorBD {
             ConectaBD conectaBD = new ConectaBD();
             con = conectaBD.getConnection();
             st = con.prepareStatement("select * from usuarios");
-            
+
             rs = st.executeQuery();
-            if (!rs.next()){
+            if (!rs.next()) {
                 primero = true;
             }
-            
-            
+
             st = con.prepareStatement("INSERT INTO usuarios VALUES"
                     + " (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             // 1, 2 y 3 nombre de usuario, clave y correo
@@ -73,26 +72,26 @@ public class GestorBD {
             st.setFloat(10, 0);
 
             resultUpdate = st.executeUpdate();
-            
-            if (resultUpdate != 0){
+
+            if (resultUpdate != 0) {
                 retorno = true;
             }
-            
-            if (retorno){
+
+            if (retorno) {
                 st = con.prepareStatement("insert into roles_usuarios values (?, ?, ?)");
                 st.setString(1, usuario.getNombre());
                 st.setInt(3, 0);
-                if (primero){
+                if (primero) {
                     st.setInt(2, 0);
                 } else {
                     st.setInt(2, 1);
                 }
                 resultUpdate = st.executeUpdate();
-                
-                if (resultUpdate != 0){
-                retorno = true;
+
+                if (resultUpdate != 0) {
+                    retorno = true;
                 }
-                
+
             }
 
             //con.commit();
@@ -101,17 +100,22 @@ public class GestorBD {
         } catch (SQLException e) {
             return false;
         } finally {
-            if (rs != null){rs.close();}
-            if (st != null){st.close();}
-            if (con != null){con.close();}
+            if (rs != null) {
+                rs.close();
+            }
+            if (st != null) {
+                st.close();
+            }
+            if (con != null) {
+                con.close();
+            }
         }
-        
+
     }
 
- 
     /*
     se comrpueba si el usuario existe. Devuelve 1 si existe, 0 si no existe y -1 si existe pero la clave esta mal.
-    */
+     */
     public int existeUsuario(Usuario usuario) throws SQLException {
         int devolver = 0;
         try {
@@ -124,7 +128,7 @@ public class GestorBD {
             if (!rs.next()) {
                 devolver = 0;
             } else {
-                if (rs.getString("clave").equals(usuario.getClave())){
+                if (rs.getString("clave").equals(usuario.getClave())) {
                     devolver = 1;
                 } else {
                     devolver = -1;
@@ -147,8 +151,8 @@ public class GestorBD {
         }
         return devolver;
     }
-    
-    public ArrayList<String> carga_todos_los_roles() throws SQLException{
+
+    public ArrayList<String> carga_todos_los_roles() throws SQLException {
         ArrayList<String> roles = new ArrayList<String>();
         String rol;
         try {
@@ -156,13 +160,13 @@ public class GestorBD {
             con = conectaBD.getConnection();
             st = con.prepareStatement("Select descripcion from roles");
             rs = st.executeQuery();
-            while (rs.next()){
+            while (rs.next()) {
                 rol = rs.getString("descripcion");
                 roles.add(rol);
-            }     
-            return roles;   
-            
-        } catch (SQLException e){
+            }
+            return roles;
+
+        } catch (SQLException e) {
             return null;
             //con.rollback();
         } finally {
@@ -177,7 +181,7 @@ public class GestorBD {
             }
 
         }
-        
+
     }
 
     public Usuario cargarUsuario(Usuario usuario) throws SQLException {
@@ -203,10 +207,11 @@ public class GestorBD {
                 devolver.setPartidas_perdidas(rs.getInt("partidas_perdidas"));
                 devolver.setPorcentaje_rondas(rs.getFloat("porcentaje_rondas"));
                 devolver.setPorcentaje_partidas(rs.getFloat("porcentaje_partidas"));
-                
+
                 st = con.prepareStatement(
                         "select descripcion from roles_usuarios left join roles on roles.idRol = roles_usuarios.idRol "
-                                + "where nombre_usuario = ?");
+                                + "where nombre_usuario = ?"
+                                + "and estado = 0 order by roles.idRol");
                 st.setString(1, usuario.getNombre());
                 rs = st.executeQuery();
                 rs.next();
@@ -337,7 +342,7 @@ public class GestorBD {
             resultUpdate = st.executeUpdate();
 
             return resultUpdate == 1;
-            
+
         } catch (SQLException e) {
             //con.rollback();
             return false;
@@ -444,23 +449,27 @@ public class GestorBD {
             }
         }
     }
-    
-    public boolean borrarBaraja(String nombre_baraja) throws SQLException{
+
+    public boolean borrarBaraja(String nombre_baraja) throws SQLException {
         int rs;
-        try{
+        try {
             ConectaBD conectaBD = new ConectaBD();
             con = conectaBD.getConnection();
             st = con.prepareStatement("delete from barajas where nombre_baraja = ?");
             st.setString(1, nombre_baraja);
             rs = st.executeUpdate();
-            
+
             return rs == 1;
-            
-        } catch (SQLException e){
+
+        } catch (SQLException e) {
             return false;
         } finally {
-            if (st != null){ st.close();}
-            if (con != null){ con.close();}
+            if (st != null) {
+                st.close();
+            }
+            if (con != null) {
+                con.close();
+            }
         }
     }
 
@@ -522,54 +531,54 @@ public class GestorBD {
             st = con.prepareStatement("Select * from barajas where nombre_baraja = ?");
             st.setString(1, baraja);
             rs = st.executeQuery();
-            
-            if(rs.next()){
+
+            if (rs.next()) {
                 main1N = rs.getInt("ganadas_main") + main1;
                 main2N = rs.getInt("perdidas_main") + main2;
                 side1N = rs.getInt("ganadas_side") + side1;
                 side2N = rs.getInt("perdidas_side") + side2;
-                
-                if (main1N == 0){
+
+                if (main1N == 0) {
                     porcentaje_main = 0;
                 } else {
-                    if (main2N == 0){
+                    if (main2N == 0) {
                         porcentaje_main = 99;
                     } else {
                         porcentaje_main = main1N * 100 / (main1N + main2N);
                     }
                 }
-                
-                if (side1N == 0){
+
+                if (side1N == 0) {
                     porcentaje_side = 0;
                 } else {
-                    if (side2N == 0){
+                    if (side2N == 0) {
                         porcentaje_side = 99;
                     } else {
                         porcentaje_side = side1N * 100 / (side1N + side2N);
                     }
                 }
-                
-                if (main1N + side1N == 0){
-                    porcentaje_total = 0;                 
+
+                if (main1N + side1N == 0) {
+                    porcentaje_total = 0;
                 } else {
-                    if (main2N + side2N == 0){
+                    if (main2N + side2N == 0) {
                         porcentaje_total = 99;
                     } else {
                         porcentaje_total = (main1N + side1N) * 100 / (main1N + main2N + side1N + side2N);
                     }
                 }
-                
+
                 st = con.prepareStatement(
                         "update barajas set "
-                            + "ganadas_main = ?, "
-                            + "perdidas_main = ?, "
-                            + "ganadas_side = ?, "
-                            + "perdidas_side = ?, "
-                            + "porcentaje_main = ?, "
-                            + "porcentaje_side = ?, "
-                            + "porcentaje_total = ? "
-                            + "where nombre_baraja = ?");
-                
+                        + "ganadas_main = ?, "
+                        + "perdidas_main = ?, "
+                        + "ganadas_side = ?, "
+                        + "perdidas_side = ?, "
+                        + "porcentaje_main = ?, "
+                        + "porcentaje_side = ?, "
+                        + "porcentaje_total = ? "
+                        + "where nombre_baraja = ?");
+
                 st.setInt(1, main1N);
                 st.setInt(2, main2N);
                 st.setInt(3, side1N);
@@ -578,18 +587,15 @@ public class GestorBD {
                 st.setFloat(6, porcentaje_side);
                 st.setFloat(7, porcentaje_total);
                 st.setString(8, baraja);
-                
-                
-                if (st.executeUpdate() != 1){
+
+                if (st.executeUpdate() != 1) {
                     control = false;
-                }        
-                
+                }
+
             } else {
                 control = false;
             }
-                    
-                    
-                    
+
         } catch (SQLException e) {
             //con.rollback();
             return false;
@@ -614,17 +620,16 @@ public class GestorBD {
 // NOTA: LAS BARAJAS DEBEN SER DISTINTAS se añaden resultados espejo, consideracion de diseño
         // deben venir ordenadas alfabéticamente para facilitar la busqueda
         float porcentaje_main, porcentaje_side, porcentaje_total;
-        
+
         boolean retorno = (!baraja1.equals(baraja2));
-        
+
         if (retorno) {
             retorno = introducirResultado_a_baraja(baraja1, main1, main2, side1, side2);
         }
-             
-        if(retorno){
+
+        if (retorno) {
             retorno = introducirResultado_a_baraja(baraja2, main2, main1, side2, side1);
         }
-        
 
         if (retorno) {
             try {
@@ -1244,4 +1249,154 @@ public class GestorBD {
         }
 
     }
+
+    public boolean actualizarUsuario(String nombre, String nombre_nuevo, String clave_nueva)
+            throws SQLException {
+        try {
+            ConectaBD conectaBD = new ConectaBD();
+            con = conectaBD.getConnection();
+            st = con.prepareStatement(
+                    "update usuarios set nombre_usuario = ?, "
+                    + "clave = ? where "
+                    + "nombre_usuario = ?");
+            st.setString(1, nombre_nuevo);
+            st.setString(2, clave_nueva);
+            st.setString(3, nombre);
+
+            return st.executeUpdate() == 1;
+
+        } catch (SQLException e) {
+            return false;
+        } finally {
+            if (st != null) {
+                st.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+    }
+
+    public boolean gestionar_peticion_rol(String nombre_usuario, String rol, String rol_solicitado)
+            throws SQLException {
+        boolean retorno = true;
+        int valor_rol_actual = 0, valor_rol_solicitado;
+
+        try {
+            ConectaBD conectaBD = new ConectaBD();
+            con = conectaBD.getConnection();
+            st = con.prepareStatement(
+                    "select idRol from roles where descripcion = ?");
+            st.setString(1, rol);
+            rs = st.executeQuery();
+            if (!rs.next()) {
+                retorno = false;
+            }
+            if (retorno) {
+                valor_rol_actual = rs.getInt("idRol");
+                st.setString(1, rol_solicitado);
+                rs = st.executeQuery();
+                if (!rs.next()) {
+                    retorno = false;
+                }
+            }
+
+            if (retorno) {
+                valor_rol_solicitado = rs.getInt("idRol");
+                if (valor_rol_actual <= valor_rol_solicitado) {
+                    retorno = false;
+                } else {
+                    st = con.prepareStatement("insert into roles_usuarios values (?, ?, 1)");
+                    st.setString(1, nombre_usuario);
+                    st.setInt(2, valor_rol_solicitado);
+                    retorno = (st.executeUpdate() == 1);
+                }
+            }
+
+            return retorno;
+
+        } catch (SQLException e) {
+            return false;
+        } finally {
+            if (st != null) {
+                st.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+    }
+    
+    public ArrayList<RolUsuario> lee_roles_usuarios(String nombre_usuario_actual) throws SQLException{
+        
+        ArrayList<RolUsuario> roles = new ArrayList<RolUsuario>();
+        RolUsuario rol;
+        
+        try {
+            ConectaBD conectaBD = new ConectaBD();
+            con = conectaBD.getConnection();
+            st = con.prepareStatement(
+                    "select * from roles_usuarios left join roles on roles_usuarios.idRol = roles.idRol "
+                            + "where roles_usuarios.idRol > 0 "
+                            + "and nombre_usuario != ? order by nombre_usuario;");
+            st.setString(1, nombre_usuario_actual);
+            rs = st.executeQuery();
+            
+            while (rs.next()){
+                rol = new RolUsuario();
+                rol.setNombre_usuario(rs.getString("nombre_usuario"));
+                rol.setIdRol(rs.getInt("idRol"));
+                rol.setDescripcion_rol(rs.getString("descripcion"));
+                rol.setEstado(rs.getInt("estado"));
+                roles.add(rol);
+            }
+            
+            return roles;
+            
+        } catch (SQLException e){
+            return roles;
+        } finally {
+            if (rs != null) {rs.close();}
+            if (st != null) {st.close();}
+            if (con != null){con.close();}
+        }
+    }
+    
+    /*
+    **********************************************************
+    TO DO
+    public ArrayList<RolUsuario> lee_peticiones_rol() throws SQLException{
+        
+        ArrayList<RolUsuario> peticiones = new ArrayList<RolUsuario>();
+        RolUsuario rol;
+        
+        try {
+            ConectaBD conectaBD = new ConectaBD();
+            con = conectaBD.getConnection();
+            st = con.prepareStatement(
+                    "select * from roles_usuarios left join roles on roles_usuarios.idRol = roles.idRol "
+                            + "where roles_usuarios.idRol = 1");
+            
+            rs = st.executeQuery();
+            
+            while (rs.next()){
+                rol = new RolUsuario();
+                rol.setNombre_usuario(rs.getString("nombre_usuario"));
+                rol.setIdRol(rs.getInt("idRol"));
+                rol.setDescripcion_rol(rs.getString("descripcion"));
+                rol.setEstado(rs.getInt("estado"));
+                roles.add(rol);
+            }
+            
+            return roles;
+            
+        } catch (SQLException e){
+            return roles;
+        } finally {
+            if (rs != null) {rs.close();}
+            if (st != null) {st.close();}
+            if (con != null){con.close();}
+        }
+    }
+*/
 }

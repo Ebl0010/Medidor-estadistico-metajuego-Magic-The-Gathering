@@ -324,6 +324,8 @@ public class FormularioManagedBean {
         clave_nueva = null;
         clave_nueva_confirmacion = null;
         roles = gestorBD.carga_todos_los_roles();
+        roles.remove(rol);
+        roles.add(0, rol);
         try {
             FacesContext.getCurrentInstance()
                     .getExternalContext()
@@ -333,10 +335,51 @@ public class FormularioManagedBean {
         }
     }
 
-    public void confirmar_cambios() {
-        if (nombre_nuevo.length() <= 20
-                && clave_nueva.length() <= 20
-                && clave_nueva.equals(clave_nueva_confirmacion)) {
+    public void confirmar_cambios() throws SQLException {
+        String error = "ok";
+        if (nombre_nuevo.length() == 0) {
+            nombre_nuevo = nombre;
+        } else {
+            if (nombre_nuevo.length() > 20) {
+                error = "nombre_largo";
+            } else {
+                nombre_nuevo = Herramientas.tratar_nombre(nombre_nuevo);
+            }
+        }
+        if (error.equals("ok")
+                && clave_nueva.length() == 0
+                && clave_nueva_confirmacion.length() == 0) {
+
+            clave_nueva = clave;
+        } else {
+            if (clave_nueva.length() > 16) {
+                error = "clave_larga";
+            } else {
+                if (!clave_nueva.equals(clave_nueva_confirmacion)) {
+                    error = "claves_distintas";
+                }
+            }
+        }
+
+        if (error.equals("ok")) {
+            if (!nombre.equals(nombre_nuevo) || !clave.equals(clave_nueva)) {
+                if (!gestorBD.actualizarUsuario(nombre, nombre_nuevo, clave_nueva)) {
+                    error = "error_base";
+                }
+            }
+
+            if (error.equals("ok") && !rol.equals(rol_solicitado)) {
+                //tengo que usaar nomre_nuevo, si no ha cambiado arriba es nombre, pero
+                //si arriba ha cambiado, va a buscarlo en la tabla usuarios con el nombre "viejo"
+                if (!gestorBD.gestionar_peticion_rol(nombre_nuevo, rol, rol_solicitado)) {
+                    error = "error_rol";
+                }
+            }
+        }
+
+        if (error.equals("ok")) {
+            nombre = nombre_nuevo;
+            clave = clave_nueva;
             try {
                 FacesContext.getCurrentInstance()
                         .getExternalContext()
@@ -344,24 +387,21 @@ public class FormularioManagedBean {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
         } else {
             try {
                 FacesContext.getCurrentInstance()
                         .getExternalContext()
-                        .redirect("resultado_no_introducido.xhtml");
+                        .redirect("perfil_usuario.xhtml");
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-
     }
 
     private void poner_a_cero() {
         nombre = null;
         clave = null;
         clave_repetir = null;
-        correo = null;
     }
 
     public void volverAlIndex() {
@@ -383,6 +423,13 @@ public class FormularioManagedBean {
                     .redirect("agregar_usuario.xhtml");
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void lanza_error(String mensaje) {
+        switch (mensaje) {
+            case ("nombre_largo"):
+
         }
     }
 

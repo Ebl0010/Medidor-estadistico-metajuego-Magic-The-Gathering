@@ -14,6 +14,9 @@
         
         <link href="#{request.contextPath}/css/css50.css" 
               rel="stylesheet" type="text/css"/>
+        
+        <link href="#{request.contextPath}/css/estilo_hotel.css" 
+              rel="stylesheet" type="text/css"/>
 
 
 
@@ -98,7 +101,7 @@
                 
                 <div class="bloque_cambiar_nombre bloque_permisos">
                     <h:outputLabel value="Tipo de cuenta: #{formularioManagedBean.rol}"/>
-                    <h:selectOneMenu class="menu_seleccion menu_seleccion_baraja" 
+                    <h:selectOneMenu class="menu_seleccion menu_seleccion_baraja menu_seleccion_pequenio" 
                                      value="#{formularioManagedBean.rol_solicitado}">
                         <f:selectItems value="#{formularioManagedBean.roles}" />
                     </h:selectOneMenu>
