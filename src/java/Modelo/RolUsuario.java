@@ -73,6 +73,6 @@ public class RolUsuario {
             case(2): s_estado = "Denegado"; break;           
         }
     }
-            
     
+                
 }

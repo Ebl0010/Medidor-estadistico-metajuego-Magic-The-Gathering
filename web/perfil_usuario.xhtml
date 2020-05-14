@@ -11,10 +11,10 @@
 
         <link href="#{request.contextPath}/css/css40.css" 
               rel="stylesheet" type="text/css"/>
-        
+
         <link href="#{request.contextPath}/css/css50.css" 
               rel="stylesheet" type="text/css"/>
-        
+
         <link href="#{request.contextPath}/css/estilo_hotel.css" 
               rel="stylesheet" type="text/css"/>
 
@@ -27,14 +27,14 @@
             <div class="titulo">MEDIDOR HEURISTICO DE METAJUEGO MAGIC</div>
 
 
-            <div class="perfil_nombre">#{formularioManagedBean.nombre}</div>
-            
-                <h:form>
-                    <h:commandButton class="boton_navegacion boton_perfil" 
-                                     value="Modificar perfil" type="submit"
-                                     action="#{formularioManagedBean.carga_pagina_perfil_usuario()}" />
-                </h:form>
-                  
+            <div class="perfil_nombre">#{formularioManagedBean.nombre} [#{formularioManagedBean.rol}]</div>
+
+            <h:form>
+                <h:commandButton class="boton_navegacion boton_perfil" 
+                                 value="Modificar perfil" type="submit"
+                                 action="#{formularioManagedBean.carga_pagina_perfil_usuario()}" />
+            </h:form>
+
 
 
             <h:form>
@@ -87,10 +87,10 @@
 
                 <div class="bloque_cambiar_nombre">
                     <a>NOMBRE:<br/>#{formularioManagedBean.nombre}<br/></a>
-                        <h:inputText value="#{formularioManagedBean.nombre_nuevo}"/>
+                    <h:inputText value="#{formularioManagedBean.nombre_nuevo}"/>
                 </div>
 
-                
+
                 <div class="bloque_cambiar_nombre bloque_cambiar_clave">
                     <a>Contraseña nueva:<br/>
                         <h:inputSecret value="#{formularioManagedBean.clave_nueva}"/><br/>
@@ -98,13 +98,29 @@
                         <h:inputSecret value="#{formularioManagedBean.clave_nueva_confirmacion}"/>
                     </a>
                 </div>
-                
+
                 <div class="bloque_cambiar_nombre bloque_permisos">
                     <h:outputLabel value="Tipo de cuenta: #{formularioManagedBean.rol}"/>
                     <h:selectOneMenu class="menu_seleccion menu_seleccion_baraja menu_seleccion_pequenio" 
                                      value="#{formularioManagedBean.rol_solicitado}">
                         <f:selectItems value="#{formularioManagedBean.roles}" />
                     </h:selectOneMenu>
+                </div>
+
+                <div class="tabla_solicitudes_rol">
+                    <h:dataTable value="#{formularioManagedBean.solicitudes}"
+                                 var="solicitud" columnClasses="celda_num"
+                                 cellspacing="10" cellpadding="10">
+
+                        <h:column>
+                            <f:facet name="header" >Cuenta solicitada</f:facet>                    
+                            <div style="text-align: center">#{solicitud.descripcion_rol}</div>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header" >Estado solicitud</f:facet>                    
+                            <div style="text-align: center">#{solicitud.s_estado}</div>
+                        </h:column>
+                    </h:dataTable>
                 </div>
 
                 <h:commandButton class="boton_navegacion boton_validar_resultado" value="Guardar cambios" type="submit"

@@ -1,9 +1,7 @@
 package Controlador;
 
-import Modelo.Baraja;
 import Modelo.GestorBD;
 import Modelo.RolUsuario;
-import Util.Herramientas;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -37,15 +35,10 @@ public class GestionarUsuariosManagedBean {
         return peticiones;
     }
     
-    public void leeRoles_y_peticiones() throws SQLException{
-        roles = gestorBD.lee_roles_usuarios(nombre_usuario_actual);
-        peticiones = gestorBD.lee_peticiones_rol();
-    }
-    
-    
-    
+        
+   
     public void carga_pagina_gestionar_usuarios(String nombre_usuario_actual) throws SQLException{
-        leeRoles_y_peticiones();
+        roles = gestorBD.lee_peticiones_roles(nombre_usuario_actual);
         
         for (int i=0; i<roles.size(); i++){
             RolUsuario r = roles.get(i);
@@ -58,5 +51,12 @@ public class GestionarUsuariosManagedBean {
                 } catch (IOException e) {
                     //e.printStackTrace();
                 }
+    }
+    
+    public void guardarCambios(String nombre_usuario_actual) throws SQLException{
+        if (gestorBD.actualizar_roles(roles)){
+            roles.clear();
+            carga_pagina_gestionar_usuarios(nombre_usuario_actual);
+        }
     }
 }

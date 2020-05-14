@@ -210,8 +210,8 @@ public class GestorBD {
 
                 st = con.prepareStatement(
                         "select descripcion from roles_usuarios left join roles on roles.idRol = roles_usuarios.idRol "
-                                + "where nombre_usuario = ?"
-                                + "and estado = 0 order by roles.idRol");
+                        + "where nombre_usuario = ?"
+                        + "and estado = 0 order by roles.idRol");
                 st.setString(1, usuario.getNombre());
                 rs = st.executeQuery();
                 rs.next();
@@ -1326,77 +1326,125 @@ public class GestorBD {
             }
         }
     }
-    
-    public ArrayList<RolUsuario> lee_roles_usuarios(String nombre_usuario_actual) throws SQLException{
-        
-        ArrayList<RolUsuario> roles = new ArrayList<RolUsuario>();
+
+    public ArrayList<RolUsuario> lee_peticiones_roles(String nombre_usuario_actual) throws SQLException {
+
+        ArrayList<RolUsuario> roles = new ArrayList<>();
         RolUsuario rol;
-        
+
         try {
             ConectaBD conectaBD = new ConectaBD();
             con = conectaBD.getConnection();
             st = con.prepareStatement(
                     "select * from roles_usuarios left join roles on roles_usuarios.idRol = roles.idRol "
-                            + "where roles_usuarios.idRol > 0 "
-                            + "and nombre_usuario != ? order by nombre_usuario;");
+                    + "where estado = 1 or estado = 2 and nombre_usuario != ? "
+                    + "order by estado;");
             st.setString(1, nombre_usuario_actual);
             rs = st.executeQuery();
-            
-            while (rs.next()){
+
+            while (rs.next()) {
                 rol = new RolUsuario();
                 rol.setNombre_usuario(rs.getString("nombre_usuario"));
                 rol.setIdRol(rs.getInt("idRol"));
                 rol.setDescripcion_rol(rs.getString("descripcion"));
-                rol.setEstado(rs.getInt("estado"));
                 roles.add(rol);
             }
-            
+
             return roles;
-            
-        } catch (SQLException e){
+
+        } catch (SQLException e) {
             return roles;
         } finally {
-            if (rs != null) {rs.close();}
-            if (st != null) {st.close();}
-            if (con != null){con.close();}
+            if (rs != null) {
+                rs.close();
+            }
+            if (st != null) {
+                st.close();
+            }
+            if (con != null) {
+                con.close();
+            }
         }
     }
-    
-    /*
-    **********************************************************
-    TO DO
-    public ArrayList<RolUsuario> lee_peticiones_rol() throws SQLException{
-        
-        ArrayList<RolUsuario> peticiones = new ArrayList<RolUsuario>();
+
+    public boolean actualizar_roles(ArrayList<RolUsuario> roles) throws SQLException {
+
+        boolean control = true;
+        PreparedStatement stBorrar;
+
+        try {
+
+            ConectaBD conectaBD = new ConectaBD();
+            con = conectaBD.getConnection();
+            st = con.prepareStatement(
+                    "update roles_usuarios set estado = ? where nombre_usuario = ? and idRol = 0");
+            stBorrar = con.prepareStatement(
+                    "delete from roles_usuarios where idRol > 0 and nombre_usuario = ?");
+
+            for (RolUsuario rol : roles) {
+                if (control) {
+                    if (rol.getS_estado().equals("Conceder")) {
+                        st.setInt(1, 0);
+                        st.setString(2, rol.getNombre_usuario());
+                        control = st.executeUpdate() == 1;
+                        stBorrar.setString(1, rol.getNombre_usuario());
+                        control = stBorrar.executeUpdate() == 1;
+                    } else {
+                        if (rol.getS_estado().equals("Denegar")) {
+                            st.setInt(1, 2);
+                            st.setString(2, rol.getNombre_usuario());
+                            control = st.executeUpdate() == 1;
+                        }
+                    }
+
+                }
+
+            }
+
+            return control;
+        } catch (SQLException e) {
+            return false;
+        } finally {
+            if (st != null) {
+                st.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+    }
+
+    public ArrayList<RolUsuario> lee_solicitudes(String nombre_usuario)
+            throws SQLException {
         RolUsuario rol;
-        
+        ArrayList<RolUsuario> solicitudes = new ArrayList<RolUsuario>();
         try {
             ConectaBD conectaBD = new ConectaBD();
             con = conectaBD.getConnection();
             st = con.prepareStatement(
-                    "select * from roles_usuarios left join roles on roles_usuarios.idRol = roles.idRol "
-                            + "where roles_usuarios.idRol = 1");
-            
+                    "select descripcion, estado " +
+                    "from roles_usuarios left join roles on roles_usuarios.idRol = roles.idRol " +
+                    "where nombre_usuario = ? and estado = 1 or estado = 2");
+            st.setString(1, nombre_usuario);
             rs = st.executeQuery();
-            
             while (rs.next()){
                 rol = new RolUsuario();
-                rol.setNombre_usuario(rs.getString("nombre_usuario"));
-                rol.setIdRol(rs.getInt("idRol"));
-                rol.setDescripcion_rol(rs.getString("descripcion"));
                 rol.setEstado(rs.getInt("estado"));
-                roles.add(rol);
+                rol.setDescripcion_rol(rs.getString("descripcion"));
+                rol.traducirEstado();
+                solicitudes.add(rol);
             }
-            
-            return roles;
-            
-        } catch (SQLException e){
-            return roles;
+            return solicitudes;
+        } catch (SQLException e) {
+            return solicitudes;
         } finally {
-            if (rs != null) {rs.close();}
-            if (st != null) {st.close();}
-            if (con != null){con.close();}
+            if (st != null) {
+                st.close();
+            }
+            if (con != null) {
+                con.close();
+            }
         }
     }
-*/
+
 }

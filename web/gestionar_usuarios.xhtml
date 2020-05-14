@@ -10,22 +10,14 @@
 
         <link href="#{request.contextPath}/css/css30.css" 
               rel="stylesheet" type="text/css"/>
+        
+        <link href="#{request.contextPath}/css/css24.css" 
+              rel="stylesheet" type="text/css"/>
 
 
     </h:head>
     <h:body>
-        <div class="barra_superior_home">
 
-            <div class="titulo">MEDIDOR HEURISTICO DE METAJUEGO MAGIC</div>
-
-            <div class="perfil_home">#{formularioManagedBean.nombre}</div>
-
-            <h:form>
-                <h:commandButton class="boton_logout" value="Salir" type="submit"
-                                 action="#{formularioManagedBean.salir()}" />
-            </h:form>
-
-        </div>
 
         <div class="menu_izquierda"> 
 
@@ -60,36 +52,67 @@
             </h:form>
 
         </div> 
-
-        <h:form>
-        <h:dataTable class="cuadro_principal tabla_barajas" 
-                     value="#{gestionarUsuariosManagedBean.roles}"
-                     var="rolUsuario" columnClasses="celda_num"
-                     cellspacing="10" cellpadding="10" >
-
-            <h:column>
-                <f:facet name="header">Usuario</f:facet>
-                    #{rolUsuario.nombre_usuario}
-            </h:column>
-            <h:column>
-                <f:facet name="header" >Tipo de cuenta</f:facet>                    
-                <div style="text-align: center">#{rolUsuario.descripcion_rol}</div>
-            </h:column>
-            <h:column>
-                <f:facet name="header">Estado</f:facet>
-                <h:selectOneMenu class="menu_seleccion" value="#{rolUsuario.s_estado}">
-                    <f:selectItems value="#{barajaManagedBean.nombres_barajas}" />
-                </h:selectOneMenu>
-            </h:column>
-        </h:dataTale>
-        </h:form>
-
-
+        
         <div class="borde_fondo cuadro_agregar_baraja">
 
             <div class="titulo_agregar_baraja">GESTIONAR TIPOS DE CUENTAS</div>          
 
         </div> 
+
+        <div class="barra_superior_home">
+
+            <div class="titulo">MEDIDOR HEURISTICO DE METAJUEGO MAGIC</div>
+
+            <div class="perfil_home">#{formularioManagedBean.nombre}</div>
+
+            <h:form>
+                <h:commandButton class="boton_logout" value="Salir" type="submit"
+                                 action="#{formularioManagedBean.salir()}" />
+            </h:form>
+
+        </div>
+
+        <h:form>
+
+            <h:dataTable class="cuadro_principal tabla_barajas" 
+                         value="#{gestionarUsuariosManagedBean.roles}"
+                         var="rolUsuario" columnClasses="celda_num"
+                         cellspacing="10" cellpadding="10">
+
+                <h:column>
+                    <f:facet name="header">Usuario</f:facet>
+                        #{rolUsuario.nombre_usuario}
+                </h:column>
+                <h:column>
+                    <f:facet name="header" >Cuenta solicitada</f:facet>                    
+                    <div style="text-align: center">#{rolUsuario.descripcion_rol}</div>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Conceder / Denegar</f:facet>
+                    <div style="text-align: center">
+                        <h:selectOneMenu class="menu_seleccion menu_seleccion_grande" 
+                                         value="#{rolUsuario.s_estado}">
+                            <f:selectItem itemValue="Esperar" itemLabel="Esperar"/>
+                            <f:selectItem itemValue="Denegar" itemLabel="Denegar"/>
+                            <f:selectItem itemValue="Conceder" itemLabel="Conceder"/>
+
+                        </h:selectOneMenu>
+                    </div>
+                </h:column>
+
+
+            </h:dataTable>
+
+            <h:commandButton class="boton_navegacion actualizar_roles" value="Guardar cambios" 
+                             type="submit"
+                             action="#{gestionarUsuariosManagedBean.guardarCambios(formularioManagedBean.nombre)}" />
+
+
+
+        </h:form>
+
+
+        
 
 
 

@@ -2,6 +2,7 @@ package Controlador;
 
 import Modelo.Baraja_de_usuario;
 import Modelo.GestorBD;
+import Modelo.RolUsuario;
 import Modelo.Usuario;
 import Util.Herramientas;
 import java.io.IOException;
@@ -30,7 +31,8 @@ public class FormularioManagedBean {
     private ArrayList<Baraja_de_usuario> lista_de_barajas_de_usuario;
 
     private ArrayList<String> roles;
-
+    private ArrayList<RolUsuario> solicitudes;
+    
     private GestorBD gestorBD;
 
     public FormularioManagedBean() {
@@ -197,15 +199,21 @@ public class FormularioManagedBean {
         return lista_de_barajas_de_usuario;
     }
 
+    public ArrayList<RolUsuario> getSolicitudes() {
+        return solicitudes;
+    }
+    
+    
+    
     public void crearUsuario() {
         String error = "ok";
-        if (nombre.length() > 20 || nombre.length() <= 6) {
+        if (nombre.length() > 20 || nombre.length() < 6) {
             error = "El nombre debe tener entre 6 y 20 caracteres.";
         } else {
             if (!clave.equals(clave_repetir)) {
                 error = "Las contraseñas no son iguales.";
             } else {
-                if (clave.length() > 16 || clave.length() <= 6) {
+                if (clave.length() > 16 || clave.length() < 6) {
                     error = "La contraseña debe tener entre 6 y 16 caracteres";
                 }
             }
@@ -326,6 +334,7 @@ public class FormularioManagedBean {
         roles = gestorBD.carga_todos_los_roles();
         roles.remove(rol);
         roles.add(0, rol);
+        solicitudes = gestorBD.lee_solicitudes(nombre);
         try {
             FacesContext.getCurrentInstance()
                     .getExternalContext()
@@ -340,8 +349,8 @@ public class FormularioManagedBean {
         if (nombre_nuevo.length() == 0) {
             nombre_nuevo = nombre;
         } else {
-            if (nombre_nuevo.length() > 20) {
-                error = "nombre_largo";
+            if (nombre_nuevo.length() > 20 || nombre_nuevo.length() > 6) {
+                error = "nombre_largo_o_corto";
             } else {
                 nombre_nuevo = Herramientas.tratar_nombre(nombre_nuevo);
             }
@@ -416,7 +425,11 @@ public class FormularioManagedBean {
     }
 
     public void carga_pagina_registrarse() {
+        //poner a 0 no cambia todo porque esta ligado a modificar el perfil
         poner_a_cero();
+        correo = null;
+        rol = null;
+        
         try {
             FacesContext.getCurrentInstance()
                     .getExternalContext()

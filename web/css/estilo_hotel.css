@@ -1,3 +1,6 @@
-.solicitudes_usuario{
-    
+.tabla_solicitudes_rol{
+    position: absolute;
+    left: 55%;
+    top: 35%;
+    width: 30%;
 }

@@ -1,0 +1,16 @@
+.cuadro_con_tabla_dentro{
+    position: absolute;
+    top: 20%;
+    left: 20%;
+    width: 80%;
+    height: 80%;
+}
+
+.actualizar_roles{
+    position: absolute;
+    top: 22%;
+    left: 50%;
+    height: 4%;
+    width: 10%;
+    
+}
