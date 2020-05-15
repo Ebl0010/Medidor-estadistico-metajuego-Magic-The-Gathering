@@ -13,52 +13,7 @@
 
     </h:head>
     <h:body>
-        <div class="barra_superior_home">
-
-            <div class="titulo">MEDIDOR HEURISTICO DE METAJUEGO MAGIC</div>
-
-            <div class="perfil_home">#{formularioManagedBean.nombre}</div>
-
-            <h:form>
-                <h:commandButton class="boton_logout" value="Salir" type="submit"
-                                 action="#{formularioManagedBean.salir()}" />
-            </h:form>
-
-        </div>
-
-        <div class="menu_izquierda"> 
-
-            <h:form>
-                <h:commandButton class="boton_navegacion" value="Inicio" type="submit"
-                                 action="#{formularioManagedBean.login()}" />
-            </h:form>
-
-            <h:form>
-                <h:commandButton class="boton_navegacion boton_navegacion_2" value="Mis barajas" 
-                                 action="#{barajaManagedBean.carga_pagina_desglose_barajas_usuario()}" />
-            </h:form>
-
-            <h:form>
-                <h:commandButton class="boton_navegacion boton_navegacion_3" value="Introducir resultado" 
-                                 action="#{resultadoManagedBean.carga_pagina_introducir_resultado()}" />
-            </h:form>
-
-            <h:form>
-                <h:commandButton class="boton_navegacion boton_navegacion_4" value="Introducir torneo" 
-                                 action="#{resultadoManagedBean.introducirPrevioTorneo(formularioManagedBean.nombre)}" />
-            </h:form>
-
-            <h:form>
-                <h:commandButton class="boton_navegacion boton_navegacion_5" value="Ver torneos" 
-                                 action="#{historialTorneosManagedBean.cargaTorneosDeUsuario(formularioManagedBean.nombre)}" />
-            </h:form>
-            
-            <h:form>
-                <h:commandButton class="boton_navegacion boton_navegacion_6" value="Estadisticas barajas" 
-                                 action="#{cuadroManagedBean.carga_pagina_estadisticas_barajas()}" />
-            </h:form>
-
-        </div> 
+       
 
 
         <div class="borde_fondo cuadro_principal">
@@ -96,5 +51,58 @@
             </h:form>
 
         </div>
+        
+        
+        <div class="menu_izquierda"> 
+
+            <h:form>
+                <h:commandButton class="boton_navegacion" value="Inicio" type="submit"
+                                 action="#{formularioManagedBean.login()}" />
+            </h:form>
+
+            <h:form>
+                <h:commandButton class="boton_navegacion boton_navegacion_2" value="Mis barajas" 
+                                 action="#{barajaManagedBean.carga_pagina_desglose_barajas_usuario()}" />
+            </h:form>
+
+            <h:form>
+                <h:commandButton class="boton_navegacion boton_navegacion_3" value="Introducir torneo" 
+                                 action="#{resultadoManagedBean.introducirPrevioTorneo(formularioManagedBean.nombre)}" />
+            </h:form>
+
+            <h:form>
+                <h:commandButton class="boton_navegacion boton_navegacion_4" value="Ver torneos" 
+                                 action="#{historialTorneosManagedBean.cargaTorneosDeUsuario(formularioManagedBean.nombre)}" />
+            </h:form>
+
+            <h:form>
+                <h:commandButton class="boton_navegacion boton_navegacion_5" value="Estadisticas barajas" 
+                                 action="#{cuadroManagedBean.carga_pagina_estadisticas_barajas()}" />
+            </h:form>
+                   
+        </div>   
+        
+        <div class="barra_superior_home">
+
+            <div class="titulo">MEDIDOR HEURISTICO DE METAJUEGO MAGIC</div>
+
+
+            <div class="perfil_nombre">#{formularioManagedBean.nombre} [#{formularioManagedBean.rol}]</div>
+
+            <h:form>
+                <h:commandButton class="boton_navegacion boton_perfil" 
+                                 value="Modificar perfil" type="submit"
+                                 action="#{formularioManagedBean.carga_pagina_perfil_usuario()}" />
+            </h:form>
+
+
+
+            <h:form>
+                <h:commandButton class="boton_logout" value="Salir" type="submit"
+                                 action="#{formularioManagedBean.salir()}" />
+            </h:form>
+
+        </div>
+        
     </h:body>
 </html>

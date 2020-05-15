@@ -42,9 +42,20 @@ public class GestorBD {
         return roles;
     }
 
-    public boolean crearUsuario(Usuario usuario) throws SQLException {
-        boolean retorno = false;
-        boolean primero = false;
+    /**
+     * 
+     * @param usuario usuario nuevo a crear
+     * @return 0 si es el primer usuario, 1 si no y -1 si hay error
+     * @throws SQLException 
+     * 
+     * comprueba si no hay ningun usuario previo para cambiar retorno a 0, inserta el usuario nuevo 
+     * con su nombre y su clave; pondría a -1 retorno si no se insertase. Despues, si no ha habido errores
+     * inserta en roles usuarios a este nuevo usuario con admin si es el primero o con cuenta estandar si no lo es.
+     */
+    public int crearUsuario(Usuario usuario) throws SQLException {
+        
+        int retorno = 1;
+
         try {
             ConectaBD conectaBD = new ConectaBD();
             con = conectaBD.getConnection();
@@ -52,7 +63,7 @@ public class GestorBD {
 
             rs = st.executeQuery();
             if (!rs.next()) {
-                primero = true;
+                retorno = 0;
             }
 
             st = con.prepareStatement("INSERT INTO usuarios VALUES"
@@ -73,23 +84,24 @@ public class GestorBD {
 
             resultUpdate = st.executeUpdate();
 
-            if (resultUpdate != 0) {
-                retorno = true;
+            if (resultUpdate == 0) {
+                retorno = -1;
             }
 
-            if (retorno) {
+            if (retorno != -1) {
                 st = con.prepareStatement("insert into roles_usuarios values (?, ?, ?)");
                 st.setString(1, usuario.getNombre());
-                st.setInt(3, 0);
-                if (primero) {
+                st.setInt(3, 0); //estado por defecto "condedido"
+                // si retorno es 0 es Admin, sino Estandar 
+                if (retorno == 0) {
                     st.setInt(2, 0);
                 } else {
                     st.setInt(2, 1);
                 }
                 resultUpdate = st.executeUpdate();
 
-                if (resultUpdate != 0) {
-                    retorno = true;
+                if (resultUpdate == 0) {
+                    retorno = -1;
                 }
 
             }
@@ -98,7 +110,7 @@ public class GestorBD {
             return retorno;
 
         } catch (SQLException e) {
-            return false;
+            return -1;
         } finally {
             if (rs != null) {
                 rs.close();

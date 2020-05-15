@@ -32,7 +32,7 @@ public class FormularioManagedBean {
 
     private ArrayList<String> roles;
     private ArrayList<RolUsuario> solicitudes;
-    
+
     private GestorBD gestorBD;
 
     public FormularioManagedBean() {
@@ -202,9 +202,21 @@ public class FormularioManagedBean {
     public ArrayList<RolUsuario> getSolicitudes() {
         return solicitudes;
     }
-    
-    
-    
+
+    public void fallo() {
+        nombre = null;
+        clave = null;
+        clave_repetir = null;
+        correo = null;
+        try {
+            FacesContext.getCurrentInstance()
+                    .getExternalContext()
+                    .redirect("agregar_usuario.xhtml");
+        } catch (IOException e) {
+            //e.printStackTrace();
+        }
+    }
+
     public void crearUsuario() {
         String error = "ok";
         if (nombre.length() > 20 || nombre.length() < 6) {
@@ -220,37 +232,49 @@ public class FormularioManagedBean {
         }
 
         if (!"ok".equals(error)) {
-            nombre = null;
-            clave = null;
-            clave_repetir = null;
-            correo = null;
-            try {
-                FacesContext.getCurrentInstance()
-                        .getExternalContext()
-                        .redirect("agregar_usuario.xhtml");
-            } catch (IOException e) {
-                //e.printStackTrace();
-            }
+            fallo();
         } else {
             nombre = Herramientas.tratar_nombre(nombre);
             Usuario usuarioNuevo = new Usuario(nombre, clave, correo);
+            int valor_rol;
+
             try {
-                if (gestorBD.crearUsuario(usuarioNuevo)) {
-                    rol = "estandar";
+                valor_rol = gestorBD.crearUsuario(usuarioNuevo);
+            } catch (SQLException e) {
+                valor_rol = -1;
+            }
+
+            if (valor_rol == 1) {
+                rol = "estandar";
+                try {
+                    FacesContext.getCurrentInstance()
+                            .getExternalContext()
+                            .redirect("homeUser.xhtml");
+                } catch (IOException e) {
+                    //e.printStackTrace();
+                }
+            } else {
+                if (valor_rol == 0) {
+                    rol = "administrador";
                     try {
                         FacesContext.getCurrentInstance()
                                 .getExternalContext()
-                                .redirect("homeUser.xhtml");
+                                .redirect("homeSuperUser.xhtml");
                     } catch (IOException e) {
                         //e.printStackTrace();
                     }
-                }
-            } catch (SQLException e) {
-                // HACER COSAS
-            }
+                } else {
 
+                    if (valor_rol == -1) {
+                        fallo();
+                    }
+                }
+
+            }
         }
     }
+
+    
 
     public void login() throws SQLException {
         nombre = Herramientas.tratar_nombre(nombre);
@@ -429,7 +453,7 @@ public class FormularioManagedBean {
         poner_a_cero();
         correo = null;
         rol = null;
-        
+
         try {
             FacesContext.getCurrentInstance()
                     .getExternalContext()

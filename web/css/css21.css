@@ -20,7 +20,7 @@
 
 .bloque_admin{
     top: 70%;
-    height: 18%;
+    height: 25%;
 }
 
 .boton_usuarios{
@@ -28,7 +28,7 @@
     top: 12%;
     left: 10%;
     width: 80%;
-    height: 30%;
+    height: 20%;
     background-color: #FFD700;
     color: black;
     border-radius: 1em;
@@ -41,7 +41,12 @@
 }
 
 .boton_barajas{
-    top: 55%;
+    top: 39%;
+}
+
+.boton_introducir_resultado{
+    position: absolute;
+    top: 67%;
 }
 
 

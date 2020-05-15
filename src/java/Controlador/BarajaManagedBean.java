@@ -88,6 +88,8 @@ public class BarajaManagedBean {
 
     public void carga_pagina_gestionar_barajas() throws SQLException {
         modificar = null;
+        nuevo_nombre = null;
+        tier_nuevo = 0;
         barajas = gestorBD.lee_todas_las_barajas();
         nombres_barajas = gestorBD.lee_nombres_barajas();
         nombres_barajas.add(0, "Modificar");
@@ -134,16 +136,8 @@ public class BarajaManagedBean {
         }
 
         if (gestorBD.actualizarBaraja(modificar, nuevo_nombre, tier_nuevo)) {
-            modificar = null;
-            tier_nuevo = 0;
-            barajas = gestorBD.lee_todas_las_barajas();
-            try {
-                FacesContext.getCurrentInstance()
-                        .getExternalContext()
-                        .redirect("gestionar_barajas.xhtml");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            
+            carga_pagina_gestionar_barajas();
 
         } else {
             modificar = null;
@@ -161,32 +155,11 @@ public class BarajaManagedBean {
     }
 
     public void borrarBaraja() throws SQLException {
-
         if (gestorBD.borrarBaraja(modificar)) {
-            modificar = null;
-            tier_nuevo = 0;
-            barajas = gestorBD.lee_todas_las_barajas();
-            try {
-                FacesContext.getCurrentInstance()
-                        .getExternalContext()
-                        .redirect("gestionar_barajas.xhtml");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
+            carga_pagina_gestionar_barajas();
         } else {
-            modificar = null;
-            tier_nuevo = 0;
-            try {
-                FacesContext.getCurrentInstance()
-                        .getExternalContext()
-                        .redirect("modificar_baraja.xhtml");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
+            carga_pagina_modificar_baraja();
         }
-
     }
 
     public void guardar_baraja() throws SQLException {
