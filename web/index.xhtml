@@ -1,39 +1,46 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
         <title>MEDIDOR ESTADISTICO</title>
 
-        <link href="#{request.contextPath}/css/css11.css" 
+        <link href="#{request.contextPath}/css/login_css.css" 
               rel="stylesheet" type="text/css"/>
 
-        
+
 
     </h:head>
 
     <h:body>
 
+        
+        
         <h1 class="titulo">Medidor estadístico de metajuego MTG</h1>
+        <h:form class="cuadro_login">
+            
 
-        <h:form class="cuadro_login" id="form" >
-
-            <div class="bloque_entrar">Entrar</div>
-
-
-            <span class="bloque_login_nick">Nombre: </span>
-            <h:inputText class="bloque_login_nick_in" value="#{formularioManagedBean.nombre}" />
+                <div class="bloque_entrar">Entrar</div>
 
 
-            <span class="bloque_login_pass">Clave: </span>
-            <h:inputSecret class="bloque_login_pass_in" value="#{formularioManagedBean.clave}"/>
+                <span class="bloque_login_nick">Nombre: </span>
+                <h:inputText class="bloque_login_nick_in" value="#{formularioManagedBean.nombre}" />
 
-            <h:commandButton class="boton_login" value="Entrar" type="submit"
-                             action="#{formularioManagedBean.login()}" />
 
-            <div class="barra_registrarse">
-                <h:commandButton class="boton_registrarse" value="Registrarse" 
-                                 action="agregar_usuario.xhtml" />
-            </div>
+                <span class="bloque_login_pass">Clave: </span>
+                <h:inputSecret class="bloque_login_pass_in" value="#{formularioManagedBean.clave}"/>
+
+                <h:commandButton class="boton_login" value="Entrar" type="submit"
+                                 action="#{formularioManagedBean.login()}" />
+                 
+
+                <div class="barra_registrarse">
+                    <h:commandButton class="boton_registrarse" value="Registrarse" 
+                                     action="000_prueba.xhtml" />
+                </div>
+            
         </h:form>
+
+
 
     </h:body>
 </html>

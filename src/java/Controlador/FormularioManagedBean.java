@@ -8,9 +8,12 @@ import Util.Herramientas;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+
 
 @ManagedBean(name = "formularioManagedBean")
 @SessionScoped
@@ -32,7 +35,7 @@ public class FormularioManagedBean {
 
     private ArrayList<String> roles;
     private ArrayList<RolUsuario> solicitudes;
-
+    
     private GestorBD gestorBD;
 
     public FormularioManagedBean() {
@@ -247,6 +250,7 @@ public class FormularioManagedBean {
             if (valor_rol == 1) {
                 rol = "estandar";
                 try {
+                    
                     FacesContext.getCurrentInstance()
                             .getExternalContext()
                             .redirect("homeUser.xhtml");
@@ -285,7 +289,7 @@ public class FormularioManagedBean {
         if (login == 1) {
             cargarUsuario(usuarioIntento);
             if (rol.equals("administrador")) {
-                try {
+                try {                   
                     FacesContext.getCurrentInstance()
                             .getExternalContext()
                             .redirect("homeSuperUser.xhtml");
@@ -304,10 +308,15 @@ public class FormularioManagedBean {
 
         } else {
             if (login == -1) {
-                error = "Clave incorrecta";
+                error = "La clave introducida no es correcta";
+                FacesContext context = FacesContext.getCurrentInstance();
+                MensajeManagedBean mensajeMB = context.getApplication().evaluateExpressionGet(
+                        context, "#{mensajeManagedBean}", MensajeManagedBean.class);
+                mensajeMB.alert_mensaje("error", error, false);
             } else {
                 if (login == 0) {
                     error = "No existe ningún usuario con ese nombre";
+                    
                 }
             }
             try {

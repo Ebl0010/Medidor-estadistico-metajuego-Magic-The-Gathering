@@ -1,0 +1,109 @@
+body{
+    font-family: helvetica;
+    background-color: #0C9FE0;
+}
+
+.titulo{
+    position: absolute;
+    color: #005E89;
+    margin-top: 5%;
+    width: 100%;
+    height: 10%;
+    margin: 0px;
+    text-align: center;
+}
+
+.cuadro_login{
+    position: absolute;
+    left: 32%;
+    top: 31%;
+    margin-bottom: 0px;
+    width: 36%;
+    height: 38%;
+    color: black;
+    background-color: white;
+    border: 1px solid #0F597A;
+    border-radius: 9px;
+}
+
+.bloque_entrar{
+    position: absolute;
+    width: 100%;
+    height: 20%;
+    background-color: #0A97D7;
+    color: #0F597A;	
+    font-size: 200%;
+    border-color: #0F597A;
+    border-radius: inherit;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.bloque_login_nick{
+    position: absolute;
+    width: 28%;
+    height: 24%;
+    top: 38%;
+    text-align: right;
+}
+
+.bloque_login_nick_in{
+    position: absolute;
+    top: 38%;
+    left: 30%;
+    width: 35%;
+}
+
+.bloque_login_pass{
+    position: absolute;
+    width: 28%;
+    height: 24%;
+    top: 51%;
+    text-align: right;
+}
+
+.bloque_login_pass_in{
+    position: absolute;
+    top: 51%;
+    margin-left: 30%;
+    width: 35%;
+}
+
+.boton_login{
+    position: absolute;
+    top: 67%;
+    left: 30%;
+    width: 26%;
+    height: 14%;
+    background-color: #0C9FE0;
+    color: white;
+    transition: 0.6s;
+}
+
+.boton_login:hover{
+    background-color: #134BEA;
+}
+
+.barra_registrarse{
+    position: absolute;
+    top: 100%;
+    width: 100%;
+    height: 9%;
+    background-color: #C3D5DD;
+    color: #0F597A;
+    text-align: center;
+    border: 1px solid #0F597A;
+    border-radius: 9px;
+}
+
+.boton_registrarse{
+    position: absolute;
+}
+
+.alert_mensaje{
+    position: absolute;
+    top: 45%;
+    left: 12%;
+    width: 80%;
+}
+

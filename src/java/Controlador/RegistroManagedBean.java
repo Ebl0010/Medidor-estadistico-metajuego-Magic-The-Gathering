@@ -79,29 +79,5 @@ public class RegistroManagedBean {
         }
     }
 
-    /*
-    public void crearUsuario() {
-        String error = "ok";
-        if (nombre.length() > 20 || nombre.length() <= 6) {
-            error = "El nombre debe tener entre 6 y 20 caracteres.";
-        } else {
-            if (!clave.equals(clave_repetir)) {
-                error = "Las contraseñas no son iguales.";
-            } else {
-                if (clave.length() > 16 || clave.length() <= 6) {
-                    error = "La contraseña debe tener entre 6 y 16 caracteres";
-                }
-            }
-        }
-
-        if (error.equals("ok")) {
-            Usuario usuarioNuevo = new Usuario(nombre, clave, correo);
-            if (gestorBD.crearUsuario(usuarioNuevo)) {
-                
-
-            }
-        }
-
-    }*/
-
+   
 }

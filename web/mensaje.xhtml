@@ -1,0 +1,36 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>MEDIDOR ESTADISTICO</title>
+
+        <link href="#{request.contextPath}/css/login_css.css" 
+              rel="stylesheet" type="text/css"/>
+
+
+
+    </h:head>
+
+    <h:body>
+
+        
+        
+        <h1 class="titulo">Medidor estadístico de metajuego MTG</h1>
+        <h:form class="cuadro_login">
+            
+
+            <div class="bloque_entrar">#{mensajeManagedBean.tipo}</div>
+
+
+            <span class="alert_mensaje">#{mensajeManagedBean.mensaje}</span>
+
+                <h:commandButton class="boton_login" value="Aceptar" type="submit"
+                                 action="#{mensajeManagedBean.volver()}" />
+                 
+            
+        </h:form>
+
+
+
+    </h:body>
+</html>
