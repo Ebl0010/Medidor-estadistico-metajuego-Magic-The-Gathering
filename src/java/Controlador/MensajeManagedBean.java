@@ -1,5 +1,6 @@
 package Controlador;
 
+import Util.TipoMensaje;
 import java.io.IOException;
 import java.sql.SQLException;
 import javax.faces.bean.ManagedBean;
@@ -10,33 +11,33 @@ import javax.faces.context.FacesContext;
 @SessionScoped
 public class MensajeManagedBean {
 
-    private String tipo;
-    private String mensaje;
-    private boolean login;
+    TipoMensaje tipoMensaje;
+    String mensaje;
+    String retorno;
+    
 
     public MensajeManagedBean() {
     }
 
-    public String getTipo() {
-        return tipo;
+    public TipoMensaje getTipoMensaje(){
+        return tipoMensaje;
     }
-
+    
     public String getMensaje() {
         return mensaje;
     }
 
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
+    public String getRetorno() {
+        return retorno;
     }
 
-    public void setMensaje(String mensaje) {
+     
+    public void alert_mensaje(TipoMensaje tipoMensaje, String mensaje, String retorno) {
+        
+        this.tipoMensaje = tipoMensaje;
         this.mensaje = mensaje;
-    }
-
-    public void alert_mensaje(String tipo, String mensaje, Boolean login) {
-        this.tipo = tipo;
-        this.mensaje = mensaje;
-        this.login = login;
+        this.retorno = retorno;
+        
         try {
             FacesContext.getCurrentInstance()
                     .getExternalContext()
@@ -48,20 +49,19 @@ public class MensajeManagedBean {
     }
 
     public void volver() throws SQLException {
-        if (login) {
+        if (retorno.equals("login")) {
             FacesContext context = FacesContext.getCurrentInstance();
             FormularioManagedBean formularioMB = context.getApplication().evaluateExpressionGet(
                     context, "#{formularioManagedBean}", FormularioManagedBean.class);
             formularioMB.login();
         } else {
             try {
-                FacesContext.getCurrentInstance()
-                        .getExternalContext()
-                        .redirect("index.xhtml");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
+                    FacesContext.getCurrentInstance()
+                            .getExternalContext()
+                            .redirect(retorno);
+                } catch (IOException e) {
+                    //e.printStackTrace();
+                }
         }
     }
 }

@@ -34,6 +34,10 @@ public class ResultadoManagedBean {
         num_rondas = 0;
     }
 
+    /**
+     * UTILIZAR UN METODO PRIVADO PARA LEER SOLO LOS NOMBRES DE LAS BARAJAS
+     * @throws SQLException 
+     */
     private void carga_todas_las_barajas() throws SQLException {
         todas_las_barajas = gestorBD.lee_nombres_barajas();
     }

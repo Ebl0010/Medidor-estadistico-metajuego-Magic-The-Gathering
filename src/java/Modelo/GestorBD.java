@@ -42,332 +42,17 @@ public class GestorBD {
         return roles;
     }
 
-    /**
-     * 
-     * @param usuario usuario nuevo a crear
-     * @return 0 si es el primer usuario, 1 si no y -1 si hay error
-     * @throws SQLException 
-     * 
-     * comprueba si no hay ningun usuario previo para cambiar retorno a 0, inserta el usuario nuevo 
-     * con su nombre y su clave; pondría a -1 retorno si no se insertase. Despues, si no ha habido errores
-     * inserta en roles usuarios a este nuevo usuario con admin si es el primero o con cuenta estandar si no lo es.
-     */
-    public int crearUsuario(Usuario usuario) throws SQLException {
-        
-        int retorno = 1;
+    
 
-        try {
-            ConectaBD conectaBD = new ConectaBD();
-            con = conectaBD.getConnection();
-            st = con.prepareStatement("select * from usuarios");
+    
 
-            rs = st.executeQuery();
-            if (!rs.next()) {
-                retorno = 0;
-            }
+    
 
-            st = con.prepareStatement("INSERT INTO usuarios VALUES"
-                    + " (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            // 1, 2 y 3 nombre de usuario, clave y correo
-            st.setString(1, usuario.getNombre());
-            st.setString(2, usuario.getClave());
-            st.setString(3, usuario.getCorreo());
-            // 4, 5, 6, 7 y 8 enteros de rondas y partidas
-            st.setInt(4, 0);
-            st.setInt(5, 0);
-            st.setInt(6, 0);
-            st.setInt(7, 0);
-            st.setInt(8, 0);
-            // 9 y 10 porcentajes
-            st.setFloat(9, 0);
-            st.setFloat(10, 0);
+    
 
-            resultUpdate = st.executeUpdate();
-
-            if (resultUpdate == 0) {
-                retorno = -1;
-            }
-
-            if (retorno != -1) {
-                st = con.prepareStatement("insert into roles_usuarios values (?, ?, ?)");
-                st.setString(1, usuario.getNombre());
-                st.setInt(3, 0); //estado por defecto "condedido"
-                // si retorno es 0 es Admin, sino Estandar 
-                if (retorno == 0) {
-                    st.setInt(2, 0);
-                } else {
-                    st.setInt(2, 1);
-                }
-                resultUpdate = st.executeUpdate();
-
-                if (resultUpdate == 0) {
-                    retorno = -1;
-                }
-
-            }
-
-            //con.commit();
-            return retorno;
-
-        } catch (SQLException e) {
-            return -1;
-        } finally {
-            if (rs != null) {
-                rs.close();
-            }
-            if (st != null) {
-                st.close();
-            }
-            if (con != null) {
-                con.close();
-            }
-        }
-
-    }
-
+ 
+    
     /*
-    se comrpueba si el usuario existe. Devuelve 1 si existe, 0 si no existe y -1 si existe pero la clave esta mal.
-     */
-    public int existeUsuario(Usuario usuario) throws SQLException {
-        int devolver = 0;
-        try {
-            ConectaBD conectaBD = new ConectaBD();
-            con = conectaBD.getConnection();
-            st = con.prepareStatement("Select clave from usuarios where nombre_usuario = ?");
-            st.setString(1, usuario.getNombre());
-            rs = st.executeQuery();
-
-            if (!rs.next()) {
-                devolver = 0;
-            } else {
-                if (rs.getString("clave").equals(usuario.getClave())) {
-                    devolver = 1;
-                } else {
-                    devolver = -1;
-                }
-            }
-            //con.commit();
-        } catch (SQLException e) {
-            //con.rollback();
-        } finally {
-            if (rs != null) {
-                rs.close();
-            }
-            if (st != null) {
-                st.close();
-            }
-            if (con != null) {
-                con.close();
-            }
-
-        }
-        return devolver;
-    }
-
-    public ArrayList<String> carga_todos_los_roles() throws SQLException {
-        ArrayList<String> roles = new ArrayList<String>();
-        String rol;
-        try {
-            ConectaBD conectaBD = new ConectaBD();
-            con = conectaBD.getConnection();
-            st = con.prepareStatement("Select descripcion from roles");
-            rs = st.executeQuery();
-            while (rs.next()) {
-                rol = rs.getString("descripcion");
-                roles.add(rol);
-            }
-            return roles;
-
-        } catch (SQLException e) {
-            return null;
-            //con.rollback();
-        } finally {
-            if (rs != null) {
-                rs.close();
-            }
-            if (st != null) {
-                st.close();
-            }
-            if (con != null) {
-                con.close();
-            }
-
-        }
-
-    }
-
-    public Usuario cargarUsuario(Usuario usuario) throws SQLException {
-        Usuario devolver = null;
-        try {
-            ConectaBD conectaBD = new ConectaBD();
-            con = conectaBD.getConnection();
-            st = con.prepareStatement("SELECT * FROM usuarios WHERE nombre_usuario = ? and clave = ?");
-
-            st.setString(1, usuario.getNombre());
-            st.setString(2, usuario.getClave());
-
-            rs = st.executeQuery();
-
-            if (!rs.next()) {
-                devolver = null;
-            } else {
-                devolver = new Usuario(usuario.getNombre());
-                devolver.setRondas_ganadas(rs.getInt("rondas_ganadas"));
-                devolver.setRondas_empatadas(rs.getInt("rondas_empatadas"));
-                devolver.setRondas_perdidas(rs.getInt("rondas_perdidas"));
-                devolver.setPartidas_ganadas(rs.getInt("partidas_ganadas"));
-                devolver.setPartidas_perdidas(rs.getInt("partidas_perdidas"));
-                devolver.setPorcentaje_rondas(rs.getFloat("porcentaje_rondas"));
-                devolver.setPorcentaje_partidas(rs.getFloat("porcentaje_partidas"));
-
-                st = con.prepareStatement(
-                        "select descripcion from roles_usuarios left join roles on roles.idRol = roles_usuarios.idRol "
-                        + "where nombre_usuario = ?"
-                        + "and estado = 0 order by roles.idRol");
-                st.setString(1, usuario.getNombre());
-                rs = st.executeQuery();
-                rs.next();
-                String rol = rs.getString("descripcion");
-                devolver.setRol(rol);
-
-                ArrayList<Baraja_de_usuario> barajas = leeBarajas_de_usuario(usuario);
-                devolver.setLista_de_barajas_de_usuario(barajas);
-            }
-
-        } catch (SQLException e) {
-            //con.rollback();
-            e.printStackTrace();
-        } finally {
-            if (rs != null) {
-                rs.close();
-            }
-            if (st != null) {
-                st.close();
-            }
-            if (con != null) {
-                con.close();
-            }
-
-        }
-        return devolver;
-    }
-
-    private ArrayList<Baraja_de_usuario> leeBarajas_de_usuario(Usuario usuario)
-            throws SQLException {
-        ArrayList<Baraja_de_usuario> lista_de_barajas = new ArrayList<>();
-        try {
-            ConectaBD conectaBD = new ConectaBD();
-            con = conectaBD.getConnection();
-            st = con.prepareStatement(
-                    "select  * from barajas_usuarios where nombre_usuario = ?");
-            st.setString(1, usuario.getNombre());
-            rs = st.executeQuery();
-
-            if (!rs.next()) {
-                return lista_de_barajas;
-            } else {
-                do {
-                    Baraja_de_usuario baraja = new Baraja_de_usuario();
-                    baraja.setNombre_baraja(rs.getString("nombre_baraja"));
-                    baraja.setRondas_ganadas(rs.getInt("rondas_ganadas"));
-                    baraja.setRondas_perdidas(rs.getInt("rondas_perdidas"));
-                    baraja.setRondas_empatadas(rs.getInt("rondas_empatadas"));
-                    baraja.setPartidas_ganadas_main(rs.getInt("partidas_ganadas_main"));
-                    baraja.setPartidas_ganadas_side(rs.getInt("partidas_ganadas_side"));
-                    baraja.setPartidas_perdidas_main(rs.getInt("partidas_perdidas_main"));
-                    baraja.setPartidas_perdidas_side(rs.getInt("partidas_perdidas_side"));
-                    baraja.setPorcentaje_partidas_ganadas_main(rs.getFloat("porcentaje_partidas_ganadas_main"));
-                    baraja.setPorcentaje_partidas_ganadas_side(rs.getFloat("porcentaje_partidas_ganadas_side"));
-                    baraja.setPorcentaje_partidas_ganadas_total(rs.getFloat("porcentaje_partidas_ganadas_total"));
-                    baraja.setPorcentaje_rondas_ganadas(rs.getFloat("porcentaje_rondas_ganadas"));
-
-                    lista_de_barajas.add(baraja);
-
-                } while (rs.next());
-                return lista_de_barajas;
-            }
-        } catch (SQLException e) {
-            //con.rollback();
-            return lista_de_barajas;
-        } finally {
-            if (rs != null) {
-                rs.close();
-            }
-            if (st != null) {
-                st.close();
-            }
-            if (con != null) {
-                con.close();
-            }
-        }
-    }
-
-    public ArrayList<String> devolver_nombres_barajas_de_usuario(String nombre_usuario) throws SQLException {
-        ArrayList<String> barajas = new ArrayList<>();
-        try {
-            ConectaBD conectaBD = new ConectaBD();
-            con = conectaBD.getConnection();
-            st = con.prepareStatement(
-                    "SELECT nombre_baraja from barajas_usuarios where nombre_usuario = ?");
-            st.setString(1, nombre_usuario);
-            rs = st.executeQuery();
-
-            while (rs.next()) {
-                barajas.add(rs.getString("nombre_baraja"));
-            }
-            return barajas;
-
-        } catch (SQLException e) {
-            //con.rollback();
-            return barajas;
-        } finally {
-            if (rs != null) {
-                rs.close();
-            }
-            if (st != null) {
-                st.close();
-            }
-            if (con != null) {
-                con.close();
-            }
-        }
-    }
-
-    public boolean guardarBaraja(Baraja baraja) throws SQLException {
-        try {
-            ConectaBD conectaBD = new ConectaBD();
-            con = conectaBD.getConnection();
-            st = con.prepareStatement("INSERT INTO barajas VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            // 1 y 2 nombre y tier
-            st.setString(1, baraja.getNombre());
-            st.setInt(2, baraja.getTier());
-            // 3, 4, 5 y 6 enteros
-            st.setInt(3, 0);
-            st.setInt(4, 0);
-            st.setInt(5, 0);
-            st.setInt(6, 0);
-            // 7, 8 y 9 decimales.
-            st.setFloat(7, 0);
-            st.setFloat(8, 0);
-            st.setFloat(9, 0);
-
-            resultUpdate = st.executeUpdate();
-
-            return resultUpdate == 1;
-
-        } catch (SQLException e) {
-            //con.rollback();
-            return false;
-        } finally {
-            if (st != null) {
-                st.close();
-            }
-            if (con != null) {
-                con.close();
-            }
-        }
-    }
-
     public ArrayList<String> lee_nombres_barajas() throws SQLException {
         ArrayList<String> barajas = new ArrayList<>();
         try {
@@ -399,6 +84,7 @@ public class GestorBD {
             }
         }
     }
+    */
 
     public int devuelve_tier_baraja(String nombre_baraja) throws SQLException {
         int devolver;
@@ -433,103 +119,11 @@ public class GestorBD {
         }
     }
 
-    public boolean actualizarBaraja(String modificar, String nombre_nuevo, int tier_nuevo) throws SQLException {
-        try {
-            ConectaBD conectaBD = new ConectaBD();
-            con = conectaBD.getConnection();
-            st = con.prepareStatement("UPDATE barajas SET nombre_baraja = ?, tier = ? where nombre_baraja = ?");
-            st.setString(1, nombre_nuevo);
-            st.setInt(2, tier_nuevo);
-            st.setString(3, modificar);
+    
 
-            resultUpdate = st.executeUpdate();
+    
 
-            return resultUpdate != 0;
-
-        } catch (SQLException e) {
-            //con.rollback;
-            return false;
-        } finally {
-            if (rs != null) {
-                rs.close();
-            }
-            if (st != null) {
-                st.close();
-            }
-            if (con != null) {
-                con.close();
-            }
-        }
-    }
-
-    public boolean borrarBaraja(String nombre_baraja) throws SQLException {
-        int rs;
-        try {
-            ConectaBD conectaBD = new ConectaBD();
-            con = conectaBD.getConnection();
-            st = con.prepareStatement("delete from barajas where nombre_baraja = ?");
-            st.setString(1, nombre_baraja);
-            rs = st.executeUpdate();
-
-            return rs == 1;
-
-        } catch (SQLException e) {
-            return false;
-        } finally {
-            if (st != null) {
-                st.close();
-            }
-            if (con != null) {
-                con.close();
-            }
-        }
-    }
-
-    public boolean agregar_baraja_a_usuario(String nombre_usuario, String nombre_baraja) throws SQLException {
-        boolean retorno = false;
-        try {
-            ConectaBD conectaBD = new ConectaBD();
-            con = conectaBD.getConnection();
-            // no hace falta comprobar si la baraja existe porque la esta cogiendo de las barajas existentes ya
-
-            st = con.prepareStatement("INSERT INTO barajas_usuarios values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            // 1 y 2 los nombres
-            st.setString(1, nombre_usuario);
-            st.setString(2, nombre_baraja);
-            // 3, 4 y 5 integeres de rondas ganadas perdidas y empatadas
-            st.setInt(3, 0);
-            st.setInt(4, 0);
-            st.setInt(5, 0);
-            // 6, 7, 8 y 9 integeres de partidas ganadas y perdidas de main y side
-            st.setInt(6, 0);
-            st.setInt(7, 0);
-            st.setInt(8, 0);
-            st.setInt(9, 0);
-            // 10, 11, 12 y 13 porcentajes de promedios
-            st.setFloat(10, 0);
-            st.setFloat(11, 0);
-            st.setFloat(12, 0);
-            st.setFloat(13, 0);
-
-            resultUpdate = st.executeUpdate();
-            if (resultUpdate != 0) {
-                retorno = true;
-            }
-            return retorno;
-        } catch (SQLException e) {
-            return false;
-        } finally {
-            if (rs != null) {
-                rs.close();
-            }
-            if (st != null) {
-                st.close();
-            }
-            if (con != null) {
-                con.close();
-            }
-        }
-    }
+    
 
     public boolean introducirResultado_a_baraja(String baraja, int main1, int main2,
             int side1, int side2) throws SQLException {
@@ -1180,43 +774,7 @@ public class GestorBD {
         }
     }
 
-    public ArrayList<Baraja> lee_todas_las_barajas() throws SQLException {
-        ArrayList<Baraja> barajas = new ArrayList<>();
-        Baraja baraja;
-        try {
-            ConectaBD conectaBD = new ConectaBD();
-            con = conectaBD.getConnection();
-            st = con.prepareStatement("select nombre_baraja, tier, porcentaje_main, porcentaje_side, porcentaje_total from barajas order by tier");
-            rs = st.executeQuery();
-
-            while (rs.next()) {
-                baraja = new Baraja();
-                baraja.setNombre(rs.getString("nombre_baraja"));
-                baraja.setTier(rs.getInt("tier"));
-                baraja.setPorcentaje_main(rs.getFloat("porcentaje_main"));
-                baraja.setPorcentaje_side(rs.getFloat("porcentaje_side"));
-                baraja.setPorcentaje_total(rs.getFloat("porcentaje_total"));
-                barajas.add(baraja);
-            }
-
-            return barajas;
-
-        } catch (SQLException e) {
-            //e.printStackTrace();
-            //con.rollback();
-            return barajas;
-        } finally {
-            if (rs != null) {
-                rs.close();
-            }
-            if (st != null) {
-                st.close();
-            }
-            if (con != null) {
-                con.close();
-            }
-        }
-    }
+    
 
     public ArrayList<Cruce> leerCruces(String nombre_baraja) throws SQLException {
         ArrayList<Cruce> cruces = new ArrayList<Cruce>();
@@ -1262,82 +820,9 @@ public class GestorBD {
 
     }
 
-    public boolean actualizarUsuario(String nombre, String nombre_nuevo, String clave_nueva)
-            throws SQLException {
-        try {
-            ConectaBD conectaBD = new ConectaBD();
-            con = conectaBD.getConnection();
-            st = con.prepareStatement(
-                    "update usuarios set nombre_usuario = ?, "
-                    + "clave = ? where "
-                    + "nombre_usuario = ?");
-            st.setString(1, nombre_nuevo);
-            st.setString(2, clave_nueva);
-            st.setString(3, nombre);
+    
 
-            return st.executeUpdate() == 1;
-
-        } catch (SQLException e) {
-            return false;
-        } finally {
-            if (st != null) {
-                st.close();
-            }
-            if (con != null) {
-                con.close();
-            }
-        }
-    }
-
-    public boolean gestionar_peticion_rol(String nombre_usuario, String rol, String rol_solicitado)
-            throws SQLException {
-        boolean retorno = true;
-        int valor_rol_actual = 0, valor_rol_solicitado;
-
-        try {
-            ConectaBD conectaBD = new ConectaBD();
-            con = conectaBD.getConnection();
-            st = con.prepareStatement(
-                    "select idRol from roles where descripcion = ?");
-            st.setString(1, rol);
-            rs = st.executeQuery();
-            if (!rs.next()) {
-                retorno = false;
-            }
-            if (retorno) {
-                valor_rol_actual = rs.getInt("idRol");
-                st.setString(1, rol_solicitado);
-                rs = st.executeQuery();
-                if (!rs.next()) {
-                    retorno = false;
-                }
-            }
-
-            if (retorno) {
-                valor_rol_solicitado = rs.getInt("idRol");
-                if (valor_rol_actual <= valor_rol_solicitado) {
-                    retorno = false;
-                } else {
-                    st = con.prepareStatement("insert into roles_usuarios values (?, ?, 1)");
-                    st.setString(1, nombre_usuario);
-                    st.setInt(2, valor_rol_solicitado);
-                    retorno = (st.executeUpdate() == 1);
-                }
-            }
-
-            return retorno;
-
-        } catch (SQLException e) {
-            return false;
-        } finally {
-            if (st != null) {
-                st.close();
-            }
-            if (con != null) {
-                con.close();
-            }
-        }
-    }
+    
 
     public ArrayList<RolUsuario> lee_peticiones_roles(String nombre_usuario_actual) throws SQLException {
 
@@ -1426,37 +911,6 @@ public class GestorBD {
         }
     }
 
-    public ArrayList<RolUsuario> lee_solicitudes(String nombre_usuario)
-            throws SQLException {
-        RolUsuario rol;
-        ArrayList<RolUsuario> solicitudes = new ArrayList<RolUsuario>();
-        try {
-            ConectaBD conectaBD = new ConectaBD();
-            con = conectaBD.getConnection();
-            st = con.prepareStatement(
-                    "select descripcion, estado " +
-                    "from roles_usuarios left join roles on roles_usuarios.idRol = roles.idRol " +
-                    "where nombre_usuario = ? and estado = 1 or estado = 2");
-            st.setString(1, nombre_usuario);
-            rs = st.executeQuery();
-            while (rs.next()){
-                rol = new RolUsuario();
-                rol.setEstado(rs.getInt("estado"));
-                rol.setDescripcion_rol(rs.getString("descripcion"));
-                rol.traducirEstado();
-                solicitudes.add(rol);
-            }
-            return solicitudes;
-        } catch (SQLException e) {
-            return solicitudes;
-        } finally {
-            if (st != null) {
-                st.close();
-            }
-            if (con != null) {
-                con.close();
-            }
-        }
-    }
+    
 
 }

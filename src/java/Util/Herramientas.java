@@ -5,6 +5,9 @@
  */
 package Util;
 
+import Controlador.MensajeManagedBean;
+import javax.faces.context.FacesContext;
+
 /**
  *
  * @author admin
@@ -16,6 +19,13 @@ public class Herramientas {
         char[] nombre_array = nombre_bruto.toCharArray();
         nombre_array[0] = Character.toUpperCase(nombre_array[0]);
         return String.valueOf(nombre_array);
+    }
+
+    public static void lanza_mensaje(TipoMensaje tipo, String error, String retorno) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        MensajeManagedBean mensajeMB = context.getApplication().evaluateExpressionGet(
+                context, "#{mensajeManagedBean}", MensajeManagedBean.class);
+        mensajeMB.alert_mensaje(tipo, error, retorno);
     }
 
 }

@@ -53,7 +53,7 @@ public class CuadroManagedBean {
     
 
     public void carga_pagina_estadisticas_barajas() throws SQLException {
-        barajas = gestorBD.lee_todas_las_barajas();
+        //barajas = barajaBD.lee_todas_las_barajas();
         nombres_barajas = new ArrayList<>();
         cruces = new ArrayList<>();
         nombres_barajas.add("todas");
