@@ -2,7 +2,6 @@ package Controlador;
 
 import GestorBD.BarajaBD;
 import Modelo.Baraja;
-import Modelo.GestorBD;
 import Util.Herramientas;
 import Util.TipoMensaje;
 import java.io.IOException;
@@ -25,11 +24,9 @@ public class BarajaManagedBean {
     private ArrayList<Baraja> barajas;
     private ArrayList<String> nombres_barajas;
     
-    private final GestorBD gestorBD;
     private final BarajaBD barajaBD;
 
     public BarajaManagedBean() throws SQLException {
-        gestorBD = new GestorBD();
         barajaBD = new BarajaBD();
 
     }
@@ -129,10 +126,17 @@ public class BarajaManagedBean {
         tier_nuevo = 0;
         nuevo_nombre = null;
         if (!modificar.equals("Modificar")) {
-            try {
-                tier = gestorBD.devuelve_tier_baraja(modificar);
-            } catch (SQLException e) {
-                control = false;
+            
+            boolean encontrada = false;
+            int i=0;
+            Baraja b;
+            while (! encontrada && i<barajas.size()){
+                b = barajas.get(i);
+                if (b.getNombre().equals(modificar)){
+                    tier = b.getTier();
+                    encontrada = true;
+                }
+                i ++;
             }
 
             if (control) {

@@ -1,7 +1,10 @@
 package Controlador;
 
+import GestorBD.ResultadoBD;
 import Modelo.GestorBD;
 import Modelo.ResultadoRonda;
+import Util.Herramientas;
+import Util.TipoMensaje;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -16,12 +19,16 @@ public class ResultadoManagedBean {
 
     private String baraja1, baraja2, usuario, resultado_torneo, encabezado;
     private int main1, main2, side1, side2, num_rondas;
-    private final GestorBD gestorBD;
+    
     private ArrayList<String> todas_las_barajas, barajas_de_usuario;
     private ArrayList<ResultadoRonda> resultadosRondas;
 
+    private final GestorBD gestorBD;
+    private final ResultadoBD resultadoBD;
+    
     public ResultadoManagedBean() throws SQLException {
         gestorBD = new GestorBD();
+        resultadoBD = new ResultadoBD();
     }
 
     private void puestaCero() {
@@ -39,11 +46,11 @@ public class ResultadoManagedBean {
      * @throws SQLException 
      */
     private void carga_todas_las_barajas() throws SQLException {
-        todas_las_barajas = gestorBD.lee_nombres_barajas();
+        todas_las_barajas = resultadoBD.lee_nombres_barajas();
     }
 
     private void carga_nombres_barajas_de_usuario(String nombre_usuario) throws SQLException {
-        barajas_de_usuario = gestorBD.devolver_nombres_barajas_de_usuario(usuario);
+        barajas_de_usuario = resultadoBD.devolver_nombres_barajas_de_usuario(usuario);
     }
 
     public ArrayList<String> getTodas_las_barajas() {
@@ -145,41 +152,29 @@ public class ResultadoManagedBean {
         // entonces si baraja1.compareTo(baraja2) devuelve 1 es que baraja2 va ANTES.
         //si es 1 es porque b.ct(a), --> b2 va ANTES que b1 hay que invertirlas
 
+        String retorno = "introducir_resultado.xhtml";
+        
         if (baraja1.equals(baraja2)) {
             puestaCero();
-            try {
-                FacesContext.getCurrentInstance()
-                        .getExternalContext()
-                        .redirect("introducir_resultado.xhtml");
-            } catch (IOException e) {
-                //e.printStackTrace();
-            }
+            Herramientas.lanza_mensaje(TipoMensaje.INFO, "Las barajas deben ser distintas", 
+                    retorno);
         } else {
             boolean control;
             // mando las barajas ordenadas pero si invierto el orden hay que invertirlo en los resultados
             if (baraja1.compareTo(baraja2) < 1) {
-                control = gestorBD.introducirResultado(baraja1, baraja2, main1, main2, side1, side2);
+                control = resultadoBD.introducirResultado(baraja1, baraja2, main1, main2, side1, side2);
             } else {
-                control = gestorBD.introducirResultado(baraja2, baraja1, main2, main1, side2, side1);
+                control = resultadoBD.introducirResultado(baraja2, baraja1, main2, main1, side2, side1);
             }
             puestaCero();
             if (control) {
-                try {
-                    FacesContext.getCurrentInstance()
-                            .getExternalContext()
-                            .redirect("resultado_introducido.xhtml");
-                } catch (IOException e) {
-                    //e.printStackTrace();
-                }
-
+                  Herramientas.lanza_mensaje(TipoMensaje.CORRECTO, 
+                          "El resultado se ha introducido correctamente",
+                          retorno);
             } else {
-                try {
-                    FacesContext.getCurrentInstance()
-                            .getExternalContext()
-                            .redirect("resultado_no_introducido.xhtml");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                Herramientas.lanza_mensaje(TipoMensaje.ERROR, 
+                        "El resultado no ha podido introducirse, vuelve a intentarlo",
+                        retorno);
             }
         }
 
@@ -211,13 +206,9 @@ public class ResultadoManagedBean {
         } catch (IOException e) {
             baraja1 = null;
             num_rondas = 0;
-            try {
-                FacesContext.getCurrentInstance()
-                        .getExternalContext()
-                        .redirect("resultado_no_introducido.xhtml");
-            } catch (IOException ex) {
-                e.printStackTrace();
-            }
+            Herramientas.lanza_mensaje(TipoMensaje.ERROR,
+                    "No ha podido introducirse el resultado", 
+                    "introducir_torneo_1.xhtml");
         }
 
     }
@@ -317,9 +308,9 @@ public class ResultadoManagedBean {
             if (!baraja1.equals(baraja2)) {
 
                 if (baraja1.compareTo(baraja2) < 1) {
-                    control = gestorBD.introducirResultado(baraja1, baraja2, main1, main2, side1, side2);
+                    control = resultadoBD.introducirResultado(baraja1, baraja2, main1, main2, side1, side2);
                 } else {
-                    control = gestorBD.introducirResultado(baraja2, baraja1, main1, main2, side1, side2);
+                    control = resultadoBD.introducirResultado(baraja2, baraja1, main1, main2, side1, side2);
                 }
             } else {
                 control = true;
@@ -362,22 +353,14 @@ public class ResultadoManagedBean {
         }
 
         if (control) {
-            try {
-                FacesContext.getCurrentInstance()
-                        .getExternalContext()
-                        .redirect("resultado_introducido.xhtml");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            Herramientas.lanza_mensaje(TipoMensaje.CORRECTO, 
+                    "El resultado se ha introducido correctamente", 
+                    "login");
 
         } else {
-            try {
-                FacesContext.getCurrentInstance()
-                        .getExternalContext()
-                        .redirect("resultado_no_introducido.xhtml");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            Herramientas.lanza_mensaje(TipoMensaje.ERROR, 
+                    "El resultado no se ha podido introducir",
+                    "login");
         }
     }
 

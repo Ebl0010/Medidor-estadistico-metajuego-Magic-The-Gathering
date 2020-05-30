@@ -23,8 +23,7 @@ public class BarajaBD {
     private PreparedStatement st = null;
     private ResultSet rs = null;
     private int resultUpdate = 0;
-    
-    
+
     public ArrayList<Baraja> lee_todas_las_barajas() throws SQLException {
         ArrayList<Baraja> barajas = new ArrayList<>();
         Baraja baraja;
@@ -62,14 +61,15 @@ public class BarajaBD {
             }
         }
     }
-    
+
     /**
-     * puede dar error de clave primaria... 
+     * puede dar error de clave primaria...
+     *
      * @param modificar
      * @param nombre_nuevo
      * @param tier_nuevo
      * @return
-     * @throws SQLException 
+     * @throws SQLException
      */
     public int actualizarBaraja(String modificar, String nombre_nuevo, int tier_nuevo) throws SQLException {
         try {
@@ -100,8 +100,7 @@ public class BarajaBD {
             }
         }
     }
-    
-    
+
     public boolean borrarBaraja(String nombre_baraja) throws SQLException {
         int rs;
         try {
@@ -127,8 +126,7 @@ public class BarajaBD {
             }
         }
     }
-    
-    
+
     public int guardarBaraja(Baraja baraja) throws SQLException {
         try {
             ConectaBD conectaBD = new ConectaBD();
@@ -211,6 +209,5 @@ public class BarajaBD {
             }
         }
     }
-    
 
 }
