@@ -1,6 +1,6 @@
 package Controlador;
 
-import Modelo.GestorBD;
+import GestorBD.RolesBD;
 import Modelo.RolUsuario;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -13,13 +13,12 @@ import javax.faces.context.FacesContext;
 @SessionScoped
 public class GestionarUsuariosManagedBean {
 
-    private GestorBD gestorBD;
+    private final RolesBD rolesBD;
     private ArrayList<RolUsuario> roles, peticiones;
-    private String nombre_usuario_actual;
-    private ArrayList<String> todos_los_estados;
+
     
     public GestionarUsuariosManagedBean(){
-        gestorBD = new GestorBD();
+        rolesBD = new RolesBD();
         
     }
     
@@ -38,7 +37,7 @@ public class GestionarUsuariosManagedBean {
         
    
     public void carga_pagina_gestionar_usuarios(String nombre_usuario_actual) throws SQLException{
-        roles = gestorBD.lee_peticiones_roles(nombre_usuario_actual);
+        roles = rolesBD.lee_peticiones_roles(nombre_usuario_actual);
         
         for (int i=0; i<roles.size(); i++){
             RolUsuario r = roles.get(i);
@@ -54,7 +53,7 @@ public class GestionarUsuariosManagedBean {
     }
     
     public void guardarCambios(String nombre_usuario_actual) throws SQLException{
-        if (gestorBD.actualizar_roles(roles)){
+        if (rolesBD.actualizar_roles(roles)){
             roles.clear();
             carga_pagina_gestionar_usuarios(nombre_usuario_actual);
         }

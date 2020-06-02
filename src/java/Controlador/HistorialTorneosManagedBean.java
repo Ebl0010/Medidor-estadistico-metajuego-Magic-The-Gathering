@@ -1,6 +1,6 @@
 package Controlador;
 
-import Modelo.GestorBD;
+import GestorBD.ResultadoBD;
 import Modelo.Torneo;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -26,10 +26,10 @@ public class HistorialTorneosManagedBean {
     private String nombre_baraja, nombre_baraja_filtro;
     private ArrayList<Torneo> torneos, filtrados;
     private ArrayList<String> barajas_usadas;
-    private GestorBD gestorBD;
+    private final ResultadoBD resultadoBD;
 
     public HistorialTorneosManagedBean() {
-        gestorBD = new GestorBD();
+        resultadoBD = new ResultadoBD();
     }
 
     public String getNombre_baraja_filtro() {
@@ -65,7 +65,7 @@ public class HistorialTorneosManagedBean {
     }
 
     public void cargaTorneosDeUsuario(String nombre_de_usuario) throws SQLException {
-        torneos = gestorBD.cargaTorneosDeUsuario(nombre_de_usuario);
+        torneos = resultadoBD.cargaTorneosDeUsuario(nombre_de_usuario);
         filtrados = new ArrayList<>();
         String nombre_baraja;
         if (torneos.size() > 0) {

@@ -1,8 +1,9 @@
 package Controlador;
 
 import GestorBD.ResultadoBD;
-import Modelo.GestorBD;
+import Modelo.Resultado;
 import Modelo.ResultadoRonda;
+import Modelo.ResultadoUsuarioBaraja;
 import Util.Herramientas;
 import Util.TipoMensaje;
 import java.io.IOException;
@@ -19,15 +20,13 @@ public class ResultadoManagedBean {
 
     private String baraja1, baraja2, usuario, resultado_torneo, encabezado;
     private int main1, main2, side1, side2, num_rondas;
-    
+
     private ArrayList<String> todas_las_barajas, barajas_de_usuario;
     private ArrayList<ResultadoRonda> resultadosRondas;
 
-    private final GestorBD gestorBD;
     private final ResultadoBD resultadoBD;
-    
+
     public ResultadoManagedBean() throws SQLException {
-        gestorBD = new GestorBD();
         resultadoBD = new ResultadoBD();
     }
 
@@ -41,15 +40,11 @@ public class ResultadoManagedBean {
         num_rondas = 0;
     }
 
-    /**
-     * UTILIZAR UN METODO PRIVADO PARA LEER SOLO LOS NOMBRES DE LAS BARAJAS
-     * @throws SQLException 
-     */
     private void carga_todas_las_barajas() throws SQLException {
         todas_las_barajas = resultadoBD.lee_nombres_barajas();
     }
 
-    private void carga_nombres_barajas_de_usuario(String nombre_usuario) throws SQLException {
+    private void carga_nombres_barajas_de_usuario() throws SQLException {
         barajas_de_usuario = resultadoBD.devolver_nombres_barajas_de_usuario(usuario);
     }
 
@@ -147,32 +142,120 @@ public class ResultadoManagedBean {
         }
     }
 
+    /**
+     * carga los valores de una baraja a un objeto resultado, actualiza los
+     * valores añadiendo los actuales, resultado recalcula sus porcentaje y
+     * llama al metodo que actualiza los datos de la baraja en la base de datos
+     *
+     * @param baraja la baraja sobre la que se quieren actualizar los datos
+     * @param main1 partidas ganadas de main
+     * @param main2 partidas perdidas de main
+     * @param side1 partidas ganadas de side
+     * @param side2 partidas perdidas de side
+     * @return true o false en funcion de si el metodo con la base de datos ha
+     * funcionado o no.
+     * @throws SQLException
+     */
+    public boolean introducirResultado_a_baraja(String baraja, int main1, int main2,
+            int side1, int side2) throws SQLException {
+
+        Resultado res = resultadoBD.obtener_resultados(baraja, null);
+        res.introducir_datos(main1, main2, side1, side2);
+        res.calcular_porcentajes();
+        return resultadoBD.introducir_variable_resultado(res, false);
+
+    }
+
+    /**
+     * Metodo que inserta el resultado de un emparejamiento entre dos barajas.
+     * Recoge los datos de ese emparejamiento con el metodo obtenerResultados,
+     * y, si los 4 valores de victorias y derrotas estan a 0, inicializa la
+     * variable existeCruce a falso (sino a verdadero).
+     *
+     * Entonces utiliza el metodo introducirVariable resultado para actualizar
+     * los datos: de la primera baraja globalmente, de la segunda baraja
+     * globalmente, del cruce entre la primera baraja y la segunda del cruce
+     * entre la segunda baraja y la primera
+     *
+     * @param baraja1 primera baraja del enfrentamiento
+     * @param baraja2 segunda baraja del enfrentamiento
+     * @param main1 victorias de la primera baraja en main
+     * @param main2 victorias de la segunda baraja en main
+     * @param side1 victorias de la primera baraja en side
+     * @param side2 victorias de la segunda baraja en side
+     * @return true o false en funcion de si han fucnionado todas las
+     * transaccioens o no
+     */
+    public boolean introducirResultadoCruce(String baraja1, String baraja2, int main1, int main2,
+            int side1, int side2) {
+
+        Resultado res;
+        boolean existeCruce = true, resultado_metodo;
+
+        try {
+
+            // global baraja 1:
+            res = resultadoBD.obtener_resultados(baraja1, null);
+            res.introducir_datos(main1, main2, side1, side2);
+            res.calcular_porcentajes();
+            resultado_metodo = resultadoBD.introducir_variable_resultado(res, false);
+
+            if (resultado_metodo) {
+                //global baraja 2:
+                res = resultadoBD.obtener_resultados(baraja2, null);
+                res.introducir_datos(main2, main1, side2, side1);
+                res.calcular_porcentajes();
+                resultado_metodo = resultadoBD.introducir_variable_resultado(res, false);
+            }
+
+            if (resultado_metodo) {
+                //cruce 1 vs 2:
+                res = resultadoBD.obtener_resultados(baraja1, baraja2);
+                existeCruce = !(res.getMain1() == 0
+                        && res.getMain2() == 0
+                        && res.getSide1() == 0
+                        && res.getSide2() == 0);
+                res.introducir_datos(main1, main2, side1, side2);
+                res.calcular_porcentajes();
+                resultado_metodo = resultadoBD.introducir_variable_resultado(res, existeCruce);
+            }
+
+            if (resultado_metodo) {
+                //cruce 2 vs 1:
+                res = resultadoBD.obtener_resultados(baraja2, baraja1);
+                res.introducir_datos(main2, main1, side2, side1);
+                res.calcular_porcentajes();
+                resultado_metodo = resultadoBD.introducir_variable_resultado(res, existeCruce);
+            }
+
+            return resultado_metodo;
+
+        } catch (SQLException e) {
+            //e.printStackTrace();
+            return false;
+        }
+
+    }
+
     public void introducirResultado() throws SQLException {
-        // el CT de 2 string devuelve -1 en a.CT(b)
-        // entonces si baraja1.compareTo(baraja2) devuelve 1 es que baraja2 va ANTES.
-        //si es 1 es porque b.ct(a), --> b2 va ANTES que b1 hay que invertirlas
+
 
         String retorno = "introducir_resultado.xhtml";
-        
+
         if (baraja1.equals(baraja2)) {
             puestaCero();
-            Herramientas.lanza_mensaje(TipoMensaje.INFO, "Las barajas deben ser distintas", 
+            Herramientas.lanza_mensaje(TipoMensaje.INFO, "Las barajas deben ser distintas",
                     retorno);
         } else {
             boolean control;
-            // mando las barajas ordenadas pero si invierto el orden hay que invertirlo en los resultados
-            if (baraja1.compareTo(baraja2) < 1) {
-                control = resultadoBD.introducirResultado(baraja1, baraja2, main1, main2, side1, side2);
-            } else {
-                control = resultadoBD.introducirResultado(baraja2, baraja1, main2, main1, side2, side1);
-            }
+            control = introducirResultadoCruce(baraja1, baraja2, main1, main2, side1, side2);
             puestaCero();
             if (control) {
-                  Herramientas.lanza_mensaje(TipoMensaje.CORRECTO, 
-                          "El resultado se ha introducido correctamente",
-                          retorno);
+                Herramientas.lanza_mensaje(TipoMensaje.CORRECTO,
+                        "El resultado se ha introducido correctamente",
+                        retorno);
             } else {
-                Herramientas.lanza_mensaje(TipoMensaje.ERROR, 
+                Herramientas.lanza_mensaje(TipoMensaje.ERROR,
                         "El resultado no ha podido introducirse, vuelve a intentarlo",
                         retorno);
             }
@@ -180,18 +263,18 @@ public class ResultadoManagedBean {
 
     }
 
-    public void introducirPrevioTorneo(String usuario) throws SQLException {
-        this.usuario = usuario;
+    public void introducirPrevioTorneo(String nombre_usuario) throws SQLException {
+        usuario = nombre_usuario;
         num_rondas = 0;
         baraja1 = null;
-        carga_nombres_barajas_de_usuario(usuario);
+        carga_nombres_barajas_de_usuario();
         try {
             FacesContext.getCurrentInstance()
                     .getExternalContext()
                     .redirect("intoducir_torneo_1.xhtml");
 
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 
@@ -207,13 +290,13 @@ public class ResultadoManagedBean {
             baraja1 = null;
             num_rondas = 0;
             Herramientas.lanza_mensaje(TipoMensaje.ERROR,
-                    "No ha podido introducirse el resultado", 
+                    "No ha podido introducirse el resultado",
                     "introducir_torneo_1.xhtml");
         }
 
     }
 
-    public void introducirResultadoTorneo() throws SQLException {
+    public void introducirResultadoRonda() throws SQLException {
         ResultadoRonda ronda;
 
         /*
@@ -268,6 +351,7 @@ public class ResultadoManagedBean {
 
     }
 
+
     public void guardar_torneo() throws SQLException {
 
         // en cada elemento del arraylist resultadosRondas tengo partidas ganadas y perdidas,
@@ -283,6 +367,7 @@ public class ResultadoManagedBean {
         int rondas_perdidas = 0;
         int rondas_empatadas = 0;
         ResultadoRonda resultado;
+        ResultadoUsuarioBaraja resultadoUsuarioBaraja;
 
         boolean control = true;
         Iterator<ResultadoRonda> it = resultadosRondas.iterator();
@@ -304,14 +389,10 @@ public class ResultadoManagedBean {
             String baraja2 = resultado.getOponente();
 
             // solo computo el resultado del emparejamiento si las barajas son distintas
-            // se las paso ordenadas a introducirResultado
+            // como hay resultados espejos no necesito ordenarlas
             if (!baraja1.equals(baraja2)) {
-
-                if (baraja1.compareTo(baraja2) < 1) {
-                    control = resultadoBD.introducirResultado(baraja1, baraja2, main1, main2, side1, side2);
-                } else {
-                    control = resultadoBD.introducirResultado(baraja2, baraja1, main1, main2, side1, side2);
-                }
+                
+                control = introducirResultadoCruce(baraja1, baraja2, main1, main2, side1, side2);
             } else {
                 control = true;
             }
@@ -341,24 +422,29 @@ public class ResultadoManagedBean {
         // a lo largo del torneo, que se deberan introducir con una sola operacion en cada tabla, con un solo metodo
         // cuando el it.hasNext devuelva false, control deberia ser true si todo se ha introducido bien
         if (control) {
-            control = gestorBD.guardar_torneo(usuario, baraja1, main_torneo1, main_torneo2,
+
+            resultadoUsuarioBaraja = resultadoBD.obtener_resultado_usuario_con_baraja(usuario, baraja1);
+            resultadoUsuarioBaraja.introducir_datos(main_torneo1, main_torneo2,
                     side_torneo1, side_torneo2, rondas_ganadas, rondas_perdidas, rondas_empatadas);
+            resultadoUsuarioBaraja.calcular_porcentajes();
+
+            control = resultadoBD.introducir_variable_resultado_usuario_con_baraja(resultadoUsuarioBaraja);
 
         }
 
         if (control) {
             String cadena_resultado = "" + rondas_ganadas + "-" + rondas_perdidas + "-" + rondas_empatadas;
             int puntos = rondas_ganadas * 3 + rondas_empatadas;
-            control = gestorBD.guardar_resultado_torneo(usuario, baraja1, puntos, cadena_resultado);
+            control = resultadoBD.guardar_resultado_final_torneo(usuario, baraja1, puntos, cadena_resultado);
         }
 
         if (control) {
-            Herramientas.lanza_mensaje(TipoMensaje.CORRECTO, 
-                    "El resultado se ha introducido correctamente", 
+            Herramientas.lanza_mensaje(TipoMensaje.CORRECTO,
+                    "El resultado se ha introducido correctamente",
                     "login");
 
         } else {
-            Herramientas.lanza_mensaje(TipoMensaje.ERROR, 
+            Herramientas.lanza_mensaje(TipoMensaje.ERROR,
                     "El resultado no se ha podido introducir",
                     "login");
         }

@@ -1,17 +1,12 @@
 package Controlador;
 
+import GestorBD.ResultadoBD;
 import Modelo.Baraja;
-import Modelo.Baraja_de_usuario;
 import Modelo.Cruce;
-import Modelo.GestorBD;
-import Modelo.Usuario;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 
@@ -24,10 +19,10 @@ public class CuadroManagedBean {
     private String baraja_filtro;
     private ArrayList<Cruce> cruces;
 
-    private GestorBD gestorBD;
+    private final ResultadoBD resultadoBD;
 
     public CuadroManagedBean() {
-        gestorBD = new GestorBD();
+        resultadoBD = new ResultadoBD();
     }
 
     public ArrayList<Baraja> getBarajas() {
@@ -72,7 +67,7 @@ public class CuadroManagedBean {
     public void detalles_baraja() throws SQLException {
 
         if (!baraja_filtro.equals("todas")) {
-            cruces = gestorBD.leerCruces(baraja_filtro);
+            cruces = resultadoBD.leerCruces(baraja_filtro);
           
             try {
                 FacesContext.getCurrentInstance()
