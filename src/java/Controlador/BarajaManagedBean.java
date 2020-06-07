@@ -15,15 +15,14 @@ import javax.faces.context.FacesContext;
 @SessionScoped
 public class BarajaManagedBean {
 
-
     private String nombre, modificar, nuevo_nombre;
     private String nombre_nueva_baraja_usuario;
-    
+
     private int tier, tier_nuevo;
-    
+
     private ArrayList<Baraja> barajas;
     private ArrayList<String> nombres_barajas;
-    
+
     private final BarajaBD barajaBD;
 
     public BarajaManagedBean() throws SQLException {
@@ -86,12 +85,15 @@ public class BarajaManagedBean {
     public ArrayList<String> getNombres_barajas() {
         return nombres_barajas;
     }
-    
-    private ArrayList<String> lee_nombres_barajas(){
+
+    private ArrayList<String> lee_nombres_barajas() {
         ArrayList<String> nombres_barajas = new ArrayList<>();
-        barajas.forEach((b) -> {
-            nombres_barajas.add(b.getNombre());
-        });
+        if (barajas.size() > 0) {
+            barajas.forEach((b) -> {
+                nombres_barajas.add(b.getNombre());
+            });
+        }
+
         return nombres_barajas;
     }
 
@@ -99,16 +101,16 @@ public class BarajaManagedBean {
         modificar = null;
         nuevo_nombre = null;
         tier_nuevo = 0;
-        
+
         try {
             barajas = barajaBD.lee_todas_las_barajas();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             //e.printStackTrace();
             //con.rollback();
             Herramientas.lanza_mensaje(TipoMensaje.ERROR, "Se ha prodocido un problema con la base de datos",
                     "homeSuperUser.xhtml");
         }
-        
+
         //nombres_barajas = gestorBD.lee_nombres_barajas();
         nombres_barajas = lee_nombres_barajas();
         nombres_barajas.add(0, "Modificar");
@@ -126,17 +128,17 @@ public class BarajaManagedBean {
         tier_nuevo = 0;
         nuevo_nombre = null;
         if (!modificar.equals("Modificar")) {
-            
+
             boolean encontrada = false;
-            int i=0;
+            int i = 0;
             Baraja b;
-            while (! encontrada && i<barajas.size()){
+            while (!encontrada && i < barajas.size()) {
                 b = barajas.get(i);
-                if (b.getNombre().equals(modificar)){
+                if (b.getNombre().equals(modificar)) {
                     tier = b.getTier();
                     encontrada = true;
                 }
-                i ++;
+                i++;
             }
 
             if (control) {
@@ -164,14 +166,14 @@ public class BarajaManagedBean {
         }
 
         int resultado;
-        
+
         try {
             resultado = barajaBD.actualizarBaraja(modificar, nuevo_nombre, tier_nuevo);
-        } catch (SQLException e){
+        } catch (SQLException e) {
             //e.printStackTrace();
             resultado = 0;
         }
-        
+
         if (resultado == 1) {
             carga_pagina_gestionar_barajas();
         } else {
@@ -183,15 +185,15 @@ public class BarajaManagedBean {
 
     }
 
-    public void borrarBaraja()  {
+    public void borrarBaraja() {
         boolean funciona;
         try {
             funciona = barajaBD.borrarBaraja(modificar);
-        } catch (SQLException e){
+        } catch (SQLException e) {
             //e.printStackTrace();
             funciona = false;
         }
-        if (funciona){
+        if (funciona) {
             carga_pagina_gestionar_barajas();
         } else {
             Herramientas.lanza_mensaje(TipoMensaje.ERROR, "No se ha podido eliminar la baraja.",
@@ -204,9 +206,9 @@ public class BarajaManagedBean {
         if (!nuevo_nombre.equals("") && nuevo_nombre.length() <= 20 && tier_nuevo > 0) {
             nuevo_nombre = Herramientas.tratar_nombre(nuevo_nombre);
             Baraja baraja_nueva = new Baraja(nuevo_nombre, tier_nuevo);
-            
+
             int valor = barajaBD.guardarBaraja(baraja_nueva);
-            
+
             if (valor == 1) {
                 nuevo_nombre = null;
                 tier = 0;
@@ -214,13 +216,14 @@ public class BarajaManagedBean {
                 Herramientas.lanza_mensaje(TipoMensaje.CORRECTO, "La baraja se ha introducido",
                         "gestionar_barajas.xhtml");
             } else {
-               Herramientas.lanza_mensaje(TipoMensaje.ERROR, "No se ha podido introducir la baraja",
-                       "gestionar_barajas.xhtml");
+                Herramientas.lanza_mensaje(TipoMensaje.ERROR, "No se ha podido introducir la baraja",
+                        "gestionar_barajas.xhtml");
             }
         }
     }
 
     public void carga_pagina_desglose_barajas_usuario() throws SQLException {
+        barajas = barajaBD.lee_todas_las_barajas();
         nombres_barajas = lee_nombres_barajas();
 
         try {

@@ -9,6 +9,7 @@ import Conectividad.ConectaBD;
 import Modelo.Cruce;
 import Modelo.Resultado;
 import Modelo.ResultadoUsuarioBaraja;
+import Modelo.ResultadoUsuarioGlobal;
 import Modelo.Torneo;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -374,7 +375,10 @@ public class ResultadoBD {
             st.setString(13, res.getNombre_usuario());
 
             resultado = st.executeUpdate() == 1;
-
+            
+            
+                        
+                        
             //con.commit;
             return resultado;
 
@@ -520,5 +524,88 @@ public class ResultadoBD {
             }
         }
     }
+    
+    
+    public ResultadoUsuarioGlobal obtener_resultados_usuario(String nombre_usuario)
+            throws SQLException{
+        ResultadoUsuarioGlobal res = new ResultadoUsuarioGlobal();
+        res.setNombre_usuario(nombre_usuario);
+        
+        try{
+            
+            ConectaBD conectaBD = new ConectaBD();
+            con = conectaBD.getConnection();
+            st = con.prepareStatement(
+                    "select rondas_ganadas, rondas_empatadas, rondas_perdidas, partidas_ganadas, "
+                    + "partidas_perdidas from usuarios where nombre_usuario = ?");
+            st.setString(1, nombre_usuario);
+            rs = st.executeQuery();
+
+            if (rs.next()){
+                res.setRondas_ganadas(rs.getInt("rondas_ganadas"));
+                res.setRondas_perdidas(rs.getInt("rondas_perdidas"));
+                res.setRondas_empatadas(rs.getInt("rondas_empatadas"));
+                res.setPartidas_ganadas(rs.getInt("partidas_ganadas"));
+                res.setPartidas_perdidas(rs.getInt("partidas_perdidas"));             
+            }
+            
+            
+            //con.commit();
+            return res;
+        
+        }catch (SQLException e) {
+            //e.printStackTrace();
+            //con.rollback();
+            throw e;
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+            if (st != null) {
+                st.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+    }
+    
+    public boolean introducir_resultados_usuario(ResultadoUsuarioGlobal res)
+            throws SQLException {
+        try {
+            ConectaBD conectaBD = new ConectaBD();
+            con = conectaBD.getConnection();
+            st = con.prepareStatement(
+                    "update usuarios set "
+                    + "rondas_ganadas = ?, "
+                    + "rondas_empatadas = ?, "
+                    + "rondas_perdidas = ?, "
+                    + "partidas_ganadas = ?, "
+                    + "partidas_perdidas = ?, "
+                    + "porcentaje_rondas = ?, "
+                    + "porcentaje_partidas = ? "
+                    + "where nombre_usuario = ?");
+            
+            st.setInt(1, res.getRondas_ganadas());
+            st.setInt(2, res.getRondas_empatadas());
+            st.setInt(3, res.getRondas_perdidas());
+            st.setInt(4, res.getPartidas_ganadas());
+            st.setInt(5, res.getPartidas_perdidas());
+            st.setFloat(6, res.getPorcentaje_rondas());
+            st.setFloat(7, res.getPorcentaje_partidas());
+            st.setString(8, res.getNombre_usuario());
+            
+            return st.executeUpdate() == 1;
+            
+        } catch (SQLException e){
+            //con.rollback();
+            throw e;
+        } finally {
+            if (st != null){st.close();}
+            if (con != null){con.close();}
+        }
+        
+    }
+        
 
 }

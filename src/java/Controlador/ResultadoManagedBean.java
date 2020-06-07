@@ -4,6 +4,7 @@ import GestorBD.ResultadoBD;
 import Modelo.Resultado;
 import Modelo.ResultadoRonda;
 import Modelo.ResultadoUsuarioBaraja;
+import Modelo.ResultadoUsuarioGlobal;
 import Util.Herramientas;
 import Util.TipoMensaje;
 import java.io.IOException;
@@ -352,6 +353,7 @@ public class ResultadoManagedBean {
     }
 
 
+    // corregir que no lanzce excepttion
     public void guardar_torneo() throws SQLException {
 
         // en cada elemento del arraylist resultadosRondas tengo partidas ganadas y perdidas,
@@ -429,9 +431,24 @@ public class ResultadoManagedBean {
             resultadoUsuarioBaraja.calcular_porcentajes();
 
             control = resultadoBD.introducir_variable_resultado_usuario_con_baraja(resultadoUsuarioBaraja);
-
         }
-
+        
+        if (control) {
+            try {
+               ResultadoUsuarioGlobal resultadoUsuario = resultadoBD.obtener_resultados_usuario(usuario); 
+               resultadoUsuario.introducir_resultados(
+                        (main_torneo1+side_torneo1), (main_torneo2+side_torneo2), rondas_ganadas, rondas_perdidas, rondas_empatadas);
+               resultadoUsuario.calcular_porcentajes();
+               control = resultadoBD.introducir_resultados_usuario(resultadoUsuario);
+               
+            } catch (SQLException e){
+                //e.printStackTrace();
+                control = false;
+            } 
+            
+        }
+        
+        
         if (control) {
             String cadena_resultado = "" + rondas_ganadas + "-" + rondas_perdidas + "-" + rondas_empatadas;
             int puntos = rondas_ganadas * 3 + rondas_empatadas;

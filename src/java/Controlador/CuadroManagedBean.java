@@ -1,5 +1,6 @@
 package Controlador;
 
+import GestorBD.BarajaBD;
 import GestorBD.ResultadoBD;
 import Modelo.Baraja;
 import Modelo.Cruce;
@@ -20,9 +21,11 @@ public class CuadroManagedBean {
     private ArrayList<Cruce> cruces;
 
     private final ResultadoBD resultadoBD;
+    private final BarajaBD barajaBD;
 
     public CuadroManagedBean() {
         resultadoBD = new ResultadoBD();
+        barajaBD = new BarajaBD();
     }
 
     public ArrayList<Baraja> getBarajas() {
@@ -48,7 +51,7 @@ public class CuadroManagedBean {
     
 
     public void carga_pagina_estadisticas_barajas() throws SQLException {
-        //barajas = barajaBD.lee_todas_las_barajas();
+        barajas = barajaBD.lee_todas_las_barajas();
         nombres_barajas = new ArrayList<>();
         cruces = new ArrayList<>();
         nombres_barajas.add("todas");
