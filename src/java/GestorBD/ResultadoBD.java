@@ -1,53 +1,77 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package GestorBD;
 
-import Conectividad.ConectaBD;
 import Modelo.Cruce;
 import Modelo.Resultado;
 import Modelo.ResultadoUsuarioBaraja;
 import Modelo.ResultadoUsuarioGlobal;
 import Modelo.Torneo;
+import Util.PoolDeConexiones;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
+ * Clase de gestión de datos y comnunicación con la base de datos para la introduccion de resultados de torneos
  *
- * @author admin
+ * @author <a href="mailto:ebl0010@alu.ubu.es">Eric Berlinches</a>
  */
 public class ResultadoBD {
 
+    /**
+     * Atributo conexion para conectarse a la base de datos
+     */
     private Connection con = null;
+    /**
+     * atributo sentencia preparada para las operaciones SQL
+     */
     private PreparedStatement st = null;
+    /**
+     * artibuto result set para recoger el resultado de las select
+     */
     private ResultSet rs = null;
+    /**
+     * atributo logger para recoger las trazas de error de las excepciones
+     */
+    private static Logger l = null;
 
-    private float porcentaje_main, porcentaje_side, porcentaje_total;
+    /**
+     * constructor sin argumentos que inicializa el logger.
+     */
+    public ResultadoBD() {
+        l = LoggerFactory.getLogger(ResultadoBD.class);
+    }
 
+
+    /**
+     * Metodo que devuelve un arraylist con los nombres de las barajas ordenadas por tier. 
+     * @return barajas devuelve un arraylist de String con los nombres de las barajas de la base de datos.
+     * @throws SQLException posible excepción durante el cierre de recursos
+     */
     public ArrayList<String> lee_nombres_barajas() throws SQLException {
         ArrayList<String> barajas = new ArrayList<>();
         try {
-            ConectaBD conectaBD = new ConectaBD();
-            con = conectaBD.getConnection();
+            PoolDeConexiones pool = PoolDeConexiones.getInstance();
+            con = pool.getConnection();
             st = con.prepareStatement("SELECT nombre_baraja FROM barajas order by tier");
             rs = st.executeQuery();
 
-            if (!rs.next()) {
-                return barajas;
-            } else {
+            //no puedo hacer rs.next porque puede no haber barajas y tampoco quiero un nullPointer
+            if (rs.next()){
                 do {
                     barajas.add(rs.getString("nombre_baraja"));
                 } while (rs.next());
-                return barajas;
             }
+            con.commit();
+            return barajas;
+            
         } catch (SQLException e) {
-            //con.rollback();
-            return null;
+            con.rollback();
+            l.error(e.getLocalizedMessage());
+            return barajas;
         } finally {
             if (rs != null) {
                 rs.close();
@@ -61,11 +85,18 @@ public class ResultadoBD {
         }
     }
 
+    /**
+     * Método que devuelve un ArrayList de String con los nombres de las barajas asignadas a un usuario.
+     * No necesita comprobar si el usuario existe porque viene de la variable de sesión activa desde el login.
+     * @param nombre_usuario nombre del usuario del que se quieren recuperar las barajas.
+     * @return barajas_de_usuario ArrayList con los nombres de las barajas.
+     * @throws SQLException posible excepción durante el cierre de recursos.
+     */
     public ArrayList<String> devolver_nombres_barajas_de_usuario(String nombre_usuario) throws SQLException {
         ArrayList<String> barajas_de_usuario = new ArrayList<>();
         try {
-            ConectaBD conectaBD = new ConectaBD();
-            con = conectaBD.getConnection();
+            PoolDeConexiones pool = PoolDeConexiones.getInstance();
+            con = pool.getConnection();
             st = con.prepareStatement("SELECT nombre_baraja FROM barajas_usuarios "
                     + "where nombre_usuario = ?");
             st.setString(1, nombre_usuario);
@@ -75,12 +106,12 @@ public class ResultadoBD {
                 barajas_de_usuario.add(rs.getString("nombre_baraja"));
             }
 
-            //con.commit;
+            con.commit();
             return barajas_de_usuario;
 
         } catch (SQLException e) {
-            //con.rollback();
-            //e.printStackTrace();
+            con.rollback();
+            l.error(e.getLocalizedMessage());
             return barajas_de_usuario;
         } finally {
             if (rs != null) {
@@ -95,7 +126,21 @@ public class ResultadoBD {
         }
     }
 
-
+    /**
+     * Método auxiliar que cumple varias funciones dependiendo de los argumentos que reciba:
+     *  -caso1: recibe una sola baraja que no existe: si baraja_2 es nulo, hace una select de la tabla BARAJAS para
+     *            cargar los datos de baraja_1 (partidas ganadas y perdidas de main y side de esta baraja).
+     *  -caso2: recibe dos barajas (baraja_2 no es nula): busca en la tabla CRUCES si existe una entrada
+     *            que relacione a estas dos barajas. Si lo encuentra carga los valores de dicho cruce en unas variables
+     *            locales, y, si no existe, inicializa las variables locales a 0. 
+     * NOTA: no hay que comprobar si las barajas existen porque vienen seleccionadas de una lista cargada
+     * previamente con todas las barajas de la base de datos. 
+     * 
+     * @param baraja1 primera baraja del par.
+     * @param baraja2 segunda baraja del par.
+     * @return Resultado devuelve los datos del cruce entre esas dos barajas.
+     * @throws SQLException posible excepción durante el cierre de recursos.
+     */
     public Resultado obtener_resultados(String baraja1, String baraja2) throws SQLException {
         Resultado res = new Resultado();
         res.setBaraja1(baraja1);
@@ -105,8 +150,8 @@ public class ResultadoBD {
 
         try {
 
-            ConectaBD conectaBD = new ConectaBD();
-            con = conectaBD.getConnection();
+            PoolDeConexiones pool = PoolDeConexiones.getInstance();
+            con = pool.getConnection();
 
             if (baraja2 == null) {
                 st = con.prepareStatement(
@@ -137,12 +182,12 @@ public class ResultadoBD {
                 res.setSide2(rs.getInt(4));
             }
 
-            //con.commit;
+            con.commit();
             return res;
 
         } catch (SQLException e) {
-            //e.printStackTrace();
-            //con.rollback();
+            con.rollback();
+            l.error(e.getLocalizedMessage());
             return res;
         } finally {
             if (rs != null) {
@@ -159,24 +204,25 @@ public class ResultadoBD {
     }
 
     /**
-     * Este metodo recibe un parametro Resultado con los valores de victorias y derrotas de main y side y los
+     * Método que recibe como parametro un objeto  Resultado con los valores de victorias y derrotas de main y side y los
      * porcentajes correspondientes de baraja1 sobre baraja2. Si Baraja2 es nulo los datos se insertan en
      * la tabla barajas ya que se estan actualizado los datos globales de una unica baraja.
      * 
      * Si, por otro lado, baraja2 no es nulo, entonces se tienen que actualizar los valores en la tabla cruces,
      * y a su vez el metodo valora si el parametro existeCruce es verdadero para hacer un update o si es falso
      * para hacer un insert, en funcion de si ese cruce existia ya previamente o no. 
+     * 
      * @param res variable resultado con los datos que se quieren introducir en la base de datos
      * @param existeCruce variable booleana para saber si hay que hacer insert o update
      * @return true o false en funcion de si la transaccion ha funcionado o no
-     * @throws SQLException 
+     * @throws SQLException posible excepcion durante el cierre de recursos
      */
     public boolean introducir_variable_resultado(Resultado res, boolean existeCruce) throws SQLException {
         boolean resultado;
         try {
 
-            ConectaBD conectaBD = new ConectaBD();
-            con = conectaBD.getConnection();
+            PoolDeConexiones pool = PoolDeConexiones.getInstance();
+            con = pool.getConnection();
 
             if (res.getBaraja2() == null) {
                 st = con.prepareStatement(
@@ -250,12 +296,12 @@ public class ResultadoBD {
                 
             }
 
-            //con.commit;
+            con.commit();
             return resultado;
 
         } catch (SQLException e) {
-            //e.printStackTrace();
-            //con.rollback();
+            con.rollback();
+            l.error(e.getLocalizedMessage());
             return false;
         } finally {
             if (rs != null) {
@@ -272,6 +318,16 @@ public class ResultadoBD {
     }
 
 
+    /**
+     * Método que recibe como parámetros el nombre de un usuario y de una baraja y devuelve un objeto
+     * resultadoUsuarioBaraja que contiene las partidas ganadas y perdidas de main y side y las rondas
+     * ganadas, perdidas y empatadas de ese usuario con esa baraja. 
+     * 
+     * @param nombre_usuario usuario del que se quieren obtener los datos.
+     * @param nombre_baraja baraja de la que se quieren obtener los datos.
+     * @return ResultadoUsuarioBaraja que contiene los datos anteriormente mencionados.
+     * @throws SQLException posible excepción durante el cierre de recursos.
+     */
     public ResultadoUsuarioBaraja obtener_resultado_usuario_con_baraja(String nombre_usuario, String nombre_baraja)
             throws SQLException {
 
@@ -281,8 +337,8 @@ public class ResultadoBD {
 
         try {
 
-            ConectaBD conectaBD = new ConectaBD();
-            con = conectaBD.getConnection();
+            PoolDeConexiones pool = PoolDeConexiones.getInstance();
+            con = pool.getConnection();
 
             st = con.prepareStatement(
                     "select rondas_ganadas, rondas_perdidas, rondas_empatadas, partidas_ganadas_main, "
@@ -315,12 +371,12 @@ public class ResultadoBD {
 
             }
 
-            //con.commit;
+            con.commit();
             return res;
 
         } catch (SQLException e) {
-            //e.printStackTrace();
-            //con.rollback();
+            con.rollback();
+            l.error(e.getLocalizedMessage());
             return res;
         } finally {
             if (rs != null) {
@@ -336,13 +392,19 @@ public class ResultadoBD {
 
     }
 
+    /**
+     * Método que recibe un objeto ResultadoUsuarioBaraja e introduce sus datos en la tabla barajas_usuarios.
+     * @param res objeto resultado con los datos a introducir.
+     * @return true o false en función de si la transacción funciona o no.
+     * @throws SQLException Posible excepción producida durante el cierre de recursos.
+     */
     public boolean introducir_variable_resultado_usuario_con_baraja(ResultadoUsuarioBaraja res)
             throws SQLException {
         boolean resultado;
         try {
 
-            ConectaBD conectaBD = new ConectaBD();
-            con = conectaBD.getConnection();
+            PoolDeConexiones pool = PoolDeConexiones.getInstance();
+            con = pool.getConnection();
 
             st = con.prepareStatement(
                     "update barajas_usuarios set "
@@ -375,16 +437,13 @@ public class ResultadoBD {
             st.setString(13, res.getNombre_usuario());
 
             resultado = st.executeUpdate() == 1;
-            
-            
-                        
-                        
-            //con.commit;
+          
+            con.commit();
             return resultado;
 
         } catch (SQLException e) {
-            //e.printStackTrace();
-            //con.rollback();
+            con.rollback();
+            l.error(e.getLocalizedMessage());
             return false;
         } finally {
             if (rs != null) {
@@ -400,14 +459,27 @@ public class ResultadoBD {
 
     }
 
+    /**
+     * Método que introduce el resultado de un torneo en la base de datos. Este resultado está compuesto
+     * por el nombre del usuario, el nombre de la baraja que ha utilizado, los puntos obtenidos y la cadena
+     * resultado, que es un String de la forma "G-P-E", siendo G rondas ganadas, E empatadas y P perdidas.
+     * A tener en consideración que no hay que comprobar si el usuario y la baraja existen previamente porque
+     * vienen de un contexto de selección que no da lugar a ello.
+     * @param nombre_usuario usuario que ha obtenido el resultado.
+     * @param nombre_baraja baraja que se ha utilizado en el torneo.
+     * @param puntos número de puntos obtenidos.
+     * @param cadena_resultado cadena con el resultado descrita anteriormente.
+     * @return true o false en función de si la transacción funciona o no.
+     * @throws SQLException posible excepción durante el cierre de recursos.
+     */
     public boolean guardar_resultado_final_torneo(String nombre_usuario, String nombre_baraja, int puntos,
             String cadena_resultado)
             throws SQLException {
         boolean retorno;
         try {
             // no tengo que comprobar usuario ni baraja porque sino el torneo no hubiese podido agregarse
-            ConectaBD conectaBD = new ConectaBD();
-            con = conectaBD.getConnection();
+            PoolDeConexiones pool = PoolDeConexiones.getInstance();
+            con = pool.getConnection();
             st = con.prepareStatement(
                     "update torneos set repeticiones = repeticiones +1 where nombre_usuario = ? "
                     + "and nombre_baraja = ? and resultado = ?");
@@ -428,9 +500,11 @@ public class ResultadoBD {
                 retorno = st.executeUpdate() == 1;
             }
 
+            con.commit();
             return retorno;
         } catch (SQLException e) {
-            //con.rollback();
+            con.rollback();
+            l.error(e.getLocalizedMessage());
             return false;
         } finally {
             if (rs != null) {
@@ -445,13 +519,24 @@ public class ResultadoBD {
         }
     }
 
+    /**
+     * Método que lee todos los cruces para todas una baraja.
+     * Esto es: dada una baraja, por su nombre, busca en la tabla cruces de la base de datos todas las 
+     * entradas donde esta baraja aparece como "baraja_1", y, de cada una de esas entradas extrae el nombre
+     * de la segunda baraja del cruce, las partidas ganadas y perdidas de main y side y los porcentajes. 
+     * Introduce todos estos datos en un objeto Cruce, y los va añadiendo a un arrayList de Cruce que devuelve
+     * al final.
+     * @param nombre_baraja nombre de baraja de la que se quieren obtener los emparejamientos.
+     * @return cruces devuelve los resultados de los cruces de la baraja pasada como parámetro.
+     * @throws SQLException posible excepción durante el cierre de recursos.
+     */
     public ArrayList<Cruce> leerCruces(String nombre_baraja) throws SQLException {
-        ArrayList<Cruce> cruces = new ArrayList<Cruce>();
+        ArrayList<Cruce> cruces = new ArrayList<>();
         Cruce cruce;
 
         try {
-            ConectaBD conectaBD = new ConectaBD();
-            con = conectaBD.getConnection();
+            PoolDeConexiones pool = PoolDeConexiones.getInstance();
+            con = pool.getConnection();
             st = con.prepareStatement("select * from cruces where nombre_baraja_1 = ?");
             st.setString(1, nombre_baraja);
             rs = st.executeQuery();
@@ -469,11 +554,12 @@ public class ResultadoBD {
                 cruces.add(cruce);
             }
 
+            con.commit();
             return cruces;
 
         } catch (SQLException e) {
-            //e.printStackTrace();
-            //con.rollback();
+            con.rollback();
+            l.error(e.getLocalizedMessage());
             return cruces;
         } finally {
             if (rs != null) {
@@ -489,11 +575,18 @@ public class ResultadoBD {
 
     }
 
+    /**
+     * Método que devuelve todos los resultados de torneos de un usuario. Al haber varios registros va guardando
+     * cada fila del resultSet en un objeto Cruce, que después añade al array que se devuelve al final.
+     * @param nombre_usuario nombre del usuario cuyo historial de torneos se quiere devolver.
+     * @return torneos devuelve un arrayList de Torneo con los resultados obtenidos por el usuario.
+     * @throws SQLException posible excepción durante el cierre de recursos.
+     */
     public ArrayList<Torneo> cargaTorneosDeUsuario(String nombre_usuario) throws SQLException {
         ArrayList<Torneo> torneos = new ArrayList<>();
         try {
-            ConectaBD conectaBD = new ConectaBD();
-            con = conectaBD.getConnection();
+            PoolDeConexiones pool = PoolDeConexiones.getInstance();
+            con = pool.getConnection();
             st = con.prepareStatement("SELECT * FROM torneos WHERE nombre_usuario = ? order by puntos desc");
             st.setString(1, nombre_usuario);
             rs = st.executeQuery();
@@ -507,10 +600,11 @@ public class ResultadoBD {
                 t.setNombre_usuario(nombre_usuario);
                 torneos.add(t);
             }
+            con.commit();
             return torneos;
         } catch (SQLException e) {
-            //e.printStackTrace();
-            //con.rollback();
+            con.rollback();
+            l.error(e.getLocalizedMessage());
             return torneos;
         } finally {
             if (rs != null) {
@@ -525,7 +619,13 @@ public class ResultadoBD {
         }
     }
     
-    
+    /**
+     * Método para obtener los resultados concretos de un usuario. Estos resultados son las rondas ganadas,
+     * perdidas y empatadas y sus partidas ganadas y perdidas.
+     * @param nombre_usuario nombre del usuario cuyos datos se quieren obtener.
+     * @return ResultadoUsuarioGlobal devuelve un objeto con todos estos datos encapsulados.
+     * @throws SQLException posible excepción durante el cierre de recursos.
+     */
     public ResultadoUsuarioGlobal obtener_resultados_usuario(String nombre_usuario)
             throws SQLException{
         ResultadoUsuarioGlobal res = new ResultadoUsuarioGlobal();
@@ -533,8 +633,8 @@ public class ResultadoBD {
         
         try{
             
-            ConectaBD conectaBD = new ConectaBD();
-            con = conectaBD.getConnection();
+            PoolDeConexiones pool = PoolDeConexiones.getInstance();
+            con = pool.getConnection();
             st = con.prepareStatement(
                     "select rondas_ganadas, rondas_empatadas, rondas_perdidas, partidas_ganadas, "
                     + "partidas_perdidas from usuarios where nombre_usuario = ?");
@@ -550,13 +650,13 @@ public class ResultadoBD {
             }
             
             
-            //con.commit();
+            con.commit();
             return res;
         
         }catch (SQLException e) {
-            //e.printStackTrace();
-            //con.rollback();
-            throw e;
+           con.rollback();
+            l.error(e.getLocalizedMessage());
+            return res;
         } finally {
             if (rs != null) {
                 rs.close();
@@ -570,11 +670,18 @@ public class ResultadoBD {
         }
     }
     
+    /**
+     * Método para introducir los resultados de un usuario. 
+     * @param res resultado a introducir en la base de datos.
+     * @return true o false si la transacción funciona o no.
+     * @throws SQLException posible excepción durante el cierre de recursos.
+     */
     public boolean introducir_resultados_usuario(ResultadoUsuarioGlobal res)
             throws SQLException {
+        boolean resultado;
         try {
-            ConectaBD conectaBD = new ConectaBD();
-            con = conectaBD.getConnection();
+            PoolDeConexiones pool = PoolDeConexiones.getInstance();
+            con = pool.getConnection();
             st = con.prepareStatement(
                     "update usuarios set "
                     + "rondas_ganadas = ?, "
@@ -595,11 +702,14 @@ public class ResultadoBD {
             st.setFloat(7, res.getPorcentaje_partidas());
             st.setString(8, res.getNombre_usuario());
             
-            return st.executeUpdate() == 1;
+            resultado = st.executeUpdate() == 1;
+            con.commit();
+            return resultado;
             
         } catch (SQLException e){
-            //con.rollback();
-            throw e;
+            con.rollback();
+            l.error(e.getLocalizedMessage());
+            return false;
         } finally {
             if (st != null){st.close();}
             if (con != null){con.close();}

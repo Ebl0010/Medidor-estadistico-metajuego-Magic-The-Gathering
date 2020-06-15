@@ -1,48 +1,82 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package GestorBD;
 
-import Conectividad.ConectaBD;
 import Modelo.Baraja_de_usuario;
 import Modelo.Usuario;
+import Util.PoolDeConexiones;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
+ * Clase de gestión de datos y comnunicación con la base de datos para el login
+ * y usuario con sesión activa.
  *
- * @author admin
+ * @author <a href="mailto:ebl0010@alu.ubu.es">Eric Berlinches</a>
  */
 public class FormularioBD {
 
+    /**
+     * Atributo conexion para conectarse a la base de datos
+     */
     private Connection con = null;
+    /**
+     * atributo sentencia preparada para las operaciones SQL
+     */
     private PreparedStatement st = null;
+    /**
+     * artibuto result set para recoger el resultado de las select
+     */
     private ResultSet rs = null;
-    private int resultUpdate = 0;
+    /**
+     * atributo logger para recoger las trazas de error de las excepciones
+     */
+    private static Logger l = null;
 
     /**
-     *
-     * @param usuario usuario nuevo a crear
-     * @return 0 si es el primer usuario, 1 si no y -1 si hay error
-     *
-     * comprueba si no hay ningun usuario previo para cambiar retorno a 0,
-     * inserta el usuario nuevo con su nombre y su clave; pondría a -1 retorno
-     * si no se insertase. Despues, si no ha habido errores inserta en roles
-     * usuarios a este nuevo usuario con admin si es el primero o con cuenta
-     * estandar si no lo es.
+     * constructor sin argumentos que inicializa el logger.
      */
-    public int crearUsuario(Usuario usuario) {
+    public FormularioBD() {
+        l = LoggerFactory.getLogger(FormularioBD.class);
+    }
+
+    /**
+     * Método para introducir un usuario a la base de datos.Antes del insert,
+     * realiza una select para saber si es el primer usuario que se registra y,
+     * en caso de serlo, le asigna el rol de administrador. Toda cuenta de
+     * usuario que ingrese posteriormente tendrá el rol "Estandar".
+     *
+     * Se inicializa una variable entera "retorno" en 1, y si no existen
+     * usuarios previamente se reasigna a 0. Si la inserción del usuario
+     * funciona, utilizando esta variable retorno se crea un registro en la
+     * tabla roles_usuarios con el valor 0 (Admin) o 1 (Estandar) para ese
+     * usuario. Si se produce un error durante la transacción la variable pasa a
+     * valer -1 y no se produce esta inserción.
+     *
+     * Si se produce una violación de clave ajena porque el nombre del usuario
+     * está repetido, se salta este bloque del código y llega al bloque catch,
+     * donde se comprueba si ya existia un usuario con ese nombre para devolver
+     * -2. En caso de que el usuario NO exista, escribe la excepción en el
+     * logger y devuelve -1.
+     *
+     * @param usuario ojeto de la clase usuario con los parámetros nombre,
+     * contraseña y correo que se introducen a la base de datos.
+     * @return 0 o 1 si el usuario se agrega satisfactoriamente, -2 si ya
+     * existía un usuario con ese nombre y -1 si se produce otro tipo de error.
+     * @throws SQLException lanza una posible excepción en el bloque finally al
+     * cerrar los recursos.
+     *
+     */
+    public int crearUsuario(Usuario usuario) throws SQLException {
 
         int retorno = 1;
 
         try {
-            ConectaBD conectaBD = new ConectaBD();
-            con = conectaBD.getConnection();
+            PoolDeConexiones pool = PoolDeConexiones.getInstance();
+            con = pool.getConnection();
             st = con.prepareStatement("select * from usuarios");
 
             rs = st.executeQuery();
@@ -66,7 +100,7 @@ public class FormularioBD {
             st.setFloat(9, 0);
             st.setFloat(10, 0);
 
-            resultUpdate = st.executeUpdate();
+            int resultUpdate = st.executeUpdate();
 
             if (resultUpdate == 0) {
                 retorno = -1;
@@ -90,54 +124,62 @@ public class FormularioBD {
 
             }
 
-            //con.commit();
+            con.commit();
             return retorno;
 
         } catch (SQLException e) {
             try {
-              st = con.prepareStatement("select nombre_usuario from usuarios where nombre_usuario = ?");
-              rs = st.executeQuery();
-              if (rs.next()){
-                  String encontrado = rs.getString("nombre_usuario");
-                  if (encontrado.equals(usuario.getNombre())){
-                      return -2;
-                  }
-              }
-            } catch (SQLException e2){
-               //e.printStackTrace();
-               //con.rollback();
-               return -1;
-            }
-            
-            return -1;
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
+                st = con.prepareStatement("select nombre_usuario from usuarios where nombre_usuario = ?");
+                rs = st.executeQuery();
+                if (rs.next()) {
+                    String encontrado = rs.getString("nombre_usuario");
+                    if (encontrado.equals(usuario.getNombre())) {
+                        return -2;
+                    }
+                } else {
+                    return -1;
                 }
-                if (st != null) {
-                    st.close();
-                }
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
+            } catch (SQLException e2) {
+                con.rollback();
+                l.error(e.getLocalizedMessage());
+                l.error(e2.getLocalizedMessage());
                 return -1;
             }
 
-        }
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+            if (st != null) {
+                st.close();
+            }
+            if (con != null) {
+                con.close();
+            }
 
+        }
+        return retorno;
     }
 
-    /*
-    se comrpueba si el usuario existe. 
-    Devuelve 1 si existe, 0 si no existe y -1 si existe pero la clave esta mal.
+    /**
+     * Método que se lanza cuando el usuario intenta hacer login con una
+     * combinacion nombre/clave.El método comprueba si ese usuario existe (si no
+     * inicializa devolver a 0), y comprueba la clave de ese usuario, si es
+     * correcta inicializa devolver a 1 y sino a -1. Si se produce una excepción
+     * devuelve -2.
+     *
+     * @param usuario objeto usuario con la combinación nombre/clave que ha
+     * hecho login.
+     * @return 1 si es correcto, 0 si el usuario no existe o -1 si existe pero
+     * la contraseña es incorrecta o -2 si se produce algún error.
+     * @throws SQLException posible excepción producida en el cierre de
+     * recursos.
      */
-    public int existeUsuario(Usuario usuario) {
-        int devolver = 0;
+    public int existeUsuario(Usuario usuario) throws SQLException {
+        int devolver;
         try {
-            ConectaBD conectaBD = new ConectaBD();
-            con = conectaBD.getConnection();
+            PoolDeConexiones pool = PoolDeConexiones.getInstance();
+            con = pool.getConnection();
             st = con.prepareStatement("Select clave from usuarios where nombre_usuario = ?");
             st.setString(1, usuario.getNombre());
             rs = st.executeQuery();
@@ -151,36 +193,42 @@ public class FormularioBD {
                     devolver = -1;
                 }
             }
-            //con.commit();
+            con.commit();
             return devolver;
         } catch (SQLException e) {
-            //con.rollback();
-            //e.printStackTrace();
+            con.rollback();
+            l.error(e.getLocalizedMessage());
             return -2;
         } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (st != null) {
-                    st.close();
-                }
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                //e.printStackTrace();
-                return -2;
+            if (rs != null) {
+                rs.close();
+            }
+            if (st != null) {
+                st.close();
+            }
+            if (con != null) {
+                con.close();
             }
         }
     }
-    
-    
+
+    /**
+     * Método que carga los valores del usuario. Recibe una combinación
+     * nombre-clave y devuelve un objeto usuario con todos los datos
+     * estadísticos de dicho usuario de la base de datos.
+     *
+     * @param usuario Objeto usuario que únicamente contiene los valores de
+     * nombre y clave.
+     * @return Usuario devuelve un objeto Usuario con todos los valores respecto
+     * a sus datos en la base de datos.
+     * @throws SQLException posible excepción producida en el cierre de
+     * recursos.
+     */
     public Usuario cargarUsuario(Usuario usuario) throws SQLException {
         Usuario devolver = null;
         try {
-            ConectaBD conectaBD = new ConectaBD();
-            con = conectaBD.getConnection();
+            PoolDeConexiones pool = PoolDeConexiones.getInstance();
+            con = pool.getConnection();
             st = con.prepareStatement("SELECT * FROM usuarios WHERE nombre_usuario = ? and clave = ?");
 
             st.setString(1, usuario.getNombre());
@@ -188,35 +236,37 @@ public class FormularioBD {
 
             rs = st.executeQuery();
 
-            if (!rs.next()) {
-                devolver = null;
-            } else {
-                devolver = new Usuario(usuario.getNombre());
-                devolver.setRondas_ganadas(rs.getInt("rondas_ganadas"));
-                devolver.setRondas_empatadas(rs.getInt("rondas_empatadas"));
-                devolver.setRondas_perdidas(rs.getInt("rondas_perdidas"));
-                devolver.setPartidas_ganadas(rs.getInt("partidas_ganadas"));
-                devolver.setPartidas_perdidas(rs.getInt("partidas_perdidas"));
-                devolver.setPorcentaje_rondas(rs.getFloat("porcentaje_rondas"));
-                devolver.setPorcentaje_partidas(rs.getFloat("porcentaje_partidas"));
+            rs.next();
 
-                st = con.prepareStatement(
-                        "select descripcion from roles_usuarios left join roles on roles.idRol = roles_usuarios.idRol "
-                        + "where nombre_usuario = ?"
-                        + "and estado = 0 order by roles.idRol");
-                st.setString(1, usuario.getNombre());
-                rs = st.executeQuery();
-                rs.next();
-                String rol = rs.getString("descripcion");
-                devolver.setRol(rol);
+            devolver = new Usuario(usuario.getNombre());
+            devolver.setRondas_ganadas(rs.getInt("rondas_ganadas"));
+            devolver.setRondas_empatadas(rs.getInt("rondas_empatadas"));
+            devolver.setRondas_perdidas(rs.getInt("rondas_perdidas"));
+            devolver.setPartidas_ganadas(rs.getInt("partidas_ganadas"));
+            devolver.setPartidas_perdidas(rs.getInt("partidas_perdidas"));
+            devolver.setPorcentaje_rondas(rs.getFloat("porcentaje_rondas"));
+            devolver.setPorcentaje_partidas(rs.getFloat("porcentaje_partidas"));
 
-                ArrayList<Baraja_de_usuario> barajas = leeBarajas_de_usuario(usuario);
-                devolver.setLista_de_barajas_de_usuario(barajas);
-            }
+            st = con.prepareStatement(
+                    "select descripcion from roles_usuarios left join roles on roles.idRol = roles_usuarios.idRol "
+                    + "where nombre_usuario = ?"
+                    + "and estado = 0 order by roles.idRol");
+            st.setString(1, usuario.getNombre());
+            rs = st.executeQuery();
+            rs.next();
+            String rol = rs.getString("descripcion");
+            devolver.setRol(rol);
+
+            ArrayList<Baraja_de_usuario> barajas = leeBarajas_de_usuario(usuario);
+            devolver.setLista_de_barajas_de_usuario(barajas);
+
+            con.commit();
+            return devolver;
 
         } catch (SQLException e) {
-            //con.rollback();
-            e.printStackTrace();
+            con.rollback();
+            l.error(e.getLocalizedMessage());
+            return devolver;
         } finally {
             if (rs != null) {
                 rs.close();
@@ -229,16 +279,23 @@ public class FormularioBD {
             }
 
         }
-        return devolver;
     }
-    
-    
+
+    /**
+     * Metodo privado que se llama durante "carga usuario" y que carga sobre un usuario todas sus barajas.
+     * Este método realiza una select de la tabla barajas_usuarios con el usuario que recibe como parámetro
+     * y por cada baraja en el resultSet va cargando sus datos en un objeto baraja_de_usuario que posteriormente
+     * introducirá en una lista. Finlamente devuelve la lista con todas las barajas de usuario que ha encontrado.
+     * @param usuario usuario del que se quieren obtener sus barajas.
+     * @return barajas_de_usuario es la lista con todas las barajas que tiene ese usuario asignadas (y sus datos).
+     * @throws SQLException posible excepción producida durante el cierre de recursos.
+     */
     private ArrayList<Baraja_de_usuario> leeBarajas_de_usuario(Usuario usuario)
             throws SQLException {
         ArrayList<Baraja_de_usuario> lista_de_barajas = new ArrayList<>();
         try {
-            ConectaBD conectaBD = new ConectaBD();
-            con = conectaBD.getConnection();
+            PoolDeConexiones pool = PoolDeConexiones.getInstance();
+            con = pool.getConnection();
             st = con.prepareStatement(
                     "select  * from barajas_usuarios where nombre_usuario = ?");
             st.setString(1, usuario.getNombre());
@@ -265,11 +322,12 @@ public class FormularioBD {
                     lista_de_barajas.add(baraja);
 
                 } while (rs.next());
-                //con.commmit();
+                con.commit();
                 return lista_de_barajas;
             }
         } catch (SQLException e) {
-            //con.rollback();
+            con.rollback();
+            l.error(e.getLocalizedMessage());
             return lista_de_barajas;
         } finally {
             if (rs != null) {
@@ -283,45 +341,49 @@ public class FormularioBD {
             }
         }
     }
-    
+
     /**
-     * cambia el nombre, clave o ambos de un usuario. Antes de hacerlo comprueba que el nombre nuevo
-     * no existe ya
+     * Método que cambia el nombre, clave, o ambos, de un usuario. Antes de hacerlo comprueba
+     * que el nombre nuevo no existe ya. El método está programado utilizando una programación defensiva,
+     * si el usuario existe previamente va a devolver un -1, si el cambio se efectúa correctamente un 1, y sino
+     * un 0.
+     *
      * @param nombre nombre antes de actualizar
      * @param nombre_nuevo nombre actualizado (si lo deja en blanco es el mismo)
      * @param clave_nueva clave nueva (si la deja en blanco es la misma)
-     * @return 1 si los cambios han ido bien, -1 si el nick esta repetido
-     * @throws SQLException 
+     * @return 1 si los cambios han ido bien, -1 si el nick esta repetido y 0 si no se han producido cambios.
+     * @throws SQLException posible excepción producida durante el cierre de recursos.
      */
     public int actualizarUsuario(String nombre, String nombre_nuevo, String clave_nueva)
             throws SQLException {
-        int resultado = 0;
+        int resultado;
         try {
-            ConectaBD conectaBD = new ConectaBD();
-            con = conectaBD.getConnection();
+            PoolDeConexiones pool = PoolDeConexiones.getInstance();
+            con = pool.getConnection();
             st = con.prepareStatement(
-            "select nombre_usuario from usuarios where nombre_usuario = ?");
+                    "select nombre_usuario from usuarios where nombre_usuario = ?");
             rs = st.executeQuery();
-            if (rs.next()){
+            if (rs.next()) {
                 resultado = -1;
             } else {
-               st = con.prepareStatement(
-                    "update usuarios set nombre_usuario = ?, "
-                    + "clave = ? where "
-                    + "nombre_usuario = ?");
-            st.setString(1, nombre_nuevo);
-            st.setString(2, clave_nueva);
-            st.setString(3, nombre);
+                st = con.prepareStatement(
+                        "update usuarios set nombre_usuario = ?, "
+                        + "clave = ? where "
+                        + "nombre_usuario = ?");
+                st.setString(1, nombre_nuevo);
+                st.setString(2, clave_nueva);
+                st.setString(3, nombre);
 
-            resultado = st.executeUpdate(); 
+                resultado = st.executeUpdate();
             }
-            
+
+            con.commit();
             return resultado;
 
         } catch (SQLException e) {
-            //con.rollback;
-            //e.printStackTrace();
-            return -1;
+            con.rollback();
+            l.error(e.getLocalizedMessage());
+            return -2;
         } finally {
             if (st != null) {
                 st.close();
@@ -331,7 +393,5 @@ public class FormularioBD {
             }
         }
     }
-    
-    
 
 }

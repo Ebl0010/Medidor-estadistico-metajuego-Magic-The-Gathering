@@ -1,35 +1,59 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package GestorBD;
 
-import Conectividad.ConectaBD;
 import Modelo.Baraja;
+import Util.PoolDeConexiones;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- *
- * @author admin
+ * Clase de gestión de datos y comnunicación con la base de datos para las barajas.
+ * 
+ * @author <a href="mailto:ebl0010@alu.ubu.es">Eric Berlinches</a>
  */
 public class BarajaBD {
 
+    /**
+     * Atributo conexion para conectarse a la base de datos
+     */
     private Connection con = null;
+    /**
+     * atributo sentencia preparada para las operaciones SQL
+     */
     private PreparedStatement st = null;
+    /**
+     * artibuto result set para recoger el resultado de las select
+     */
     private ResultSet rs = null;
-    private int resultUpdate = 0;
+    /**
+     * atributo logger para recoger las trazas de error de las excepciones
+     */
+    private static Logger l = null;
+    
+    /**
+     * constructor sin argumentos que inicializa el logger.
+     */
+    public BarajaBD(){
+        l = LoggerFactory.getLogger(BarajaBD.class);
+    }
+   
 
+    /**
+     * Metodo que lee todas las barajas y sus datos y lo devuelve en forma de lista de barajas.
+     * 
+     * @return barajas: es el arraylist con todas las barajas.
+     * @throws SQLException lanza una posible excepción en el bloque finally al cerrar los recursos. 
+     */
     public ArrayList<Baraja> lee_todas_las_barajas() throws SQLException {
         ArrayList<Baraja> barajas = new ArrayList<>();
         Baraja baraja;
         try {
-            ConectaBD conectaBD = new ConectaBD();
-            con = conectaBD.getConnection();
+            PoolDeConexiones pool = PoolDeConexiones.getInstance();
+            con = pool.getConnection();
             st = con.prepareStatement("select nombre_baraja, tier, porcentaje_main, porcentaje_side, porcentaje_total from barajas order by tier");
             rs = st.executeQuery();
 
@@ -42,12 +66,13 @@ public class BarajaBD {
                 baraja.setPorcentaje_total(rs.getFloat("porcentaje_total"));
                 barajas.add(baraja);
             }
-
+            
+            con.commit();
             return barajas;
 
         } catch (SQLException e) {
-            //e.printStackTrace();
-            //con.rollback();
+            l.error(e.getLocalizedMessage());
+            con.rollback();
             return barajas;
         } finally {
             if (rs != null) {
@@ -63,30 +88,34 @@ public class BarajaBD {
     }
 
     /**
-     * puede dar error de clave primaria...
+     * Metodo que actualiza la baraja con nombre "modificar", poniendo como nombre nuevo "nombre_nuevo"
+     * y como tier "tier_nuevo". Si no se quiere modificar uno de los dos parámetros al método le llegará
+     * el argumento con el valor constante.
      *
-     * @param modificar
-     * @param nombre_nuevo
-     * @param tier_nuevo
-     * @return
-     * @throws SQLException
+     * @param modificar el nombre de la baraja que se quiere actualizar.
+     * @param nombre_nuevo el nombre nuevo que se le quiere dar a esa baraja.
+     * @param tier_nuevo el tier nuevo que se le quiere dar a esa baraja.
+     * @return resultIpudate: devuelve un entero en función de si la actualización se ha llevado a cabo (1) o no
+     * (0) 
+     * @throws SQLException lanza una posible excepción en el bloque finally al cerrar los recursos. 
      */
     public int actualizarBaraja(String modificar, String nombre_nuevo, int tier_nuevo) throws SQLException {
         try {
-            ConectaBD conectaBD = new ConectaBD();
-            con = conectaBD.getConnection();
+            PoolDeConexiones pool = PoolDeConexiones.getInstance();
+            con = pool.getConnection();
             st = con.prepareStatement("UPDATE barajas SET nombre_baraja = ?, tier = ? where nombre_baraja = ?");
             st.setString(1, nombre_nuevo);
             st.setInt(2, tier_nuevo);
             st.setString(3, modificar);
 
-            resultUpdate = st.executeUpdate();
+            int resultUpdate = st.executeUpdate();
 
+            con.commit();
             return resultUpdate;
 
         } catch (SQLException e) {
-            //con.rollback;
-            //e.printStackTrace();
+            l.error(e.getLocalizedMessage());
+            con.rollback();
             return 0;
         } finally {
             if (rs != null) {
@@ -101,22 +130,28 @@ public class BarajaBD {
         }
     }
 
-    public boolean borrarBaraja(String nombre_baraja) throws SQLException {
-        int rs;
+    /**
+     * Método que elimina una baraja de la base de datos.
+     * @param nombre_baraja nombre de la baraja que se quiere eliminar.
+     * @return rs devuelve 1 si la baraja se ha eliminado y 0 si no.
+     * @throws SQLException lanza una posible excepción en el bloque finally al cerrar los recursos. 
+     */
+    public int borrarBaraja(String nombre_baraja) throws SQLException {
         try {
-            ConectaBD conectaBD = new ConectaBD();
-            con = conectaBD.getConnection();
+            PoolDeConexiones pool = PoolDeConexiones.getInstance();
+            con = pool.getConnection();
             st = con.prepareStatement("delete from barajas where nombre_baraja = ?");
             st.setString(1, nombre_baraja);
-            rs = st.executeUpdate();
+            int rs = st.executeUpdate();
 
-            //con.commit();
-            return rs == 1;
+            con.commit();
+            return rs;
 
         } catch (SQLException e) {
-            //con.rollback();
-            //e.printStackTrace();
-            return false;
+            con.rollback();
+            l.error(e.getLocalizedMessage());
+            e.printStackTrace();
+            return 0;
         } finally {
             if (st != null) {
                 st.close();
@@ -127,10 +162,18 @@ public class BarajaBD {
         }
     }
 
+    /**
+     * Método que introduce una nueva baraja en la base de datos. Los únicos datos que el usuario puede
+     * introducir manualmente son el nombre y el tier, y todos los valores estadístiscos se inicializan en 0.
+     * 
+     * @param baraja Objeto baraja con los datos ya introducidos por el usuario e inicializados a 0.
+     * @return 1 si se ha introducido correctamente y 0 si no.
+     * @throws SQLException lanza una posible excepción en el bloque finally al cerrar los recursos. 
+     */
     public int guardarBaraja(Baraja baraja) throws SQLException {
         try {
-            ConectaBD conectaBD = new ConectaBD();
-            con = conectaBD.getConnection();
+            PoolDeConexiones pool = PoolDeConexiones.getInstance();
+            con = pool.getConnection();
             st = con.prepareStatement("INSERT INTO barajas VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
             // 1 y 2 nombre y tier
             st.setString(1, baraja.getNombre());
@@ -145,15 +188,28 @@ public class BarajaBD {
             st.setFloat(8, 0);
             st.setFloat(9, 0);
 
-            resultUpdate = st.executeUpdate();
+            int resultUpdate = st.executeUpdate();
 
-            //con.commit();
+            con.commit();
             return resultUpdate;
 
         } catch (SQLException e) {
-            //con.rollback();
-            //e.printStackTrace();
-            return -1;
+            try {
+                st = con.prepareStatement("select nombre_baraja from barajas where nombre_baraja = ?");
+                st.setString(1, baraja.getNombre());
+                rs = st.executeQuery();
+                con.rollback();
+                if (rs.next()){
+                     return -1;
+                } else {
+                    return 0;
+                }
+            } catch (SQLException e2){
+                l.error(e.getLocalizedMessage());
+                l.error(e2.getLocalizedMessage());
+                return 0;
+            }
+                  
         } finally {
             if (st != null) {
                 st.close();
@@ -164,11 +220,21 @@ public class BarajaBD {
         }
     }
 
-    public boolean agregar_baraja_a_usuario(String nombre_usuario, String nombre_baraja) throws SQLException {
-        boolean retorno = false;
+    /**
+     * Método que asocia una baraja a un usuario, añadiendo una fila a la tabla barajas_usuarios.
+     * No puede dar un error de violación de clave ajena porque la baraja se selecciona de una lista cargada
+     * previamente con las barajas existentes y el nombre del usuario es el que tiene la sesión activa.
+     * 
+     * @param nombre_usuario usuario con la sesión activa al cual se le añade la baraja seleccionada.
+     * @param nombre_baraja nombre de la baraja que se añade al usuario.
+     * @return 1 o 0 en función de si la fila se ha añadido, o no, a la tabla, respectivamente.
+     * @throws SQLException lanza una posible excepción en el bloque finally al cerrar los recursos. 
+     */
+    public int agregar_baraja_a_usuario(String nombre_usuario, String nombre_baraja) throws SQLException {
+        
         try {
-            ConectaBD conectaBD = new ConectaBD();
-            con = conectaBD.getConnection();
+            PoolDeConexiones pool = PoolDeConexiones.getInstance();
+            con = pool.getConnection();
             // no hace falta comprobar si la baraja existe porque la esta cogiendo de las barajas existentes ya
 
             st = con.prepareStatement("INSERT INTO barajas_usuarios values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
@@ -190,13 +256,13 @@ public class BarajaBD {
             st.setFloat(12, 0);
             st.setFloat(13, 0);
 
-            resultUpdate = st.executeUpdate();
-            if (resultUpdate != 0) {
-                retorno = true;
-            }
+            int retorno = st.executeUpdate();
+            con.commit();
             return retorno;
         } catch (SQLException e) {
-            return false;
+            con.commit();
+            l.error(e.getLocalizedMessage());
+            return -1;
         } finally {
             if (rs != null) {
                 rs.close();

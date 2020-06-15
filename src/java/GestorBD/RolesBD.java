@@ -5,8 +5,8 @@
  */
 package GestorBD;
 
-import Conectividad.ConectaBD;
 import Modelo.RolUsuario;
+import Util.PoolDeConexiones;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -27,8 +27,8 @@ public class RolesBD {
         ArrayList<String> roles = new ArrayList<>();
         String rol;
         try {
-            ConectaBD conectaBD = new ConectaBD();
-            con = conectaBD.getConnection();
+            PoolDeConexiones pool = PoolDeConexiones.getInstance();
+            con = pool.getConnection();
             st = con.prepareStatement("Select descripcion from roles");
             rs = st.executeQuery();
             while (rs.next()) {
@@ -60,8 +60,8 @@ public class RolesBD {
         RolUsuario rol;
         ArrayList<RolUsuario> solicitudes = new ArrayList<>();
         try {
-            ConectaBD conectaBD = new ConectaBD();
-            con = conectaBD.getConnection();
+            PoolDeConexiones pool = PoolDeConexiones.getInstance();
+            con = pool.getConnection();
             st = con.prepareStatement(
                     "select descripcion, estado "
                     + "from roles_usuarios left join roles on roles_usuarios.idRol = roles.idRol "
@@ -94,8 +94,8 @@ public class RolesBD {
         int valor_rol_actual = 0, valor_rol_solicitado;
 
         try {
-            ConectaBD conectaBD = new ConectaBD();
-            con = conectaBD.getConnection();
+            PoolDeConexiones pool = PoolDeConexiones.getInstance();
+            con = pool.getConnection();
             st = con.prepareStatement(
                     "select idRol from roles where descripcion = ?");
             st.setString(1, rol);
@@ -144,8 +144,8 @@ public class RolesBD {
         RolUsuario rol;
 
         try {
-            ConectaBD conectaBD = new ConectaBD();
-            con = conectaBD.getConnection();
+            PoolDeConexiones pool = PoolDeConexiones.getInstance();
+            con = pool.getConnection();
             st = con.prepareStatement(
                     "select * from roles_usuarios left join roles on roles_usuarios.idRol = roles.idRol "
                     + "where estado = 1 or estado = 2 and nombre_usuario != ? "
@@ -185,8 +185,8 @@ public class RolesBD {
 
         try {
 
-            ConectaBD conectaBD = new ConectaBD();
-            con = conectaBD.getConnection();
+            PoolDeConexiones pool = PoolDeConexiones.getInstance();
+            con = pool.getConnection();
             st = con.prepareStatement(
                     "update roles_usuarios set estado = ? where nombre_usuario = ? and idRol = 0");
             stBorrar = con.prepareStatement(
