@@ -262,7 +262,7 @@ public class BarajaBD {
         } catch (SQLException e) {
             con.commit();
             l.error(e.getLocalizedMessage());
-            return -1;
+            return 0;
         } finally {
             if (rs != null) {
                 rs.close();

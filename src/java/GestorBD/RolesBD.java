@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package GestorBD;
 
 import Modelo.RolUsuario;
@@ -12,17 +7,45 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
+ * Clase de gestión de datos y comnunicación con la base de datos relacionada con las lecturas y peticiones de roles
  *
- * @author admin
+ * @author <a href="mailto:ebl0010@alu.ubu.es">Eric Berlinches</a>
  */
 public class RolesBD {
 
+    /**
+     * Atributo conexion para conectarse a la base de datos
+     */
     private Connection con = null;
+    /**
+     * atributo sentencia preparada para las operaciones SQL
+     */
     private PreparedStatement st = null;
+    /**
+     * artibuto result set para recoger el resultado de las select
+     */
     private ResultSet rs = null;
+    /**
+     * atributo logger para recoger las trazas de error de las excepciones
+     */
+    private static Logger l = null;
 
+    /**
+     * constructor sin argumentos que inicializa el logger.
+     */
+    public RolesBD() {
+        l = LoggerFactory.getLogger(ResultadoBD.class);
+    }
+
+    /**
+     * Método que devuelve una lista con las descripciones de todos los roles. 
+     * @return roles lista de String donde cada elemento es la descripción de un rol.
+     * @throws SQLException posible excepción surgida durante el cierre de recursos.
+     */
     public ArrayList<String> carga_todos_los_roles() throws SQLException {
         ArrayList<String> roles = new ArrayList<>();
         String rol;
@@ -35,11 +58,13 @@ public class RolesBD {
                 rol = rs.getString("descripcion");
                 roles.add(rol);
             }
+            con.commit();
             return roles;
 
         } catch (SQLException e) {
-            return null;
-            //con.rollback();
+            con.rollback();
+            l.error(e.getLocalizedMessage());
+            return roles;
         } finally {
             if (rs != null) {
                 rs.close();
@@ -55,6 +80,15 @@ public class RolesBD {
 
     }
 
+    /**
+     * Método que devuelve las solicitudes de cambio de rol del usaurio que recibe como argumento. La consulta
+     * contra la base de datos hace un join entre las tablas roles y roles usuarios para obtener las descripciones
+     * y devuelve los que tienen estado 1 y 2, que son en espera y denegada, respectivamente.
+     * 
+     * @param nombre_usuario nombre del usuario cuyas peticiones se quieren obtener.
+     * @return solicitudes devuelve una lista de objetos RolUsuario con la descripción y el estado.
+     * @throws SQLException posible excepción durante el cierre de recursos.
+     */
     public ArrayList<RolUsuario> lee_solicitudes(String nombre_usuario)
             throws SQLException {
         RolUsuario rol;
@@ -75,8 +109,11 @@ public class RolesBD {
                 rol.traducirEstado();
                 solicitudes.add(rol);
             }
+            con.commit();
             return solicitudes;
         } catch (SQLException e) {
+            con.rollback();
+            l.error(e.getLocalizedMessage());
             return solicitudes;
         } finally {
             if (st != null) {
@@ -88,9 +125,24 @@ public class RolesBD {
         }
     }
 
+    /**
+     * Método que procesa una petición de cambio de rol. Recibe el nombre del usuario solicitante, el rol actual
+     * de dicho usuario y el rol que solicita, ambos en forma de String. Obtiene el valor entero del rol solicitado
+     * y del actual y si el valor del rol solicitado es MENOR (0 es el rol más permisivo, y bajar de rol a uno menos
+     * permisivo no está contemplado) añade una fila a la tabla solicitudes con el usuario, el rol que solicita y el 
+     * estado 1 (en espera).
+     * 
+     * @param nombre_usuario nombre del usuario que solicita el cambio de rol.
+     * @param rol rol actual del usuario solicitante.
+     * @param rol_solicitado rol que se solicita.
+     * @return true o false en función de si la transacción se ha llevado a cabo o no.
+     * @throws SQLException posible excepción durante el cierre de recursos.
+     */
     public boolean gestionar_peticion_rol(String nombre_usuario, String rol, String rol_solicitado)
             throws SQLException {
         boolean retorno = true;
+        // requiere inicializar a 0 valor_rol_actual porque sino da un error "no esta inicializado", aunque
+        // se reasigna antes de ser utilizado.
         int valor_rol_actual = 0, valor_rol_solicitado;
 
         try {
@@ -124,9 +176,12 @@ public class RolesBD {
                 }
             }
 
+            con.commit();
             return retorno;
 
         } catch (SQLException e) {
+            con.rollback();
+            l.error(e.getLocalizedMessage());
             return false;
         } finally {
             if (st != null) {
@@ -138,6 +193,14 @@ public class RolesBD {
         }
     }
 
+    
+    /**
+     * Método que devuelve todas las peticiones de roles excepto las del usuario pasado como argumento. 
+     * Para devolver la descripción también hace un join entre la tabla roles y roles_usuarios.
+     * @param nombre_usuario_actual nombre del usuario cuyas peticiones no se quieren devolver.
+     * @return roles devuelve una lista de RolUsuario con las peticiones de todos los demás usuarios de cambio de rol.
+     * @throws SQLException posible excepción durante el cierre de recursos.
+     */
     public ArrayList<RolUsuario> lee_peticiones_roles(String nombre_usuario_actual) throws SQLException {
 
         ArrayList<RolUsuario> roles = new ArrayList<>();
@@ -160,10 +223,13 @@ public class RolesBD {
                 rol.setDescripcion_rol(rs.getString("descripcion"));
                 roles.add(rol);
             }
-
+            
+            con.commit();
             return roles;
 
         } catch (SQLException e) {
+           con.rollback();
+            l.error(e.getLocalizedMessage());
             return roles;
         } finally {
             if (rs != null) {
@@ -178,6 +244,17 @@ public class RolesBD {
         }
     }
 
+    /**
+     * Método que actualiza el estado de todas las peticiones de rol en función de si ha sido concedida o denegada.
+     * Recibe una lista de RolUsuario, que contiene las peticiones con nombre del usuario, rol y estado, y,
+     * por cada una, si el estado es 2 (denegado), actualiza símplemente el estado, pero, si es concedido (0),
+     * actualiza la tabla roles_usuarios poníendo el estado de concedido sobre esa petición y después borra todas
+     * las entradas de la tabla roles_usuarios distintas a esta (borrando todas las demás solicitudes y roles antiguos).
+     * 
+     * @param roles lista con todas las peticiones de roles.
+     * @return true o false en función de si la transacción se ha llevado a cabo o no. 
+     * @throws SQLException 
+     */
     public boolean actualizar_roles(ArrayList<RolUsuario> roles) throws SQLException {
 
         boolean control = true;
@@ -215,9 +292,11 @@ public class RolesBD {
 
             }
 
+            con.commit();
             return control;
         } catch (SQLException e) {
-            //e.printStackTrace();
+            con.rollback();
+            l.error(e.getLocalizedMessage());
             return false;
         } finally {
             if (st != null) {

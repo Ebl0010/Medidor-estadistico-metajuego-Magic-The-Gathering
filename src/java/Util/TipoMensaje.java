@@ -1,13 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package Util;
 
 /**
+ * Enumeración con los posibles tipos de mensaje que se devuelven al usuario.
  *
- * @author admin
+ * @author <a href="mailto:ebl0010@alu.ubu.es">Eric Berlinches</a>
  */
 public enum TipoMensaje {
     CORRECTO, INFO, ERROR;
