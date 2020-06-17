@@ -130,6 +130,7 @@ public class FormularioBD {
         } catch (SQLException e) {
             try {
                 st = con.prepareStatement("select nombre_usuario from usuarios where nombre_usuario = ?");
+                st.setString(1, usuario.getNombre());
                 rs = st.executeQuery();
                 if (rs.next()) {
                     String encontrado = rs.getString("nombre_usuario");
@@ -257,10 +258,14 @@ public class FormularioBD {
             String rol = rs.getString("descripcion");
             devolver.setRol(rol);
 
+            //como lee_barajas_de_usuario requiere una conexión, y es un metodo de esta misma clase,
+            //si el commit va después la conexión ya no existe porque la habría cerrado ese método.
+            //aun así, estos dos métodos pueden venir aquí dentro y estar después del commit.
+            con.commit();
+
             ArrayList<Baraja_de_usuario> barajas = leeBarajas_de_usuario(usuario);
             devolver.setLista_de_barajas_de_usuario(barajas);
 
-            con.commit();
             return devolver;
 
         } catch (SQLException e) {
@@ -282,13 +287,18 @@ public class FormularioBD {
     }
 
     /**
-     * Metodo privado que se llama durante "carga usuario" y que carga sobre un usuario todas sus barajas.
-     * Este método realiza una select de la tabla barajas_usuarios con el usuario que recibe como parámetro
-     * y por cada baraja en el resultSet va cargando sus datos en un objeto baraja_de_usuario que posteriormente
-     * introducirá en una lista. Finlamente devuelve la lista con todas las barajas de usuario que ha encontrado.
+     * Metodo privado que se llama durante "carga usuario" y que carga sobre un
+     * usuario todas sus barajas. Este método realiza una select de la tabla
+     * barajas_usuarios con el usuario que recibe como parámetro y por cada
+     * baraja en el resultSet va cargando sus datos en un objeto
+     * baraja_de_usuario que posteriormente introducirá en una lista. Finlamente
+     * devuelve la lista con todas las barajas de usuario que ha encontrado.
+     *
      * @param usuario usuario del que se quieren obtener sus barajas.
-     * @return barajas_de_usuario es la lista con todas las barajas que tiene ese usuario asignadas (y sus datos).
-     * @throws SQLException posible excepción producida durante el cierre de recursos.
+     * @return barajas_de_usuario es la lista con todas las barajas que tiene
+     * ese usuario asignadas (y sus datos).
+     * @throws SQLException posible excepción producida durante el cierre de
+     * recursos.
      */
     private ArrayList<Baraja_de_usuario> leeBarajas_de_usuario(Usuario usuario)
             throws SQLException {
@@ -297,7 +307,7 @@ public class FormularioBD {
             PoolDeConexiones pool = PoolDeConexiones.getInstance();
             con = pool.getConnection();
             st = con.prepareStatement(
-                    "select  * from barajas_usuarios where nombre_usuario = ?");
+                    "select * from barajas_usuarios where nombre_usuario = ?");
             st.setString(1, usuario.getNombre());
             rs = st.executeQuery();
 
@@ -343,36 +353,51 @@ public class FormularioBD {
     }
 
     /**
-     * Método que cambia el nombre, clave, o ambos, de un usuario. Antes de hacerlo comprueba
-     * que el nombre nuevo no existe ya. El método está programado utilizando una programación defensiva,
-     * si el usuario existe previamente va a devolver un -1, si el cambio se efectúa correctamente un 1, y sino
-     * un 0.
+     * Método que cambia el nombre, clave, o ambos, de un usuario. Antes de
+     * hacerlo comprueba que el nombre nuevo no existe ya. El método está
+     * programado utilizando una programación defensiva, si el usuario existe
+     * previamente va a devolver un -1, si el cambio se efectúa correctamente un
+     * 1, y sino un 0.
      *
      * @param nombre nombre antes de actualizar
      * @param nombre_nuevo nombre actualizado (si lo deja en blanco es el mismo)
      * @param clave_nueva clave nueva (si la deja en blanco es la misma)
-     * @return 1 si los cambios han ido bien, -1 si el nick esta repetido y 0 si no se han producido cambios.
-     * @throws SQLException posible excepción producida durante el cierre de recursos.
+     * @return 1 si los cambios han ido bien, -1 si el nick esta repetido y 0 si
+     * no se han producido cambios.
+     * @throws SQLException posible excepción producida durante el cierre de
+     * recursos.
      */
-    public int actualizarUsuario(String nombre, String nombre_nuevo, String clave_nueva)
+    public int actualizarUsuario(String nombre, String nombre_nuevo, String clave_nueva, boolean cambia_nombre)
             throws SQLException {
-        int resultado;
+        int resultado = 0;
         try {
             PoolDeConexiones pool = PoolDeConexiones.getInstance();
             con = pool.getConnection();
-            st = con.prepareStatement(
-                    "select nombre_usuario from usuarios where nombre_usuario = ?");
-            rs = st.executeQuery();
-            if (rs.next()) {
-                resultado = -1;
-            } else {
+            if (cambia_nombre) {
                 st = con.prepareStatement(
-                        "update usuarios set nombre_usuario = ?, "
-                        + "clave = ? where "
-                        + "nombre_usuario = ?");
+                        "select nombre_usuario from usuarios where nombre_usuario = ?");
                 st.setString(1, nombre_nuevo);
-                st.setString(2, clave_nueva);
-                st.setString(3, nombre);
+                rs = st.executeQuery();
+                if (rs.next()) {
+                    resultado = -1;
+                }
+            }
+
+            if (resultado == 0) {
+                if (cambia_nombre) {
+                    st = con.prepareStatement(
+                            "update usuarios set nombre_usuario = ?, "
+                            + "clave = ? where "
+                            + "nombre_usuario = ?");
+                    st.setString(1, nombre_nuevo);
+                    st.setString(2, clave_nueva);
+                    st.setString(3, nombre);
+                } else {
+                    st = con.prepareStatement(
+                            "update usuarios set clave = ? where nombre_usuario = ?");
+                    st.setString(1, clave_nueva);
+                    st.setString(2, nombre);
+                }
 
                 resultado = st.executeUpdate();
             }

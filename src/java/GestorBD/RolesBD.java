@@ -169,10 +169,19 @@ public class RolesBD {
                 if (valor_rol_actual <= valor_rol_solicitado) {
                     retorno = false;
                 } else {
-                    st = con.prepareStatement("insert into roles_usuarios values (?, ?, 1)");
+                    st = con.prepareStatement("delete from roles_usuarios where "
+                            + "nombre_usuario = ? and idrol = ?");
                     st.setString(1, nombre_usuario);
                     st.setInt(2, valor_rol_solicitado);
-                    retorno = (st.executeUpdate() == 1);
+                    
+                    if (st.executeUpdate() == 1){
+                        st = con.prepareStatement("insert into roles_usuarios values (?, ?, 1)");
+                        st.setString(1, nombre_usuario);
+                        st.setInt(2, valor_rol_solicitado);
+                        retorno = (st.executeUpdate() == 1);
+                    } else {
+                        retorno = false;
+                    }
                 }
             }
 

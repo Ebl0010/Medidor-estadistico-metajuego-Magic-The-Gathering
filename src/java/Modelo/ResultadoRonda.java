@@ -1,17 +1,21 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Modelo;
 
 /**
+ * Clase del modelo para manejar el resultado de una ronda. Contiene un string que referencia la baraja
+ * del oponente y los 4 valores referentes a victorias y derrotas de main y side en cada caso.
  *
- * @author admin
+ * @author <a href="mailto:ebl0010@alu.ubu.es">Eric Berlinches</a>
  */
 public class ResultadoRonda {
     
+    /**
+     * Atributos enteros para las victorias de main y side de cada baraja.
+     */
     private int ganadas_main, perdidas_main, ganadas_side, perdidas_side;
+    
+    /**
+     * Atributo string para almacenar el nombre de la baraja oponente.
+     */
     private String oponente;
     
     public ResultadoRonda(){

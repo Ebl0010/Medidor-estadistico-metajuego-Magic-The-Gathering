@@ -1,18 +1,23 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Modelo;
 
 /**
+ * Clase Baraja del modelo que guarda los atributos de una baraja: nombre, tier y ratios de victoria porcentuales.
  *
- * @author admin
+ * @author <a href="mailto:ebl0010@alu.ubu.es">Eric Berlinches</a>
  */
 public class Baraja {
     
+    /**
+     * atributo que guarda el nombre de la baraja
+     */
     private String nombre;
+    /**
+     * Atributo que guarda el tier de la baraja
+     */
     private int tier;
+    /**
+     * Atributos porcentuales para los ratios de victoria
+     */
     float porcentaje_main, porcentaje_side, porcentaje_total;
     
     public Baraja(){}

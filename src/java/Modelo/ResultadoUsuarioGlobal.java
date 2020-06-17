@@ -1,18 +1,27 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Modelo;
 
 /**
+ * Clase del modelo para almacenar los datos globales de un usuario. Esta clase se utiliza cuando se
+ * introducen los datos de un torneo, guardando en ella los datos del usuario que ha jugado el torneo
+ * de la base de datos, actualizándolos con los datos del nuevo torneo, y devolviendo todo el contenido
+ * actualizado a la base de datos.
  *
- * @author admin
+ * @author <a href="mailto:ebl0010@alu.ubu.es">Eric Berlinches</a>
  */
 public class ResultadoUsuarioGlobal {
     
+    /**
+     * Atributo entero que almacena el nombre del usuario
+     */
     private String nombre_usuario;
+    /**
+     * Atributos enteros que almacenan los valores brutos de partidas y rondas ganadas y perdidas
+     */
     private int partidas_ganadas, partidas_perdidas, rondas_ganadas, rondas_perdidas, rondas_empatadas;
+    
+    /**
+     * Atributos decimales que guardan los ratios de victoria porcentuales.
+     */
     private float porcentaje_rondas, porcentaje_partidas;
     
     public ResultadoUsuarioGlobal(){
@@ -75,6 +84,14 @@ public class ResultadoUsuarioGlobal {
         this.rondas_empatadas = rondas_empatadas;
     }
     
+    /**
+     * Método que actualiza los valores de los atributos incrementándolos con los valores de los parámetros.
+     * @param par_ganadas incremento de las partidas totales ganadas.
+     * @param par_perdidas incremento de las partidas totales perdidas.
+     * @param ron_ganadas incremento de las rondas totales ganadas.
+     * @param ron_perdidas incremento de las rondas totales perdidas.
+     * @param ron_empatadas incremento de las rondas totales empatadas.
+     */
     public void introducir_resultados(int par_ganadas, int par_perdidas, int ron_ganadas, int ron_perdidas, int ron_empatadas){
         partidas_ganadas = partidas_ganadas + par_ganadas;
         partidas_perdidas = partidas_perdidas + par_perdidas;
@@ -83,6 +100,11 @@ public class ResultadoUsuarioGlobal {
         rondas_perdidas = rondas_perdidas + ron_perdidas;
     }
     
+    /**
+     * Método que recalcula los porcentajes, utilizado a continuación del anterior, que devuelve
+     * manualmente un 0 y un 99, evitando una posible divisón por, o entre 0, y un 100 que
+     * requeriría una tercera cifra en la base de datos para un número ínfimo de casos.
+     */
     public void calcular_porcentajes(){
         if (partidas_ganadas == 0){
             porcentaje_partidas = 0;

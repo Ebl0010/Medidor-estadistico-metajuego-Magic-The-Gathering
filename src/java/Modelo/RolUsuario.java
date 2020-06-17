@@ -1,20 +1,34 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Modelo;
 
 /**
+ * Clase del modelo para almacenar el rol de un usuario. Se utiliza como un comodín para poder extraer de 
+ * la base de datos la descripción del rol con un join y tenerlo guardado en una clase. También almacena
+ * el estado, que se guarda en la base de datos como un entero, y lo traduce un String.
  *
- * @author admin
+ * @author <a href="mailto:ebl0010@alu.ubu.es">Eric Berlinches</a>
  */
 public class RolUsuario {
     
+    /**
+     * Atributo que guarda la descripción del rol
+     */
     private String descripcion_rol;
+    /**
+     * Atributo que guarda el entero que vale el rol
+     */
     private int idRol;
+    /**
+     * Atributo que guarda el nombre del usuario
+     */
     private String nombre_usuario;
+    /**
+     * Atributo que guarda el estado del usuario con el rol 
+     */
     private int estado;
+    
+    /**
+     * Atributo que guarda la descrición del estado
+     */
     private String s_estado;
     
     public RolUsuario(){
@@ -66,6 +80,9 @@ public class RolUsuario {
         this.s_estado = s_estado;
     }
     
+    /**
+     * Método que traduce el estado numérico a una cadena de texto más amigable para el usuario.
+     */
     public void traducirEstado(){
         switch (estado){
             case(0): s_estado = "Concedido"; break;

@@ -1,20 +1,37 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Modelo;
 
 /**
- *
- * @author admin
+ * Clase del modelo utilizada para almacenar los datos de un torneo. Esta clase se utiliza para
+ * acceder al historial de torneos de un usuario, rellenando una lista de objetos de esta clase.
+ * 
+ * @author <a href="mailto:ebl0010@alu.ubu.es">Eric Berlinches</a>
  */
 public class Torneo {
     
+    /**
+     * Atributo que almacena el nombre del usuario que ha jugado el torneo
+     */
     private String nombre_usuario;
+    
+    /**
+     * Atributo que almacena el nombre de la baraja utilizada en el torneo
+     */
     private String nombre_baraja;
+    /**
+     * Atributo que almacena los puntos conseguidos por ese usuario en ese torneo
+     */
     private int puntos;
+    
+    /**
+     * Atributo que almacena el string resultado del torneo. El resultado de un torneo se da en forma de cadena
+     * donde primero aparece el número de rondas ganadas, después las empatadas y por último las perdidas. ASí un torneo
+     * donde el resultado ha sido 3-1-0 significa 3 rondas ganads, 1 perdidas y 0 empatadas.
+     */
     private String resultado;
+    
+    /**
+     * Atributo que guarda el número de veces que se ha repetido un mismo caso (jugador J, baraja B, resultado R)
+     */
     private int repeticiones;
     
     public Torneo(String usuario, String baraja, int puntos, String resultado, int repeticiones){

@@ -362,6 +362,7 @@ public class FormularioManagedBean {
                             .redirect("homeSuperUser.xhtml");
                 } catch (IOException e) {
                     error = "Se ha producido un problema al cargar la página.";
+                    Herramientas.lanza_mensaje(TipoMensaje.ERROR, error, "index.xhtml");
                 }
             } else {
                 try {
@@ -370,6 +371,7 @@ public class FormularioManagedBean {
                             .redirect("homeUser.xhtml");
                 } catch (IOException e) {
                     error = "Se ha producido un problema al cargar la página.";
+                    Herramientas.lanza_mensaje(TipoMensaje.ERROR, error, "index.xhtml");
                 }
             }
 
@@ -386,10 +388,11 @@ public class FormularioManagedBean {
                     break;
 
             } // cierra switch
+
+            poner_a_cero(); //aunque si se quedan en la cache del navegador al recargar no se borran
+            Herramientas.lanza_mensaje(TipoMensaje.ERROR, error, "index.xhtml");
         }
 
-        poner_a_cero(); //aunque si se quedan en la cache del navegador al recargar no se borran
-        Herramientas.lanza_mensaje(TipoMensaje.ERROR, error, "index.xhtml");
     }
 
     /**
@@ -422,7 +425,7 @@ public class FormularioManagedBean {
      * @param intento usuario que solo tiene el nombre y contraseña del que se
      * quieren cargar los datos.
      */
-    public void cargarUsuario(Usuario intento) {
+    private void cargarUsuario(Usuario intento) {
 
         Usuario usuario = new Usuario();
 
@@ -523,38 +526,41 @@ public class FormularioManagedBean {
      */
     public void confirmar_cambios() {
         String error = "ok";
+        boolean cambia_nombre = true;
         if (nombre_nuevo.length() == 0) {
-            nombre_nuevo = nombre;
+            cambia_nombre = false;
         } else {
-            if (nombre_nuevo.length() > 20 || nombre_nuevo.length() > 6) {
-                error = "nombre_largo_o_corto";
+            if (nombre_nuevo.length() > 20 || nombre_nuevo.length() < 6) {
+                error = "El nombre debe tener entre 6 y 20 caracteres";
             } else {
                 nombre_nuevo = Herramientas.tratar_nombre(nombre_nuevo);
             }
         }
-        if (error.equals("ok")
-                && clave_nueva.length() == 0
-                && clave_nueva_confirmacion.length() == 0) {
-
-            clave_nueva = clave;
-        } else {
-            if (clave_nueva.length() > 16) {
-                error = "clave_larga";
+        if (error.equals("ok")) {
+            if (clave_nueva.length() == 0
+                    && clave_nueva_confirmacion.length() == 0){
+                clave_nueva = clave;
             } else {
-                if (!clave_nueva.equals(clave_nueva_confirmacion)) {
-                    error = "claves_distintas";
+
+                if (clave_nueva.length() > 16 || clave_nueva.length() < 6) {
+                    error = "La contraseña debe tener entre 6 y 16 caracteres";
+                } else {
+                    if (!clave_nueva.equals(clave_nueva_confirmacion)) {
+                        error = "Las claves deben ser iguales";
+                    }
                 }
             }
         }
 
         if (error.equals("ok")) {
-            if (!nombre.equals(nombre_nuevo) || !clave.equals(clave_nueva)) {
+            if (!cambia_nombre && !clave.equals(clave_nueva)) {
                 int actualiza = 0;
                 try {
-                    actualiza = formularioBD.actualizarUsuario(nombre, nombre_nuevo, clave_nueva);
+                    actualiza = formularioBD.actualizarUsuario(nombre, nombre_nuevo, clave_nueva, cambia_nombre);
                 } catch (SQLException e) {
                     l.error(e.getLocalizedMessage());
-                    Herramientas.lanza_mensaje(TipoMensaje.ERROR, "Se ha prodocido un problema con la base de datos",
+                    Herramientas.lanza_mensaje(TipoMensaje.ERROR,
+                            "Se ha prodocido un problema con la base de datos",
                             "login");
                 }
 

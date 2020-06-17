@@ -1,32 +1,40 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Modelo;
 
 import java.util.ArrayList;
-import java.util.logging.Logger;
 
 /**
+ * Clase del modelo para almacenar los datos de un usuario. Los objetos de esta clase se utilizan cuando
+ * el usuario hace login para cargar todos sus datos desde la base de datos y mostrarlos en las vistas
+ * homeUser.xhtml y homeSuperUser.xhtml.
  *
- * @author admin
+ * @author <a href="mailto:ebl0010@alu.ubu.es">Eric Berlinches</a>
  */
 public class Usuario {
 
     
-    
+    /**
+     * Atributos que almacenan el nombre la contraseña, el correo y la descripción del rol del usuario.
+     */
     private String nombre, clave, rol, correo;
+    /**
+     * Atributos enteros que referencian a los datos brutos de partidas y rondas ganadas de ese usuario.
+     */
     private int rondas_ganadas,
                 rondas_perdidas,
                 rondas_empatadas,
                 partidas_ganadas,
                 partidas_perdidas;
     
+    /**
+     * Atributos decimales que guardan los ratios de victorias porcentuales del usuario.
+     */
     private float porcentaje_rondas,
                   porcentaje_partidas;
             
-    
+    /**
+     * Lista de barajas de usuario que almacena los resultados del usuario con cada una de las
+     * barajas que tiene asignadas.
+     */
     private ArrayList<Baraja_de_usuario> lista_de_barajas_de_usuario;
     
    

@@ -401,7 +401,6 @@ public class BarajaManagedBean {
      * a la página de error para indicarle que algo no ha funcionado.
      * 
      * @param nombre_usuario nombre del usuario con la sesión activa sobre el que se guarda la baraja nueva.
-     * @throws SQLException 
      */
     public void agregar_baraja_a_usuario(String nombre_usuario) {
         

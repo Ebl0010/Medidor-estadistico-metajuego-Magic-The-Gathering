@@ -1,18 +1,28 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Modelo;
 
 /**
+ * Clase del modelo para almacenar los datos de un cruce. Un cruce representa un emparejamiento
+ * entre dos barajas, y tiene todos los atributos que corresponden a medidas brutas y ratios porcentuales.
+ * (Aunque el cruce involucra a dos barajas, los objetos Cruce solo almacenen la segunda baraja porque
+ * la primera viene referenciada en el contexto donde se utilizan estos objetos y no era necesario
+ * añadirla en esta clase).
  *
- * @author admin
+ * @author <a href="mailto:ebl0010@alu.ubu.es">Eric Berlinches</a>
  */
 public class Cruce {
     
+    /**
+     * Atributo que almacena el nombre de la baraja oponente.
+     */
     private String baraja2;
+    /**
+     * Atributos enteros que guardan los valores estadísticos brutos del cruce (victorias de cada una).
+     */
     private int ganadas_main, perdidas_main, ganadas_side, perdidas_side;
+    
+    /**
+     * Atributos decimales que guardan los valores de los ratios porcentuales.
+     */
     private float porcentaje_main, porcentaje_side, porcentaje_total;
     
     public Cruce(){

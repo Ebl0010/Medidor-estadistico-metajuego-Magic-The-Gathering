@@ -1,17 +1,21 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Modelo;
 
 /**
+ * Clase del modelo para guardar los datos de una baraja asociada a un usuario. 
+ * 
  *
- * @author admin
+ * @author <a href="mailto:ebl0010@alu.ubu.es">Eric Berlinches</a>
  */
 public class Baraja_de_usuario {
     
+    /**
+     * Atributo que guarda el nombre de la baraja
+     */
     private String nombre_baraja;
+    
+    /**
+     * Atributos enteros que guardan los valores de rondas y partidas ganadas y perdidas
+     */
     private int rondas_ganadas,
                 rondas_perdidas,
                 rondas_empatadas,
@@ -23,7 +27,9 @@ public class Baraja_de_usuario {
                 partidas_jugadas_total,
                 rondas_ganadas_total;
                 
-    
+    /**
+     * Atributos decimales que guardan los ratios de victorias porcentuales
+     */
     private float porcentaje_partidas_ganadas_main,
                   porcentaje_partidas_ganadas_side,
                   porcentaje_partidas_ganadas_total,
@@ -151,7 +157,10 @@ public class Baraja_de_usuario {
         this.porcentaje_rondas_ganadas = porcentaje_rondas_ganadas;
     }
     
-        
+    /**
+     * Método que calcula los ratios de victorias en base a los datos enteros. Este método se utilizará
+     * cuando se modifiquen los valores enteros para actualizar automáticamente los ratios.
+     */
     public void recalcula_porcentajes(){
        
         porcentaje_partidas_ganadas_main = partidas_ganadas_main * 100 / (partidas_ganadas_main + partidas_perdidas_main);

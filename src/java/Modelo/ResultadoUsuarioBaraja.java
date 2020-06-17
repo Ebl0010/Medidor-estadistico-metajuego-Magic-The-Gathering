@@ -1,18 +1,27 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Modelo;
 
 /**
+ * Clase del modelo para procesar los datos de un usuario con una baraja. 
+ * Esta clase se utiliza durante el cómputo de un torneo, creando una instancia donde se almacenan
+ * los datos de un usuario con una baraja, de la base de datos, se actualizan con los datos
+ * del torneo que se está añadiendo, y después se vuelve a guardar en la base de datos.
  *
- * @author admin
+ * @author <a href="mailto:ebl0010@alu.ubu.es">Eric Berlinches</a>
  */
 public class ResultadoUsuarioBaraja {
     
+    /**
+     * Atributos que referencian al nombre del usuario y al nombre de la baraja.
+     */
     private String nombre_usuario, nombre_baraja;
+    /**
+     * Atributos enteros que referencian las partidas y rondas ganadas.
+     */
     private int ganadasMain, perdidasMain, ganadasSide, perdidasSide, rondasGanadas, rondasPerdidas, rondasEmpatadas;
+    
+    /**
+     * Atributos decimales que guaran los ratios de victoria porcentuales.
+     */
     private float porcentajeMain, porcentajeSide, porcentajeTotal, porcentajeRondasGanadas;
     
     public ResultadoUsuarioBaraja(){
@@ -122,7 +131,18 @@ public class ResultadoUsuarioBaraja {
     public void setRondasPerdidas(int rp){
         rondasPerdidas = rp;
     }
-     
+    
+    /**
+     * Método que actualiza los valores de los atributos de la clase incrementandolos con los recibidos como
+     * parámetros.
+     * @param main1N incremento de las victorias totales de main.
+     * @param main2N incremento de las derrotas totales de main.
+     * @param side1N incremento de las victorias totales de side.
+     * @param side2N incremento de las derrotas totales de side.
+     * @param rondasG incremento de las rondas totales ganadas.
+     * @param rondasP incremento de las rondas totales perdidas.
+     * @param rondasE incremento de las rondas totales empatadas.
+     */
     public void introducir_datos(int main1N, int main2N, int side1N, int side2N, int rondasG, int rondasP, int rondasE){
         ganadasMain = ganadasMain + main1N;
         perdidasMain = perdidasMain + main2N;
@@ -133,6 +153,12 @@ public class ResultadoUsuarioBaraja {
         rondasPerdidas = rondasPerdidas + rondasP;
     }
     
+    /**
+     * Método que recalcula los porcentajes, utilizado después de actualizar los datos brutos con el
+     * método anterior. Para evitar errores con una divión de 0, o entre 0, se caclula automáticamente
+     * ese posible valor, y también el posible 100% se devuelve como 99 para evitar un error de la base de 
+     * datos, solicitando una tercera cifra para una porporción perfectamente despreciable.
+     */
     public void calcular_porcentajes() {
         if (ganadasMain == 0) {
             porcentajeMain = 0;
