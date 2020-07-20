@@ -1,0 +1,14 @@
+Enlace a la carpeta de OneDrive que aloja los vídeos para la exposición y demo del proyecto,
+así como la máquina virtual que contiene todo el entorno para la ejecución y pruebas.
+También contiene el link al repositorio de Github.
+
+link del repositorio en GitHub:
+https://github.com/Ebl0010/Medidor-estadistico-metajuego-Magic-The-Gathering
+usuario: Ebl0010
+nombre del repositorio: Medidor-estadistico-metajuego-Magic-The-Gathering
+
+acceso a toda la carpeta con vídeos y máquina virtual
+https://universidaddeburgos-my.sharepoint.com/:f:/g/personal/ebl0010_alu_ubu_es/Enudg6ele3ZBhCJbVUG010ABUDivELGVBEoPTIW1m7v6-Q?e=Tpfwk1
+
+
+
