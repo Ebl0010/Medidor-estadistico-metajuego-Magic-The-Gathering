@@ -8,9 +8,13 @@ Después el sistema procesa cada uno de los emparejamientos para, por un lado, m
 desgloasadas por las barajas que ha utilizado y, finalmente, construye un cuadro donde se pueden ver los ratios de victoria generales de todas las barajas, así
 como el ratio de victoria de cada baraja frente a cada otra.
 
-# COMPONENTES DEL REPOSITORIO:
-
-
+# COMPONENTES RELEVANTES DEL REPOSITORIO:
+-Memoria y anexos: contiene los documentos correspondientes a la memoria y los anexos del proyecto.
+-dist/javadoc: contiene la documentación en javadoc
+-ficheros: contiene el fichero de la aplicación desplegado (medidorEstadistico.war),
+           el fichero con los datos para la conectividad con la base de datos (config.properties)
+           el fichero que requiere ser previamente ejecutado para la creacion de las tablas (script tablas.sql y script tablas.txt).
+-links: contiene los enlaces a los vídeos de exposición del proyecto, demo de la aplicación y a la máquina virtual con todo el entorno instalado
 
 
 # INSTALACIÓN LOCAL:
@@ -27,6 +31,8 @@ Al instalar Apache Tomcat, solicita los puertos de funcionamiento:
 Al instalar MySQL Server, durante la instalación solicita unas credenciales (usuario + contraseña).
 Estas credenciales deben modificarse en el fichero config.properties, que se encuentra en la raíz del repositorio 
  (únicamente se deben modificar las filas segunda y tercera (user y password).
+Se debe ejecutar el fichro "script tablas.sql", o bien, desde mysqlWorkbench (interfaz gráfica para MySQLServer), copiar el contenido del fichero
+ "script tablas.txt", para que se creen las tablas que lee, escribe y manipula la aplicación
 El fichero config.properties se debe copiar dentro de la ruta: C:\JAVA
 Finalmente, el fichero medidorEstadistico.war se debe copiar en la ruta dónde se haya instalado apache, en la carpeta \webApplications.
 
