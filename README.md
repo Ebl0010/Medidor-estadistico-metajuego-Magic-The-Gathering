@@ -14,6 +14,7 @@ como el ratio de victoria de cada baraja frente a cada otra.
 -ficheros: contiene el fichero de la aplicación desplegado (medidorEstadistico.war),
            el fichero con los datos para la conectividad con la base de datos (config.properties)
            el fichero que requiere ser previamente ejecutado para la creacion de las tablas (script tablas.sql y script tablas.txt).
+            --> Para ello se recomienda utilizar la aplicación de escritorio MySQL Workbench
 -links: contiene el enlace a la carpeta compartida de OneDrive donde se alojan los vídeos de exposición, demo de la aplicación y la máquina virtual con todo el entorno instalado para realizar ejecuciones y pruebas.
 
 # INSTALACIÓN LOCAL:
